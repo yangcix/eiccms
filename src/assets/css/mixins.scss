@@ -1,0 +1,21 @@
+//px转vh vw 默认为iPhone6的设计稿(750*1334)
+@function pvh($px) {
+  @return $px / 1334 * 100vh;
+};
+@function pvw($px) {
+  @return $px / 750 * 100vw;
+};
+@function fs($px) {
+  @return $px / 16 * 1em;
+};
+
+//多行文字截断
+@mixin line-clamp($lines) {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $lines; //显示的行数
+  /*! autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+}

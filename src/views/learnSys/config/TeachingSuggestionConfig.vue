@@ -26,6 +26,11 @@
                         <el-option v-for="item in classTypeList" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
+                    <span class="search-desc">分类：</span>
+                    <el-select v-model="classTypeId" placeholder="选择分类" style="margin-left: 10px; width: 150px">
+                        <el-option v-for="item in classificationList" :key="item.id" :label="item.name" :value="item.id">
+                        </el-option>
+                    </el-select>
                     <el-button type="primary" class="search-btn" @click="handleSearch">查询</el-button>
                 </div>
                 <div>
@@ -43,6 +48,7 @@
                     <el-table-column prop="subjectName" align="center" label="学科"></el-table-column>
                     <el-table-column prop="gradeName" align="center" label="学段"></el-table-column>
                     <el-table-column prop="classTypeName" align="center" label="课堂类型"></el-table-column>
+                    <el-table-column prop="classificationName" align="center" label="分类"></el-table-column>
                     <el-table-column prop="center" align="center" label="提示词">
                         <template slot-scope="scope">
                             <div class="btnList">
@@ -82,6 +88,7 @@
             >
                 <h2 style="width: fit-content; margin: 0 auto">
                     【
+                    <span>{{ teachingSuggestion.classificationName }} - </span>
                     <span v-if="teachingSuggestion.gradeName !== '-'">{{ teachingSuggestion.gradeName }} - </span>
                     <span>{{ teachingSuggestion.subjectName }}</span>
                     <span v-if="teachingSuggestion.classTypeName !== '-'"
@@ -133,6 +140,7 @@ export default {
                 gradeName: '',
                 classTypeName: '',
             },
+            classificationList: [],
         };
     },
     created() {},
@@ -142,6 +150,7 @@ export default {
         this.getStudyGradeList();
         this.getClassTypeList();
         this.handleGetData();
+        this.getClassificationList();
     },
     methods: {
         getSubjectList() {
@@ -166,6 +175,15 @@ export default {
             this.$axios.get('/sm/label/listLabel', {parentId: 33}).then((res) => {
                 this.classTypeList = res.data;
                 this.classTypeList.unshift({
+                    id: '',
+                    name: '全部',
+                });
+            });
+        },
+        getClassificationList() {
+            this.$axios.get('/sm/label/listLabel', {parentId: 33}).then((res) => {
+                this.classificationList = res.data;
+                this.classificationList.unshift({
                     id: '',
                     name: '全部',
                 });

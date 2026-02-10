@@ -8,6 +8,17 @@
         </p>
         <el-main style="margin: 20px 0 0 0">
             <el-form :model="editInfo" ref="form" label-width="120px">
+                <el-form-item style="margin-bottom: 8px" label="分类：" required>
+                    <el-radio-group v-model="editInfo.classificationId">
+                        <el-radio
+                            v-for="classification in classificationList"
+                            :key="classification.id"
+                            :disabled="editInfo.defaultFlag === 1"
+                            :label="classification.id"
+                            >{{ classification.name }}
+                        </el-radio>
+                    </el-radio-group>
+                </el-form-item>
                 <el-form-item style="margin-bottom: 8px" label="学科：" required>
                     <el-radio-group v-model="editInfo.subjectId">
                         <el-radio
@@ -85,6 +96,7 @@ export default {
                 classTypeId: '',
                 promptWords: '',
                 defalutFlag: 0,
+                classificationId: '',
             },
             subjectList: [],
             studyGradeList: [],
@@ -92,6 +104,7 @@ export default {
             pageNum: 1,
             currentLength: 0,
             maxLength: 5000,
+            classificationList: [],
         };
     },
     components: {},
@@ -106,6 +119,7 @@ export default {
         this.getSubjectList();
         this.getStudyGradeList();
         this.getClassTypeList();
+        this.getClassificationList();
     },
     methods: {
         getConfig() {
@@ -130,6 +144,11 @@ export default {
         getClassTypeList() {
             this.$axios.get('/sm/label/listLabel', {parentId: 33}).then((res) => {
                 this.classTypeList = res.data;
+            });
+        },
+        getClassificationList() {
+            this.$axios.get('/sm/label/listLabel', {parentId: 1}).then((res) => {
+                this.classificationList = res.data;
             });
         },
         confirm() {

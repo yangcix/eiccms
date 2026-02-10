@@ -154,66 +154,66 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        commitChatLogin: ({commit}, data) => {
+        commitChatLogin: ({ commit }, data) => {
             commit('setChatLogin', data);
         },
-        commitUploadTable: ({commit}, data) => {
+        commitUploadTable: ({ commit }, data) => {
             commit('setUploadTable', data);
         },
-        commitUploadBoxVisible: ({commit}, data) => {
+        commitUploadBoxVisible: ({ commit }, data) => {
             commit('setUploadBoxVisible', data);
         },
-        commitUploadDataState: ({commit}, data) => {
+        commitUploadDataState: ({ commit }, data) => {
             commit('setUploadDataState', data);
         },
-        commitAiUploadTable: ({commit}, data) => {
+        commitAiUploadTable: ({ commit }, data) => {
             commit('setAiUploadTable', data);
         },
-        commitAiUploadBoxVisible: ({commit}, data) => {
+        commitAiUploadBoxVisible: ({ commit }, data) => {
             commit('setAiUploadBoxVisible', data);
         },
-        commitAiUploadDataState: ({commit}, data) => {
+        commitAiUploadDataState: ({ commit }, data) => {
             commit('setAiUploadDataState', data);
         },
-        commitInteractUploadTable: ({commit}, data) => {
+        commitInteractUploadTable: ({ commit }, data) => {
             commit('setInteractUploadTable', data);
         },
-        commitInteracUploadBoxVisible: ({commit}, data) => {
+        commitInteracUploadBoxVisible: ({ commit }, data) => {
             localStorage.setItem('interactShow', JSON.stringify(data));
             commit('setInteractUploadBoxVisible', data);
         },
-        commitInteracUploadDataState: ({commit}, data) => {
+        commitInteracUploadDataState: ({ commit }, data) => {
             commit('setInteractUploadDataState', data);
         },
-        commitSysModule: ({commit}, data) => {
+        commitSysModule: ({ commit }, data) => {
             localStorage.setItem('sysModule', data);
             commit('setSysModule', data);
         },
-        commitSysInfo: ({commit}, data) => {
+        commitSysInfo: ({ commit }, data) => {
             localStorage.setItem('sysInfo', JSON.stringify(data));
             commit('setSysInfo', data);
         },
-        commitClassInfo: ({commit}, data) => {
+        commitClassInfo: ({ commit }, data) => {
             localStorage.setItem('classInfo', JSON.stringify(data));
             commit('setClassInfo', data);
         },
-        commitApply: ({commit}, data) => {
+        commitApply: ({ commit }, data) => {
             localStorage.setItem('applyMsg', JSON.stringify(data));
             commit('applyMsg', data);
         },
-        commitVideoMsg: ({commit}, data) => {
+        commitVideoMsg: ({ commit }, data) => {
             localStorage.setItem('videoMsg', JSON.stringify(data));
             commit('videoMsg', data);
         },
-        commitSeeHome: ({commit}, data) => {
+        commitSeeHome: ({ commit }, data) => {
             localStorage.setItem('seeHome', data);
             commit('setSeeHome', data);
         },
-        commitRightHome: ({commit}, data) => {
+        commitRightHome: ({ commit }, data) => {
             localStorage.setItem('rightHome', data);
             commit('setRightHome', data);
         },
-        commitThreeHome: ({commit}, data) => {
+        commitThreeHome: ({ commit }, data) => {
             localStorage.setItem('threeHome', data);
             commit('setThreeHome', data);
         },

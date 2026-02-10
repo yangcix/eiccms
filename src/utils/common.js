@@ -104,7 +104,7 @@ export function getDlgTableData(params, url, that) {
         that.defaultParams = params;
         that.isFirstEnter = false;
     }
-    that.defaultParams = {...that.defaultParams, ...that.sortParams};
+    that.defaultParams = {...that.defaultParams, ...that.sortParams };
     that.defaultParams['pageNum'] = that.pageInfo.index;
     that.defaultParams['pageSize'] = that.pageInfo.size;
     that.defaultParams['countDimension'] = that.selectValue;
@@ -116,9 +116,9 @@ export function getDlgTableData(params, url, that) {
 export function clickRowLine(row, prop, that) {
     if (prop == 'regionPath') {
         // 跳转区县
-        return {type: 'DISTRICT', id: row.regionId, name: row.regionPath};
+        return { type: 'DISTRICT', id: row.regionId, name: row.regionPath };
     } else if (prop == 'schoolName') {
-        return {type: 'SCHOOL', id: row.schoolId, name: row.schoolName, regionId: row.regionId};
+        return { type: 'SCHOOL', id: row.schoolId, name: row.schoolName, regionId: row.regionId };
     } else if (prop == 'teacherName') {
         return {
             type: 'USER',
@@ -129,9 +129,9 @@ export function clickRowLine(row, prop, that) {
         };
     } else if (prop == 'name') {
         if (that.selectValue == 1) {
-            return {type: 'DISTRICT', id: row.regionId, name: row.name};
+            return { type: 'DISTRICT', id: row.regionId, name: row.name };
         } else if (that.selectValue == 2) {
-            return {type: 'SCHOOL', id: row.schoolId, name: row.name, regionId: row.regionId};
+            return { type: 'SCHOOL', id: row.schoolId, name: row.name, regionId: row.regionId };
         } else if (that.selectValue == 5) {
             return {
                 type: 'USER',
@@ -150,7 +150,7 @@ export function clickRowLine(row, prop, that) {
                     schoolName: row.schoolName,
                 };
             } else if (prop == 'schoolName') {
-                return {type: 'SCHOOL', id: row.schoolId, name: row.schoolName, regionId: row.regionId};
+                return { type: 'SCHOOL', id: row.schoolId, name: row.schoolName, regionId: row.regionId };
             } else if (prop == 'name') {
                 if (JSON.parse(localStorage.getItem('sysInfo')).aiConfigId == 2) {
                     window.open('/aiReport?id=' + row.courseId, '_blank');
@@ -236,14 +236,14 @@ export function addMinutesByTimestamp(date, minutes) {
     // 分钟转为毫秒：1分钟 = 60 * 1000 毫秒
     const milliseconds = minutes * 60 * 1000;
     return new Intl.DateTimeFormat('zh-CN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-    })
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+        })
         .format(new Date(dateObj.getTime() + milliseconds))
         .replace(/\//g, '-')
         .replace(',', '');

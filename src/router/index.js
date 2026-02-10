@@ -652,6 +652,27 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "smaiclass" */ '@/views/learnSys/config/clientVersionManagement.vue'),
             },
+            {
+                // 课前指导
+                path: '/preClassGuide',
+                name: 'preClassGuide',
+                component: () =>
+                    import ( /* webpackChunkName: "smaiclass" */ '@/views/learnSys/config/preClassGuide.vue'),
+            },
+            {
+                // 课前指导详情
+                path: '/preClassGuide/detail',
+                name: 'preClassGuideDetail',
+                component: () =>
+                    import ( /* webpackChunkName: "smaiclass" */ '@/views/learnSys/config/preClassGuideDetail.vue'),
+            },
+            {
+                // 课前指导新增/编辑
+                path: '/sm/preClassGuideAddEdit',
+                name: 'preClassGuideAddEdit',
+                component: () =>
+                    import ( /* webpackChunkName: "smaiclass" */ '@/views/learnSys/config/preClassGuideAddEdit.vue'),
+            },
         ],
     },
     {
@@ -725,6 +746,14 @@ const routes = [{
         name: 'ganSuLoginRedirect',
         component: () =>
             import ( /* webpackChunkName: "training" */ '@/views/system/GanSuLoginRedirect.vue'),
+    },
+    {
+        // 课前指导报告报告
+        path: '/preClassGuideReport',
+        name: 'preClassGuideReport',
+        meta: { keepAlive: true },
+        component: () =>
+            import ( /* webpackChunkName: "lessonPlanAnalysis" */ '@/views/aiReport/preClassGuideReport.vue'),
     },
 ];
 

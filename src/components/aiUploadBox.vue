@@ -20,11 +20,7 @@
                 <el-table-column property="size" align="center" label="大小" width="150"> </el-table-column>
                 <el-table-column property="status" label="状态" align="center" width="100">
                     <template slot-scope="scope">
-                        <span :class="scope.row.status == 0 ? 'status' : ''">
-                            <img src="@/assets/imgs/upload.png" alt="" v-if="scope.row.status == 1" />
-                            <img src="@/assets/imgs/upload2.png" alt="" v-else />
-                            {{ scope.row.status | dataStatus }}
-                        </span>
+                        <el-progress type="circle" :percentage="scope.row.progress"></el-progress>
                     </template>
                 </el-table-column>
                 <el-table-column width="116" align="right" label="操作">

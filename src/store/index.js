@@ -103,6 +103,13 @@ export default new Vuex.Store({
                 let name = val.detail.get('name');
                 state.aiUploadTable = state.aiUploadTable.filter((item) => item.detail.get('name') !== name);
             }
+            if (val.type == 'update') {
+                let fileName = val.fileName;
+                const index = state.aiUploadTable.findIndex((item) => item.fileName == fileName);
+                if (index !== -1) {
+                    Object.assign(state.aiUploadTable[index], { progress: val.progress });
+                }
+            }
         },
         // 视频上传列表显示管理
         setAiUploadBoxVisible(state, val) {

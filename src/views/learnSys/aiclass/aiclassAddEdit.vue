@@ -1219,6 +1219,11 @@ export default {
                                         type: 2, //1 评课 2 AI
                                         id: this.themeId ? this.themeId : -1, // 视频id
                                         detail: formData,
+                                        fileName: this.addEditInfo.teacherVideo.name.slice(
+                                            0,
+                                            this.addEditInfo.teacherVideo.name.length - 4
+                                        ),
+                                        progress: 0,
                                     },
                                 };
                                 this.commitAiUploadTable(uploadTbaleData);
@@ -1234,7 +1239,9 @@ export default {
                                     this.addEditInfo.teacherVideo.name.slice(
                                         0,
                                         this.addEditInfo.teacherVideo.name.length - 4
-                                    )
+                                    ),
+                                    formData,
+                                    this.updateAiUploadTable
                                 );
                             }
                             if (this.addEditInfo.studentVideo) {
@@ -1250,6 +1257,11 @@ export default {
                                         type: 2, //1 评课 2 AI
                                         id: this.themeId ? this.themeId : -1, // 视频id
                                         detail: formData,
+                                        fileName: this.addEditInfo.studentVideo.name.slice(
+                                            0,
+                                            this.addEditInfo.studentVideo.name.length - 4
+                                        ),
+                                        progress: 0,
                                     },
                                 };
                                 this.commitAiUploadTable(uploadTbaleData);
@@ -1257,7 +1269,9 @@ export default {
                                     this.addEditInfo.studentVideo.name.slice(
                                         0,
                                         this.addEditInfo.studentVideo.name.length - 4
-                                    )
+                                    ),
+                                    formData,
+                                    this.updateAiUploadTable
                                 );
                             }
                             this.$router.push('/aiGrinding');
@@ -1276,12 +1290,6 @@ export default {
                             .then(
                                 (res) => {
                                     if (res.code == 200) {
-                                        if (this.addEditInfo.teacherVideo && this.addEditInfo.resources == 2) {
-                                            // this.commitAiUploadTable({
-                                            //     type: 'splice',
-                                            //     detail: formData, // 视频id
-                                            // });
-                                        }
                                         setTimeout(() => {
                                             if (this.$route.path == '/aiGrinding') {
                                                 this.$bus.emit('getAiList');
@@ -1548,6 +1556,21 @@ export default {
             if (this.teachingFileIds.length == 0) {
                 this.$message('教案必须上传！', 'error');
                 return true;
+            }
+        },
+        updateAiUploadTable(msg) {
+            if (msg.progress == 100) {
+                this.commitAiUploadTable({
+                    type: 'splice',
+                    detail: formData, // 视频id
+                });
+            } else {
+                let uploadTbaleData = {
+                    type: 'update',
+                    fileName: msg.name,
+                    progress: msg.progress,
+                };
+                this.commitAiUploadTable(uploadTbaleData);
             }
         },
     },

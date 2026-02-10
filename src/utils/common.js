@@ -200,7 +200,7 @@ export function exportTableData(url, data) {
         }
     );
 }
-export function connectWS(fileName) {
+export function connectWS(fileName, formData, callback) {
     const wsUrl = 'ws://192.168.161.166:8081/link';
     const ws = new WebSocket(wsUrl);
     console.log('ws', ws, fileName);
@@ -222,6 +222,7 @@ export function connectWS(fileName) {
         console.log('收到msg：' + msg);
         if (msg.type === '20') {
             console.log(`文件【${fileName}】进度：${msg.body.progress}%`);
+            callback(formData, msg.body);
         }
     };
 }

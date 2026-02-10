@@ -353,7 +353,7 @@ export default {
         } else if (this.$route.path.includes('/sys/home')) {
             // console.log('修改系统类型')
             this.commitSysModule(1); //修改系统类型
-            this.menuUrl = `/auth/menu`;
+            this.menuUrl = `/auth/menu?type=-7`;
             this.homeMenu.url = '/sys/home';
             this.changeMenu();
         } else if (this.$route.path.includes('/recordhome')) {
@@ -377,7 +377,7 @@ export default {
                 this.commitSysModule(2); //修改系统类型
                 this.$refs.elMenu.close(this.KeyIndex);
             } else {
-                this.menuUrl = `/auth/menu`;
+                this.menuUrl = `/auth/menu?type=-7`;
                 this.homeMenu.url = '/sys/home';
                 this.commitSysModule(1); //修改系统类型
             }
@@ -415,7 +415,7 @@ export default {
             this.$route.query.mode
         ) {
             this.commitSysModule(1);
-            this.menuUrl = `/auth/menu`;
+            this.menuUrl = `/auth/menu?type=-7`;
             this.homeMenu.url = '/sys/home';
             this.changeMenu();
         }
@@ -456,7 +456,7 @@ export default {
                 if (this.homeMenu.url !== '/sys/home' && to.path !== '/sm/filedetail') {
                     this.KeyIndex = [];
                     this.commitSysModule(1); //修改系统类型
-                    this.menuUrl = `/auth/menu?`;
+                    this.menuUrl = `/auth/menu?type=-7`;
                     this.homeMenu.url = '/sys/home'; // 保障刷新后点击
                     this.changeMenu();
                     console.log('44444', to.path);
@@ -465,7 +465,7 @@ export default {
                 if (from.path == '/sm/record') {
                     this.KeyIndex = [];
                     this.commitSysModule(1); //修改系统类型
-                    this.menuUrl = `/auth/menu?`;
+                    this.menuUrl = `/auth/menu?type=-7`;
                     this.homeMenu.url = '/sys/home'; // 保障刷新后点击
                     this.changeMenu();
                     console.log('aaa44aaa');
@@ -537,10 +537,10 @@ export default {
         changeModule(index) {
             this.KeyIndex = [];
             this.commitSysModule(index); //修改系统类型
-            // 智慧教育
+            // 智慧教育 -7
             if (this.sysModule == 1) {
                 this.homeMenu = {url: '/sys/home', name: '概览'};
-                this.menuUrl = `/auth/menu`;
+                this.menuUrl = `/auth/menu?type=-7`;
                 this.selectMenu(this.homeMenu);
             } else if (this.sysModule == 2) {
                 // 微集控录播：-2

@@ -8,8 +8,8 @@
         </p>
         <div class="content-wrap">
             <div class="item-scroll">
-                <div class="error-msg-content" v-if="$route.query.errorMsg">
-                    {{ $route.query.errorMsg }}
+                <div class="error-msg-content" v-if="$route.query.msg">
+                    {{ $route.query.msg }}
                 </div>
                 <div class="box">
                     <div class="item-wrap" v-if="aiType == 2 && feeModel == 1">

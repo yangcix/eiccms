@@ -114,7 +114,7 @@
                                 <li v-if="scope.row.type === 2">录制失败</li>
                                 <li v-if="scope.row.type === 3">
                                     排队中...
-                                    <el-tooltip :content="scope.row.errorMsg" effect="light" placement="top-start">
+                                    <el-tooltip :content="scope.row.msg" effect="light" placement="top-start">
                                         <i class="el-icon-question"></i>
                                     </el-tooltip>
                                 </li>
@@ -122,7 +122,7 @@
                                 <li v-if="scope.row.type === 5">分析成功</li>
                                 <li v-if="scope.row.type === 6">
                                     分析失败
-                                    <el-tooltip :content="scope.row.errorMsg" effect="light" placement="top-start">
+                                    <el-tooltip :content="scope.row.msg" effect="light" placement="top-start">
                                         <i class="el-icon-question"></i>
                                     </el-tooltip>
                                 </li>
@@ -986,7 +986,7 @@ export default {
                     query: {
                         themeid: val ? val.id : '',
                         teacherName: val ? val.teacherName : '',
-                        errorMsg: val.errorMsg ? val.errorMsg : '',
+                        msg: val.msg ? val.msg : '',
                     },
                 });
             } else {

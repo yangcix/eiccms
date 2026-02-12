@@ -550,6 +550,7 @@ export default {
                 {name: '自动录制', id: 0},
                 {name: '手动录制', id: 1},
             ],
+            isChangeVideo: false, // 是否替换视频
         };
     },
     components: {},
@@ -673,6 +674,7 @@ export default {
                 this.initVP();
                 this.videoId = 1;
                 this.addEditInfo.teacherVideo = file.raw;
+                this.isChangeVideo = true;
             }
         },
         async selectVideos(file) {
@@ -1198,6 +1200,10 @@ export default {
                             formData.append('id', this.themeId);
                             if (!this.addEditInfo.file && this.addEditInfo.coverUrl) {
                                 formData.append('coverUrl', this.addEditInfo.coverUrl);
+                            }
+                            // 编辑的时候且是本地视频：才需要判断视频是否有更换
+                            if (this.addEditInfo.resources == 2) {
+                                formData.append('teacherVideoNew', this.isChangeVideo ? 1 : 0);
                             }
                         }
                         // 判断编辑是否有替换视频

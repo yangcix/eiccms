@@ -360,7 +360,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 /* ::v-deep  */
 /* 设置整个报告容器 */
 .report-container {

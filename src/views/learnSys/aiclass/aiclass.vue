@@ -631,16 +631,18 @@ export default {
                           {value: 1, label: '排课录制'},
                           {value: 2, label: '本地上传'},
                       ],
-            searchThemeList: [
-                {value: '', label: '全部'},
-                {value: 0, label: '未开始'},
-                {value: 1, label: '录制中'},
-                {value: 2, label: '录制失败'},
-                {value: 3, label: '待分析'},
-                {value: 4, label: '分析中'},
-                {value: 5, label: '分析成功'},
-                {value: 6, label: '分析失败'},
-            ],
+            // searchThemeList: [
+            //     {value: '', label: '全部'},
+            //     {value: 0, label: '未开始'},
+            //     {value: 1, label: '录制中'},
+            //     {value: 2, label: '录制失败'},
+            //     {value: 3, label: '待分析'},
+            //     {value: 4, label: '分析中'},
+            //     {value: 5, label: '分析成功'},
+            //     {value: 6, label: '分析失败'},
+            //     {value: 7, label: '待提交'},
+            // ],
+            searchThemeList: [],
             searchLiveStatus: '',
             searchThemeStatus: '',
             deleteVal: {},
@@ -774,6 +776,7 @@ export default {
         // this.$bus.emit('getAiList');
         this.getSubjectId();
         this.getUserInfo();
+        this.getStatusOptions();
     },
     methods: {
         getUserInfo() {
@@ -1413,7 +1416,7 @@ export default {
             this.getSubjectOptions();
             this.getGradeOptions();
             this.getTeacherOptions();
-            this.getStatusOptions();
+            // this.getStatusOptions();
         },
         // 导出
         exportTable() {},
@@ -1439,8 +1442,8 @@ export default {
             });
         },
         getStatusOptions() {
-            this.$axios.get('/aiGrinding/getSubject').then((res) => {
-                this.statusOptions = res.data;
+            this.$axios.get('/aiGrinding/getStatus').then((res) => {
+                this.searchThemeList = res.data;
             });
         },
         // 导出弹窗数据改变

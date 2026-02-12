@@ -1130,7 +1130,6 @@ export default {
         /**
          * 覆盖默认上传，手动上传
          * @param isTranslationPending 是否暂存
-         * TODO 是否需要新的接口、参数是否需要有变动，如果可以就直接写在一个方法用参数区分，不行的话就另写一个方法
          */
         httpRequest(isTranslationPending) {
             if (this.verify()) {
@@ -1287,6 +1286,10 @@ export default {
                         }
                         console.log('资源来源：', formData.get('resources'));
                         console.log('历史记录ID：', formData.get('recordId'));
+                        // 暂存传值：type == 7
+                        if (isTranslationPending) {
+                            formData.append('type', 7);
+                        }
                         this.$axios
                             .post(url, formData, {
                                 headers: {

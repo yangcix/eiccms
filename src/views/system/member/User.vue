@@ -15,7 +15,7 @@
                         <!-- <el-tooltip class="item" effect="dark" :content="node.label" placement="top" slot-scope="{ node, data }">
 							<span class="span-ellipsis">{{ node.label }}</span>
     				</el-tooltip> -->
-                        <template slot-scope="{node, data}">
+                        <template slot-scope="{node}">
                             <span :title="node.label" class="span-ellipsis">{{ node.label }}</span>
                         </template>
                     </el-tree>

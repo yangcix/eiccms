@@ -27,10 +27,10 @@
                     <div>
                         <el-input
                             v-model="searchKey"
-                            class="width-2"
-                            placeholder="请输入姓名或学号/编号关键字进行查询"
+                            placeholder="请输入姓名或学号/编号"
                             v-search="search"
                             clearable
+                            style="width: 180px"
                         ></el-input>
                         <span class="search-desc">状态：</span>
                         <el-select v-model="searchStatus" placeholder="请选择" class="width-1">
@@ -1270,7 +1270,7 @@ export default {
 }
 .data-wrap {
     flex: 1;
-    margin-left: 45px;
+    margin-left: 15px;
     .nickName {
         width: 80px;
         overflow: hidden;

@@ -2175,10 +2175,18 @@ export default {
                     this.getTeachBuildList(res.data.evaluationOrgId);
                     this.getClassroomList(res.data.buildingId);
                     this.getTerminalIdList();
+                    this.addEditInfo.durationMinutes = this.$comjs.createDuraTionMin(
+                        this.addEditInfo.liveStartTime,
+                        this.addEditInfo.liveEndTime
+                    );
                 } else if (res.data.resources == 4) {
                     this.addEditInfo.liveStartTime = res.data.smTheme.startTime;
                     this.addEditInfo.liveEndTime = res.data.smTheme.endTime;
                     this.objectVideoName = res.data.objectName;
+                    this.addEditInfo.durationMinutes = this.$comjs.createDuraTionMin(
+                        this.addEditInfo.liveStartTime,
+                        this.addEditInfo.liveEndTime
+                    );
                 } else {
                     console.log('res.data.resources: ', res.data.resources);
                     if (res.data.resources == 5) {

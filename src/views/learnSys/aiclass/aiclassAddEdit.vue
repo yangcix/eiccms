@@ -925,6 +925,10 @@ export default {
                     this.teachingFileIds = [];
                 }
                 this.addEditInfo = res.data;
+                this.addEditInfo.durationMinutes = this.$comjs.createDuraTionMin(
+                    this.addEditInfo.startTime,
+                    this.addEditInfo.endTime
+                );
                 this.getGradeList(res.data.grindingSchool);
                 this.getClassList();
                 this.getTeachBuildList(res.data.grindingSchool);

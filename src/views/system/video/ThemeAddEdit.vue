@@ -718,6 +718,10 @@ export default {
                 if (this.themeValue !== '') {
                     this.getTypeList();
                 }
+                this.addEditInfo.durationMinutes = this.$comjs.createDuraTionMin(
+                    this.addEditInfo.startTime,
+                    this.addEditInfo.endTime
+                );
                 // setTimeout(() => {this.recodeList = recodeList;}, 100);
             });
         },

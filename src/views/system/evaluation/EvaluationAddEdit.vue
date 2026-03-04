@@ -1357,6 +1357,10 @@ export default {
                     this.getTeachBuildList(res.data.evaluationOrgId);
                     this.getClassroomList(res.data.buildingId);
                     this.getTerminalIdList();
+                    this.addEditInfo.durationMinutes = this.$comjs.createDuraTionMin(
+                        this.addEditInfo.liveStartTime,
+                        this.addEditInfo.liveEndTime
+                    );
                 } else if (res.data.resources == 3) {
                     this.addEditInfo.objectId = '';
                     this.teacherVideo = [{name: '', url: res.data.teacherVideoUrl}];

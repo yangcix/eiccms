@@ -249,3 +249,15 @@ export function addMinutesByTimestamp(date, minutes) {
         .replace(/\//g, '-')
         .replace(',', '');
 }
+
+export function createDuraTionMin(startDate, endDate) {
+    // 分钟转为毫秒：1分钟 = 60 * 1000 毫秒
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // 计算毫秒差，然后转换为分钟
+    const diffMs = end - start;
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+    return diffMinutes;
+}

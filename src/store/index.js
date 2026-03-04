@@ -7,6 +7,8 @@ export default new Vuex.Store({
     state: {
         rightHome: localStorage.getItem('rightHome'),
         threeHome: localStorage.getItem('threeHome'),
+        fiveHome: localStorage.getItem('fiveHome'),
+        sixHome: localStorage.getItem('sixHome'),
         seeHome: localStorage.getItem('seeHome'), //是否显示概览 0不显示 1显示
         videoMsg: '视频接入中，请勿刷新...',
         applyMsg: 0, // 副讲麦状态
@@ -68,6 +70,12 @@ export default new Vuex.Store({
         },
         setThreeHome(state, val) {
             state.threeHome = val;
+        },
+        setFiveHome(state, val) {
+            state.fiveHome = val;
+        },
+        setSixHome(state, val) {
+            state.sixHome = val;
         },
         // 视频上传列表管理
         setUploadTable(state, val) {
@@ -223,6 +231,14 @@ export default new Vuex.Store({
         commitThreeHome: ({ commit }, data) => {
             localStorage.setItem('threeHome', data);
             commit('setThreeHome', data);
+        },
+        commitFiveHome: ({ commit }, data) => {
+            localStorage.setItem('fiveHome', data);
+            commit('setFiveHome', data);
+        },
+        commitSixHome: ({ commit }, data) => {
+            localStorage.setItem('sixHome', data);
+            commit('setSixHome', data);
         },
     },
     modules: {},

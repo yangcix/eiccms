@@ -62,31 +62,17 @@
                             <span class="moduleTitle" @click="changeModule(3)" :class="sysModule == 3 ? 'mActive' : ''"
                                 >智能研修</span
                             >
-                            <span
-                                class="moduleTitle"
-                                :class="sysModule == 1 ? 'mActive' : ''"
-                                @click="changeModule(1)"
+                            <span class="moduleTitle" :class="sysModule == 1 ? 'mActive' : ''" @click="changeModule(1)"
                                 >智慧教育</span
                             >
-                            <span
-                                v-if="userInfo.recordType == 1"
-                                class="moduleTitle"
-                                :class="sysModule == 2 ? 'mActive' : ''"
-                                @click="changeModule(2)"
+                            <!-- v-if="userInfo.recordType == 1" -->
+                            <span class="moduleTitle" :class="sysModule == 2 ? 'mActive' : ''" @click="changeModule(2)"
                                 >微集控录播</span
                             >
-                            <span
-                                v-if="userInfo.recordType == 1"
-                                class="moduleTitle"
-                                :class="sysModule == 5 ? 'mActive' : ''"
-                                @click="changeModule(5)"
+                            <span class="moduleTitle" :class="sysModule == 5 ? 'mActive' : ''" @click="changeModule(5)"
                                 >项目次数管理</span
                             >
-                            <span
-                                v-if="userInfo.recordType == 1"
-                                class="moduleTitle"
-                                :class="sysModule == 6 ? 'mActive' : ''"
-                                @click="changeModule(6)"
+                            <span class="moduleTitle" :class="sysModule == 6 ? 'mActive' : ''" @click="changeModule(6)"
                                 >系统管理</span
                             >
                             <span
@@ -391,6 +377,10 @@ export default {
             this.homeMenu.url = '/recordhome';
         } else if (this.sysModule == 3) {
             this.homeMenu.url = '/traininghome';
+        } else if (this.sysModule == 5) {
+            this.homeMenu.url = 'sys/home';
+        } else if (this.sysModule == 6) {
+            this.homeMenu.url = '/sys/serverConfig';
         }
         this.getSystemName();
         this.getSystemInfo();
@@ -511,6 +501,8 @@ export default {
             commitSeeHome: 'commitSeeHome',
             commitRightHome: 'commitRightHome',
             commitThreeHome: 'commitThreeHome',
+            commitFiveHome: 'commitFiveHome',
+            commitSixHome: 'commitSixHome',
         }),
         toLogin() {
             this.$router.push('/login');
@@ -548,19 +540,19 @@ export default {
                 this.menuUrl = `/auth/menu?type=-1`;
                 this.selectMenu(this.homeMenu);
             } else if (this.sysModule == 3) {
-                // 智能研修：-3
+                // 智能研修：-2
                 this.homeMenu = {url: '/traininghome', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-2`;
                 this.selectMenu(this.homeMenu);
             } else if (this.sysModule == 5) {
                 // TODO 5和6默认打开的节点需要修改，等后端接口修改之后再统一修改
                 // 项目次数管理：-5
-                this.homeMenu = {url: '/traininghome', name: '概览'};
+                this.homeMenu = {url: '/sys/home', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-5`;
                 this.selectMenu(this.homeMenu);
             } else if (this.sysModule == 6) {
                 // 系统管理：-6
-                this.homeMenu = {url: '/traininghome', name: '概览'};
+                this.homeMenu = {url: '/sys/serverConfig', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-6`;
                 this.selectMenu(this.homeMenu);
             }
@@ -576,6 +568,8 @@ export default {
             let isTrue = 0;
             let rightTrue = 0;
             let threeTrue = 0;
+            let fiveTrue = 0;
+            let sixTrue = 0;
             console.log('this.menuUrl: ', this.menuUrl);
             this.$axios.get(this.menuUrl).then((res) => {
                 res.data.forEach((ele) => {
@@ -607,7 +601,6 @@ export default {
                                 ele.id !== 12240 &&
                                 ele.id !== 12600 &&
                                 ele.id !== 9181 &&
-                                ele.id !== 12604 &&
                                 ele.id !== 13910 &&
                                 ele.id !== 13911 &&
                                 ele.id !== 13912
@@ -632,18 +625,21 @@ export default {
                 } else {
                     this.commitThreeHome(0);
                 }
+                if (fiveTrue == 1) {
+                    this.commitFiveHome(1);
+                } else {
+                    this.commitFiveHome(0);
+                }
+                if (sixTrue == 1) {
+                    this.commitSixHome(1);
+                } else {
+                    this.commitSixHome(0);
+                }
                 if (this.mainInfo.userId == 1) {
                     arrs = arr;
                 } else {
                     arrs = arr.filter((el) => {
                         if (el.id !== 10205) {
-                            return el;
-                        }
-                    });
-                }
-                if (this.aiType == 1) {
-                    arrs = arrs.filter((el) => {
-                        if (el.id !== 12604) {
                             return el;
                         }
                     });
@@ -666,11 +662,12 @@ export default {
                 session.set('systemMenuList', creatTree(arrs));
                 this.menuList = session.get('systemMenuList');
                 this.setDefaultMenu(this.menuList);
-                console.log(this.$route.path, 'ss');
                 if (
                     ((isTrue == 0 && this.sysModule == 1) ||
                         (rightTrue == 0 && this.sysModule == 2) ||
-                        (threeTrue == 0 && this.sysModule == 3)) &&
+                        (threeTrue == 0 && this.sysModule == 3) ||
+                        (fiveTrue == 0 && this.sysModule == 5) ||
+                        (sixTrue == 0 && this.sysModule == 6)) &&
                     this.$route.path !== '/aiConfig/Recharge' &&
                     this.$route.path !== '/sm/aiclassAddEdit' &&
                     this.$route.path !== '/sm/commentaddedit' &&
@@ -755,13 +752,7 @@ export default {
                                     arr.push(ele);
                                 }
                             } else {
-                                if (
-                                    ele.id !== 1 &&
-                                    ele.id !== 12240 &&
-                                    ele.id !== 12600 &&
-                                    ele.id !== 9181 &&
-                                    ele.id !== 12604 
-                                ) {
+                                if (ele.id !== 1 && ele.id !== 12240 && ele.id !== 12600 && ele.id !== 9181) {
                                     arr.push(ele);
                                 }
                             }
@@ -791,13 +782,6 @@ export default {
                             }
                         });
                     }
-                    if (this.aiType == 1) {
-                        arrs = arrs.filter((el) => {
-                            if (el.id !== 12604) {
-                                return el;
-                            }
-                        });
-                    }
                     if (this.mainInfo.userId == 1 || this.mainInfo.userId == 2) {
                         if (this.feeModel == 2) {
                             arrs = arrs.filter((el) => {
@@ -819,7 +803,9 @@ export default {
                     if (
                         ((isTrue == 0 && this.sysModule == 1) ||
                             (rightTrue == 0 && this.sysModule == 2) ||
-                            (threeTrue == 0 && this.sysModule == 3)) &&
+                            (threeTrue == 0 && this.sysModule == 3) ||
+                            (fiveTrue == 0 && this.sysModule == 5) ||
+                            (sixTrue == 0 && this.sysModule == 6)) &&
                         this.$route.path !== '/aiConfig/Recharge' &&
                         this.$route.path !== '/sm/aiclassAddEdit' &&
                         this.$route.path !== '/sm/commentaddedit' &&

@@ -7,9 +7,7 @@
         </div>
         <div v-else class="main-wrap">
             <div class="tab-menu">
-                <el-button icon="el-icon-plus" @click="showSyncOrgDialog()" class="sync-btn"
-                    >同步机构</el-button
-                >
+                <el-button icon="el-icon-plus" @click="showSyncOrgDialog()" class="sync-btn">同步机构</el-button>
                 <el-menu class="el-menu-demo" mode="horizontal" :default-active="activeIndex" @select="tabChange">
                     <el-menu-item v-for="(val, index) in tabMenu" :index="val.id" :key="index">{{
                         val.name

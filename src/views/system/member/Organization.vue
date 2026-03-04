@@ -7,7 +7,7 @@
         </div>
         <div v-else class="main-wrap">
             <div class="tab-menu">
-                <el-button icon="el-icon-plus" @click="isShowSyncOrgDialog()" class="sync-btn"
+                <el-button icon="el-icon-plus" @click="showSyncOrgDialog()" class="sync-btn"
                     >同步机构</el-button
                 >
                 <el-menu class="el-menu-demo" mode="horizontal" :default-active="activeIndex" @select="tabChange">
@@ -809,7 +809,7 @@ export default {
                 this.$message('最多选择三个负责人', 'error');
             }
         },
-        isShowSyncOrgDialog() {
+        showSyncOrgDialog() {
             this.isShowSyncOrgDialog = true;
         },
         // 同步机构
@@ -820,9 +820,10 @@ export default {
             }
             let params = {};
             params['orgName'] = this.orgName;
-            this.$axios.post('/sys/org/update', params).then((res) => {
+            this.$axios.post('/gansu/syncOrgData', params).then((res) => {
                 if (res.code == 200) {
                     this.isShowSyncOrgDialog = false;
+                    this.orgName = '';
                     this.$message(res.message, 'success');
                     this.getList();
                 }

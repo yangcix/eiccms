@@ -92,7 +92,7 @@ const routes = [{
                     import ( /* webpackChunkName: "sysuser" */ '@/views/system/member/User.vue'),
             },
             {
-                //用户管理
+                //机构管理
                 path: 'org',
                 name: 'sysorg',
                 component: () =>

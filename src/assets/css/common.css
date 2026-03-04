@@ -9,7 +9,7 @@
 .main-wrap {
     min-width: 800px;
     overflow: auto;
-    padding: 50px 50px 36px 50px;
+    padding: 20px;
 }
 
 .content-title {
@@ -188,7 +188,7 @@
 }
 
 .data-table {
-    margin-top: 33px;
+    margin-top: 15px;
 }
 
 .operat-list {

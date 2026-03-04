@@ -72,7 +72,9 @@
                         <el-button class="width-1" icon="el-icon-download" @click="downLoad" v-if="permission.getExcel"
                             >模板</el-button
                         >
-                        <el-button class="width-1" @click="showSyncTeacherDialog">同步教师</el-button>
+                        <el-button class="width-1" @click="showSyncTeacherDialog" v-show="activeIndex == 1"
+                            >同步教师</el-button
+                        >
                     </div>
                 </div>
 
@@ -474,15 +476,15 @@
                     <div class="dialog-item">
                         <p>所属机构</p>
                         <p><em>*</em>：</p>
-                        <el-select v-model="teacherInfo.orgType" placeholder="请选择所属机构" class="width-5">
-                            <el-option
-                                v-for="item in orgOptions"
-                                :key="item.value"
-                                :label="item.label"
-                                :value="item.value"
-                            >
-                            </el-option>
-                        </el-select>
+                        <el-cascader
+                            v-model="teacherInfo.orgId"
+                            :props="cascaderProps"
+                            :options="departmentOptions"
+                            collapse-tags
+                            clearable
+                            filterable
+                            class="width-5"
+                        ></el-cascader>
                     </div>
                     <div class="dialog-item">
                         <p>教师姓名</p>
@@ -588,6 +590,11 @@ export default {
             teacherName: '',
             orgOptions: [],
             teacherInfo: {},
+            departmentOptions:[],
+            cascaderProps: {
+                value: 'id',
+                label: 'name',
+            },
         };
     },
     components: {},
@@ -1206,25 +1213,34 @@ export default {
                 this.$message('教师名称为必填，由中文或大小写字母或数字组成，最长20位！', 'error');
                 return;
             }
-            if (!this.teacherInfo.orgType) {
+            if (this.teacherInfo.orgId.length == 0) {
                 this.$message('请选择所属机构！', 'error');
                 return;
             }
             let params = {};
             params['teacherName'] = this.teacherInfo.teacherName;
-            params['orgType'] = this.teacherInfo.orgType;
-            this.$axios.post('/sys/org/update', params).then((res) => {
+            params['orgId'] = this.teacherInfo.orgId[0];
+            this.$axios.post('/gansu/syncUsers', params).then((res) => {
                 if (res.code == 200) {
                     this.isShowSyncTeacherDialog = false;
+                    this.teacherInfo = {};
                     this.$message(res.message, 'success');
                     this.getTableData();
                 }
             });
         },
-        getOrgOptions() {
-            this.$axios.post('').then((res) => {
-                this.orgOptions = res.data;
+        async getOrgOptions() {
+            await this.$axios.get('/sys/org/listDepartmentAndUser', {isAll: 1}).then((res) => {
+                this.departmentOptions = [];
+                this.departmentOptions = res.data;
+                let dataArray = JSON.parse(JSON.stringify(this.departmentOptions));
+                // 如果第一级只有一项，跳过，显示下级
+                while (dataArray.length == 1) {
+                    dataArray = JSON.parse(JSON.stringify(dataArray[0].children));
+                }
+                this.departmentOptions = dataArray;
             });
+            return this.departmentOptions;
         },
     },
     computed: {

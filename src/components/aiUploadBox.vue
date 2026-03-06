@@ -18,9 +18,18 @@
             <el-table :data="aiUploadTable" :class="showTable ? 'upTableNone' : ''" height="250">
                 <el-table-column property="name" label="视频名称" show-overflow-tooltip width="120"> </el-table-column>
                 <el-table-column property="size" align="center" label="大小" width="150"> </el-table-column>
-                <el-table-column property="status" label="状态" align="center" width="100">
+                <el-table-column property="status" label="进度" align="center" width="100">
                     <template slot-scope="scope">
-                        <el-progress type="circle" :percentage="scope.row.progress"></el-progress>
+                        <div class="flex-x-center">
+                            <span>{{ scope.row.progress }}%</span>&nbsp;
+                            <el-progress
+                                type="circle"
+                                :percentage="scope.row.progress"
+                                :width="20"
+                                :stroke-width="3"
+                                :show-text="false"
+                            ></el-progress>
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column width="116" align="right" label="操作">
@@ -35,6 +44,7 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <div class="tips-text">视频上传中，请勿关闭平台页面或浏览器！</div>
         </div>
     </div>
 </template>
@@ -170,7 +180,7 @@ export default {
 #uploadBox {
     .uploadBox {
         width: 500px;
-        height: 300px;
+        height: 325px;
         position: absolute;
         right: 110px;
         bottom: 86px;
@@ -201,6 +211,11 @@ export default {
         }
         .upTableNone {
             display: none;
+        }
+        .tips-text {
+            color: #ff8a48;
+            font-size: 12px;
+            margin: 20px 0 10px 20px;
         }
     }
     .shrink {

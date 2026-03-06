@@ -503,7 +503,7 @@
                             "
                             >取 消</el-button
                         >
-                        <el-button type="primary" @click="syncTeacher">确 定</el-button>
+                        <el-button type="primary" @click="syncTeacher" :loading="!isSynced">确 定</el-button>
                     </div>
                 </div>
             </el-dialog>
@@ -590,11 +590,12 @@ export default {
             teacherName: '',
             orgOptions: [],
             teacherInfo: {},
-            departmentOptions:[],
+            departmentOptions: [],
             cascaderProps: {
                 value: 'id',
                 label: 'name',
             },
+            isSynced: true,
         };
     },
     components: {},
@@ -1220,8 +1221,10 @@ export default {
             let params = {};
             params['teacherName'] = this.teacherInfo.teacherName;
             params['orgId'] = this.teacherInfo.orgId[0];
+            this.isSynced = false;
             this.$axios.post('/gansu/syncUsers', params).then((res) => {
                 if (res.code == 200) {
+                    this.isSynced = true;
                     this.isShowSyncTeacherDialog = false;
                     this.teacherInfo = {};
                     this.$message(res.message, 'success');

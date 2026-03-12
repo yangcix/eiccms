@@ -41,7 +41,12 @@
                     </el-table-column>
                     <el-table-column label="分类" align="center">
                         <template slot-scope="scope">
-                            {{ scope.row.orgType | orgType }}
+                            {{ scope.row.orgLevelName }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="所在地区" align="center">
+                        <template slot-scope="scope">
+                            {{ scope.row.ancestralStr }}
                         </template>
                     </el-table-column>
                     <el-table-column label="负责人" :show-overflow-tooltip="true" align="center">
@@ -56,11 +61,12 @@
                             {{ scope.row.status | useStatus }}
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" width="160px" label="操作">
+                    <el-table-column align="center" width="250px" label="操作">
                         <template slot-scope="scope">
                             <ul class="operat-list">
-                                <li @click="add(0, scope.row)" v-if="permission.update">编辑</li>
-                                <li @click="add(1, scope.row)" v-if="permission.save">新增下级</li>
+                                <li @click="editCurData(scope, true)" v-if="permission.update">编辑</li>
+                                <li @click="editCurData(scope, false)" v-if="permission.save">新增下级</li>
+                                <li @click="addSchoolForCity()" v-if="scope.row.orgLevel == 2">新增市属校</li>
                                 <li
                                     @click="deleteData(scope.row)"
                                     v-if="permission.delete"
@@ -163,7 +169,7 @@
                     <el-input class="width-4" v-model="addEditInfo.name"></el-input>
                 </div>
 
-                <div class="dialog-item" v-if="topLevel">
+                <div class="dialog-item" v-if="topLevelEdit">
                     <p>上级部门</p>
                     <p><em>*</em>：</p>
                     <el-input class="width-4" :disabled="true" v-model="sectionName"></el-input>
@@ -306,11 +312,121 @@
                 </div>
             </div>
         </el-dialog>
+        <el-dialog
+            :title="isEditData ? '编辑组织' : '新增组织'"
+            :close-on-click-modal="false"
+            :visible.sync="isShowOrgDialog"
+            width="500px"
+        >
+            <div class="dialog-wrap">
+                <p class="err-title" v-if="errorInfo">提示：{{ errorInfo }}</p>
+                <!-- 组织所在级别，根据orgLevel判断：1代表省级，2代表市级，3代表区域，4代表学校 -->
+                <div class="dialog-item">
+                    <p>部门名称</p>
+                    <p><em>*</em>：</p>
+                    <el-input class="width-4" v-model="addEditInfo.name"></el-input>
+                </div>
+                <div class="dialog-item" v-if="!topLevelEdit">
+                    <p>上级部门</p>
+                    <p><em>*</em>：</p>
+                    <el-input class="width-4" :disabled="true" v-model="sectionName"></el-input>
+                </div>
+                <div class="dialog-item" v-if="curRow.id !== 2">
+                    <p>类型</p>
+                    <p><em>*</em>：</p>
+                    <el-select
+                        v-model="addEditInfo.orgType"
+                        placeholder="请选择类型"
+                        :class="
+                            !(
+                                curRow.orgLevel == 4 ||
+                                addEditInfo.orgType == 2 ||
+                                curRow.orgType == 3 ||
+                                (curRow.orgLevel == 3 && !isEditData)
+                            )
+                                ? 'width-10'
+                                : 'width-4'
+                        "
+                        @change="changeOrgType"
+                        :disabled="isHaveChildren"
+                    >
+                        <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <!-- 当前层级是学校/部门或者选择的类型是学校或者区县新增下级，则不显示第二个下拉框 -->
+
+                    <el-select
+                        v-model="addEditInfo.orgLevel"
+                        placeholder="请选择"
+                        class="width-10"
+                        :disabled="!(topLevelEdit && !isHaveChildren)"
+                        v-show="
+                            !(
+                                curRow.orgLevel == 4 ||
+                                addEditInfo.orgType == 2 ||
+                                curRow.orgType == 3 ||
+                                (curRow.orgLevel == 3 && !isEditData)
+                            )
+                        "
+                        @change="changeLevelType"
+                    >
+                        <el-option v-for="item in levelList" :key="item.label" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </div>
+                <!-- 类型选中部门的时候不显示所在地区 -->
+                <div
+                    class="dialog-item"
+                    v-show="
+                        !isSchoolOrPart
+                            ? curRow.orgLevel == 3 && !isEditData
+                                ? false
+                                : addEditInfo.orgType !== 3
+                            : false
+                    "
+                >
+                    <p>所在地区</p>
+                    <!-- <p><em>*</em>：</p> -->
+                    <p>：</p>
+                    <el-cascader
+                        v-model="addEditInfo.ancestralStr"
+                        :options="regionData"
+                        placeholder="请选择所在地区"
+                        clearable
+                        class="width-4"
+                        :props="{value: 'label'}"
+                        :disabled="
+                            (curRow.id == 2 && isEditData) ||
+                            (curRow.orgLevel == 3 && !this.isEditData) ||
+                            curRow.orgLevel > 3
+                        "
+                    />
+                    <!-- :disabled="isHaveChildren" -->
+                </div>
+                <div class="dialog-item">
+                    <p>状态</p>
+                    <p><em>*</em>：</p>
+                    <el-select v-model="addEditInfo.status" placeholder="请选择" class="width-4">
+                        <el-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                </div>
+                <div class="dialog-btn">
+                    <el-button type="primary" @click="addEditConfirm">确 定</el-button>
+                    <el-button @click="isShowOrgDialog = false">取 消</el-button>
+                </div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
 import {creatTree, baseUrl} from '../../../assets/js/utils';
+import {
+    provinceAndCityData, // 省+市 两级数据
+    regionData, // 省+市+区 三级数据
+    provinceDataList, // 只包含省份的数据
+} from 'element-china-area-data';
 export default {
     name: '',
     data() {
@@ -326,7 +442,7 @@ export default {
             activeIndex: '0',
             addEditShow: false,
             updateConfirmShow: false,
-            topLevel: true,
+            topLevelEdit: true, //是否是第一级数据
             deleteShow: false,
             deleteRow: false,
             pageName: '机构管理',
@@ -350,11 +466,16 @@ export default {
             },
             addEditType: 0, //新增还是编辑
             originList: [
+                {value: 0, label: '教育厅'},
                 {value: 1, label: '教育局'},
                 {value: 2, label: '学校'},
                 {value: 3, label: '部门'},
             ],
-            typeList: [],
+            typeList: [
+                {value: 0, label: '教育厅'},
+                {value: 1, label: '教育局'},
+                {value: 2, label: '学校'},
+            ],
             statusList: [
                 {value: 0, label: '禁用'},
                 {value: 1, label: '启用'},
@@ -374,6 +495,21 @@ export default {
             BMap: undefined,
             isShowSyncOrgDialog: false,
             orgName: '',
+            isShowOrgDialog: false,
+            isEditData: false, //是否是编辑
+            regionData: [], // 省市区三级数据
+            allLevelList: [
+                {label: '省级', value: 1},
+                {label: '市级', value: 2},
+                {label: '区/县级/市属校', value: 3},
+                {label: '学校', value: 4},
+            ],
+            levelList: [],
+            curRow: {},
+            upRow: {},
+            preAreaList: [],
+            isHaveChildren: false, //判断是否有下级，没有下级时可以随意编辑；有下级的话，类型和所在地区不可编辑
+            isSchoolOrPart: true,
         };
     },
     components: {},
@@ -582,12 +718,12 @@ export default {
         add(type, val) {
             this.errorInfo = '';
             this.addEditType = type;
-            this.topLevel = true;
+            this.topLevelEdit = true;
             this.typeList = this.originList.slice(val.orgType - 1);
             if (type == 0) {
                 //0编辑
                 if (val.code == '000001') {
-                    this.topLevel = false;
+                    this.topLevelEdit = false;
                     this.typeList = this.originList.slice(val.orgType - 1, val.orgType);
                 } else {
                     this.sectionName = this.getOriginInfo(val.parentId).name;
@@ -677,7 +813,7 @@ export default {
             if (this.verify()) {
                 return;
             }
-            if (this.addEditType == 0) {
+            if (this.isEditData) {
                 //0编辑
                 if (this.addEditInfo.status == this.originStatus) {
                     this.addEditInfo.statusUpdate = 0;
@@ -696,17 +832,16 @@ export default {
                 data.append('parentId', this.addEditInfo.parentId);
                 data.append('parentType', this.addEditInfo.parentType);
                 data.append('status', this.addEditInfo.status);
-                if (this.addEditInfo.orgType == 2) {
-                    data.append('fileDetection', this.addEditInfo.file !== null ? 0 : 1);
-                    if (this.uiType == 1) {
-                        data.append('file', this.addEditInfo.file);
-                        data.append('latitude', this.addEditInfo.latitude);
-                        data.append('longitude', this.addEditInfo.longitude);
-                    }
+                if (this.addEditInfo.id == 2 || this.curRow.orgLevel > 3 || this.curRow.orgType == 3) {
+                    // 市属校
+                    data.append('ancestralStr', this.preAreaList.join('/'));
+                } else {
+                    data.append('ancestralStr', this.preAreaList.concat(this.addEditInfo.ancestralStr).join('/'));
                 }
+                data.append('orgLevel', this.addEditInfo.orgLevel ? this.addEditInfo.orgLevel : '');
                 this.$axios.post('/sys/org/save', data).then((res) => {
                     if (res.code == 200) {
-                        this.addEditShow = false;
+                        this.isShowOrgDialog = false;
                         this.$message(res.message, 'success');
                         this.getList();
                     }
@@ -719,20 +854,20 @@ export default {
             data.append('id', this.addEditInfo.id);
             data.append('name', this.addEditInfo.name);
             data.append('orgType', this.addEditInfo.orgType);
-            data.append('principalIdList', this.addEditInfo.principalIdList);
             data.append('status', this.addEditInfo.status);
             data.append('statusUpdate', this.addEditInfo.statusUpdate);
-            if (this.addEditInfo.orgType == 2) {
-                data.append('fileDetection', this.addEditInfo.file !== null ? 0 : 1);
-                if (this.uiType == 1) {
-                    data.append('file', this.addEditInfo.file);
-                    data.append('longitude', this.addEditInfo.longitude);
-                    data.append('latitude', this.addEditInfo.latitude);
-                }
+            if (this.topLevelEdit) {
+                data.append('ancestralStr', this.addEditInfo.ancestralStr.join('/'));
+            } else if (this.addEditInfo.id == 2 || this.curRow.orgLevel > 3 || this.curRow.orgType == 3) {
+                // 市属校
+                data.append('ancestralStr', this.preAreaList.join('/'));
+            } else {
+                data.append('ancestralStr', this.preAreaList.concat(this.addEditInfo.ancestralStr).join('/'));
             }
+            data.append('orgLevel', this.addEditInfo.orgLevel ? this.addEditInfo.orgLevel : '');
             this.$axios.post('/sys/org/update', data).then((res) => {
                 if (res.code == 200) {
-                    this.addEditShow = false;
+                    this.isShowOrgDialog = false;
                     this.updateConfirmShow = false;
                     this.$message(res.message, 'success');
                     this.getList();
@@ -786,17 +921,19 @@ export default {
                 this.errorInfo = '部门名称由中文大小写字母数字组成，最长20位！';
                 return true;
             }
-            if (this.addEditInfo.orgType == 2 && this.uiType == 1) {
-                if (!this.addEditInfo.longitude || this.addEditInfo.longitude == '') {
-                    this.errorInfo = '请选择位置';
-                    return true;
-                }
-            }
-            console.log(this.addEditInfo.principalIdList, 222);
-            if (this.addEditInfo.principalIdList && this.addEditInfo.principalIdList.length > 3) {
-                this.errorInfo = '最多选择三个负责人';
+            if (!this.addEditInfo.orgType && this.addEditInfo.orgType !== 0) {
+                this.errorInfo = '类型不能为空！';
                 return true;
             }
+            // if (this.addEditInfo.orgType != 2 && !this.addEditInfo.orgLevel) {
+            //     this.errorInfo = '类型不能为空！';
+            //     return true;
+            // }
+            // 所在区域目前先设置为不必填
+            // if (!this.addEditInfo.ancestralStr) {
+            //     this.errorInfo = '所在区域不能为空！';
+            //     return true;
+            // }
             return false;
         },
         //限制负责人最多三个
@@ -824,6 +961,208 @@ export default {
                     this.orgName = '';
                     this.$message(res.message, 'success');
                     this.getList();
+                }
+            });
+        },
+        /** 编辑/新增下级方法
+         * rowObj 行数据对象
+         * isEdit 是否是编辑
+         */
+        editCurData(rowObj, isEdit) {
+            const {row, $index} = rowObj;
+            this.curRow = row;
+            console.log('编辑：当前的信息为：', row, '第几行：', $index);
+            this.isEditData = isEdit;
+            this.levelList = [];
+            this.isHaveChildren = false;
+            this.isSchoolOrPart = this.curRow.orgType == 2 || this.curRow.orgType == 3;
+            if (isEdit) {
+                this.$axios.get('/sys/org/getOrgSub', {orgId: row.id}).then((res) => {
+                    if (res.code == 200) {
+                        this.isHaveChildren = res.data !== 0;
+                        if ($index == 0) {
+                            this.topLevelEdit = true;
+                            if (row.orgType || row.orgType == 0) {
+                                this.changeOrgType(row.orgType);
+                                this.changeLevelType(row.orgLevel);
+                            }
+                            // TODO 怎么判断是否是单校版，或者说怎么判断是否是学校层级的？是否需要这一层判断？
+                            this.addEditInfo = {
+                                name: row.name,
+                                status: row.status,
+                                id: row.id,
+                                orgType: row?.orgType,
+                                orgLevel: row?.orgLevel,
+                                ancestralStr: row?.ancestralStr ? row.ancestralStr.split('/') : '',
+                            };
+                        } else {
+                            this.topLevelEdit = false;
+                            this.addEditInfo = {
+                                orgLevel: row.orgLevel,
+                                orgType: row.orgType,
+                                status: 1,
+                                name: row.name,
+                                parentId: row.id,
+                                id: row.id,
+                                ancestralStr: row.ancestralStr ? row.ancestralStr.split('/').at(-1) : '',
+                            };
+                            this.sectionName = this.getOriginInfo(row.parentId).name;
+                            this.upRow = this.getOriginInfo(row.parentId);
+                            this.filterAreaList(row.orgLevel);
+                            this.levelList = this.allLevelList;
+                        }
+                        this.filterOrgTypeList();
+                        this.isShowOrgDialog = true;
+                    }
+                });
+            } else {
+                this.topLevelEdit = false;
+                this.sectionName = row.name;
+                this.addEditInfo = {
+                    orgLevel: row.orgLevel + 1,
+                    status: 1,
+                    name: '',
+                    parentId: row.id,
+                    parentType: row.orgType,
+                };
+                this.levelList = this.allLevelList;
+                this.filterAreaList(row.orgLevel + 1);
+                // this.upRow = this.getOriginInfo(row.parentId);
+                this.filterOrgTypeList();
+                this.isShowOrgDialog = true;
+            }
+        },
+        changeOrgType(val) {
+            if (this.topLevelEdit) {
+                this.$set(this.addEditInfo, 'orgLevel', '');
+                this.filterAreaList(val);
+                this.levelList = this.allLevelList.slice(val, val == 0 ? 1 : 3);
+                console.log('得到的levelList', this.levelList);
+            }
+        },
+        changeLevelType(val) {
+            this.filterAreaList(val - 1);
+        },
+        filterOrgTypeList() {
+            if (this.topLevelEdit) {
+                this.typeList = [
+                    {value: 0, label: '教育厅'},
+                    {value: 1, label: '教育局'},
+                    {value: 2, label: '学校'},
+                ];
+            } else {
+                // 市级
+                if (this.curRow.orgLevel != 4 || (this.curRow.id == 2 && this.isEditData)) {
+                    if (
+                        (this.curRow.orgLevel == 3 && !this.isEditData) ||
+                        (this.curRow.orgType == 3 && this.isEditData)
+                    ) {
+                        this.typeList = [
+                            {value: 2, label: '学校'},
+                            {value: 3, label: '部门'},
+                        ];
+                    } else if (this.curRow.orgType == 3 && !this.isEditData) {
+                        this.typeList = [{value: 3, label: '部门'}];
+                    } else {
+                        this.typeList = [
+                            {value: 1, label: '教育局'},
+                            {value: 3, label: '部门'},
+                        ];
+                    }
+                } else {
+                    this.typeList = [
+                        {value: 2, label: '学校'},
+                        {value: 3, label: '部门'},
+                    ];
+                }
+            }
+        },
+        /**
+         * val 0省 1市
+         */
+        filterAreaList(val) {
+            if (this.topLevelEdit) {
+                if (val == 0) {
+                    // 省 显示省份
+                    this.regionData = regionData.map((province) => ({
+                        ...province,
+                        children: null,
+                    }));
+                    this.$set(this.addEditInfo, 'orgLevel', 1);
+                } else if (val == 1) {
+                    // 市 显示省+市
+                    this.regionData = regionData.map((province) => ({
+                        ...province,
+                        children: province.children?.map((city) => ({
+                            ...city,
+                            children: null,
+                        })),
+                    }));
+                } else {
+                    // 区县/学校：显示省市区县
+                    this.regionData = regionData;
+                }
+            } else {
+                if (this.isEditData) {
+                    console.log('this.upRow', this.upRow);
+                    this.preAreaList = this.upRow.ancestralStr?.split('/');
+                } else {
+                    console.log('this.curRow', this.curRow);
+                    this.preAreaList = this.curRow.ancestralStr?.split('/');
+                }
+                let name = '';
+                if (
+                    (this.curRow.id == 2 && this.isEditData) ||
+                    ((this.curRow.orgLevel == 3 || this.curRow.orgType == 3) && !this.isEditData) ||
+                    this.curRow.orgLevel > 3
+                ) {
+                    name = this.preAreaList?.at(-2);
+                    this.addEditInfo.ancestralStr = this.preAreaList?.at(-1);
+                } else {
+                    name = this.preAreaList?.at(-1);
+                }
+                console.log('当前数据的上级地区是：', name, 'val是：', val);
+
+                // 省级新增下级/市属校编辑，显示市级城市名 市属校id == 2
+                if (
+                    val == 2 ||
+                    (this.curRow.id == 2 && (this.isEditData || (this.curRow.orgLevel >= 3 && !this.isEditData)))
+                ) {
+                    this.regionData = this.getCitiesByProvince(name);
+                } else {
+                    // 区县/学校：显示区县
+                    this.regionData = this.getDistrictsByCity(name);
+                }
+            }
+        },
+        // 根据省份value获取对应的城市列表
+        getCitiesByProvince(provinceName) {
+            const province = regionData.find((p) => p.label === provinceName);
+            return (
+                province?.children.map((city) => ({
+                    ...city,
+                    children: null,
+                })) || []
+            );
+        },
+
+        // 根据城市value获取对应的区县列表
+        getDistrictsByCity(cityName) {
+            for (const province of regionData) {
+                const city = province.children?.find((c) => c.label === cityName);
+                if (city) {
+                    return city.children || [];
+                }
+            }
+            return [];
+        },
+        addSchoolForCity() {
+            this.$axios.get('/sys/org/saveCitySchools').then((res) => {
+                if (res.code == 200) {
+                    this.$message(res.message, 'success');
+                    this.getList();
+                } else {
+                    this.$message(res.message, 'error');
                 }
             });
         },

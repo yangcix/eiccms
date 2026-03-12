@@ -160,11 +160,7 @@
                                     >编辑</el-button
                                 >
                                 <!-- v-if="permission.report && scope.row.type == 5 && scope.row.aiStatus != 3" -->
-                                <el-button
-                                    type="text"
-                                    @click="openDialog(scope.row)"
-                                    >查看报告</el-button
-                                >
+                                <el-button type="text" @click="openDialog(scope.row)">查看报告</el-button>
                                 <el-button
                                     v-if="permission.report && scope.row.type == 5 && scope.row.aiStatus != 3"
                                     type="text"

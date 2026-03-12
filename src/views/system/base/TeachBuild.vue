@@ -31,7 +31,8 @@
                         :importUrl="importUrl"
                         :templateUrl="templateUrl"
                         :templateParams="templateParams"
-                        :afterImportMethod="getTableData"
+                        :afterImportMethod="getBuildList"
+                        :fileConfig="fileConfig"
                     ></importResult>
                 </div>
             </div>
@@ -144,10 +145,18 @@ export default {
             totalS: '',
             loading: false, // 表格加载
             searchSchool: '',
-            uploadUrl: baseUrl + '/sys/user/importUserInfo',
-            importUrl: baseUrl + '/sys/user/importUserInfo',
-            templateUrl: baseUrl + '/sys/user/importUserInfo',
+            uploadUrl: baseUrl + '/sys/teachBuild/importSysTeachingBuildingManagement',
+            importUrl: '/sys/teachBuild/importSysTeachingBuildingManagement',
+            templateUrl: baseUrl + '/sys/teachBuild/exportSysTeachingBuildingManagementTemplate',
             templateParams: {},
+            fileConfig: {
+                教学楼编号: 'code',
+                教学楼名称: 'name',
+                楼层数: 'floors',
+                单层教室数量: 'classrooms',
+                学校: 'orgName',
+                异常原因: 'msg',
+            },
         };
     },
     components: {
@@ -166,7 +175,7 @@ export default {
                 pageNum: this.pageNum,
                 pageSize: 10,
                 keyWord: this.searchKey,
-                // school: this.searchSchool,
+                orgId: this.searchSchool,
             };
             this.$axios.get('/sys/teachBuild/list', data).then((res) => {
                 this.loading = false; // 表格加载

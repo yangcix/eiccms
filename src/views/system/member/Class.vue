@@ -41,7 +41,8 @@
                         :importUrl="importUrl"
                         :templateUrl="templateUrl"
                         :templateParams="templateParams"
-                        :afterImportMethod="getTableData"
+                        :afterImportMethod="getClassList"
+                        :fileConfig="fileConfig"
                     ></importResult>
                 </div>
             </div>
@@ -251,10 +252,21 @@ export default {
             totalS: '',
             loading: false, // 表格加载
             searchSchool: '',
-            uploadUrl: baseUrl + '/sys/user/importUserInfo',
-            importUrl: baseUrl + '/sys/user/importUserInfo',
-            templateUrl: baseUrl + '/sys/user/importUserInfo',
+            uploadUrl: baseUrl + '/sm/class/importClass',
+            importUrl: '/sm/class/importClass',
+            templateUrl: baseUrl + '/sm/class/exportClassTemplate',
             templateParams: {},
+            fileConfig: {
+                班级编号: 'code',
+                班级名称: 'name',
+                年级: 'grade',
+                学校: 'orgName',
+                教学楼: 'teachingBuilding',
+                教室: 'classroom',
+                负责人: 'principalName',
+                状态: 'status',
+                异常原因: 'msg',
+            },
         };
     },
     components: {
@@ -273,7 +285,7 @@ export default {
                 pageSize: 10,
                 keyWord: this.searchKey,
                 status: this.searchStatus,
-                // school: this.searchSchool,
+                orgId: this.searchSchool,
             };
             this.$axios.get('/sm/class/list', data).then((res) => {
                 this.loading = false; // 表格加载

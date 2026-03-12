@@ -1,9 +1,36 @@
 <template>
     <div class="content-main-wrap">
         <p class="content-title">教室管理</p>
-        <div id="classroomMangement" v-if="buildingList && buildingList.length != 0">
+        <div id="classroomMangement">
             <div class="main-wrap">
-                <el-collapse v-model="activeNames" @change="handleChange">
+                <div class="search-operat">
+                    <div>
+                        <span class="search-desc">学校：</span>
+                        <el-select v-model="searchSchool" placeholder="选择学校" style="width: 200px" clearable>
+                            <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id">
+                            </el-option>
+                        </el-select>
+                        <el-button type="primary" class="search-btn" @click="search">查询</el-button>
+                    </div>
+
+                    <div>
+                        <importResult
+                            :isShowImportBtn="true"
+                            :isShowTemplateBtn="true"
+                            :uploadUrl="uploadUrl"
+                            :importUrl="importUrl"
+                            :templateUrl="templateUrl"
+                            :templateParams="templateParams"
+                            :afterImportMethod="getBuildingList"
+                            :fileConfig="fileConfig"
+                        ></importResult>
+                    </div>
+                </div>
+                <el-collapse
+                    v-model="activeNames"
+                    @change="handleChange"
+                    v-if="buildingList && buildingList.length != 0"
+                >
                     <el-collapse-item
                         :title="isTrue == 1 ? buildingitem.orgName + ' — ' + buildingitem.name : buildingitem.name"
                         :name="buildingitem.id"
@@ -76,12 +103,12 @@
                         </div>
                     </el-collapse-item>
                 </el-collapse>
-            </div>
-        </div>
-        <div class="null-data" v-else>
-            <div class="null-box">
-                <img src="../../../assets/imgs/home-null.png" alt="" />
-                <p>暂无教室数据，请添加教室后查看</p>
+                <div class="null-data" v-else>
+                    <div class="null-box">
+                        <img src="../../../assets/imgs/home-null.png" alt="" />
+                        <p>暂无教室数据，请添加教室后查看</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -98,8 +125,13 @@
 </template>
 
 <script>
+import importResult from '@/components/importResult.vue';
+import {baseUrl} from '@/assets/js/utils';
 export default {
     name: '',
+    components: {
+        importResult,
+    },
     data() {
         return {
             permission: [],
@@ -125,9 +157,22 @@ export default {
             deleteShow: false, // 删除
             deleteRow: '',
             currentInputEle: null, //当前输入框dom
+            uploadUrl: baseUrl + '/sys/classroom/importSysClassroomManagement',
+            importUrl: '/sys/classroom/importSysClassroomManagement',
+            templateUrl: baseUrl + '/sys/classroom/exportSysClassroomManagement',
+            templateParams: {},
+            fileConfig: {
+                教室编号: 'code',
+                教室门号: 'classroomNumber',
+                楼层数: 'floorNumber',
+                教学楼名称: 'sysTeachingBuildingManagementName',
+                学校: 'orgName',
+                异常原因: 'msg',
+            },
+            searchSchool: '',
+            schoolList: [],
         };
     },
-    components: {},
     filters: {
         liwidth(length) {
             switch (length) {
@@ -148,6 +193,7 @@ export default {
     },
     mounted() {
         this.getBuildingList();
+        this.getSchoolList();
     },
     methods: {
         // 获取教学楼数据
@@ -160,7 +206,10 @@ export default {
                 }
             });
             let type = localStorage.getItem('sysModule') == 1 ? 0 : -1;
-            this.$axios.get('/sys/classroom/list?type=' + type).then((res) => {
+            let params = {};
+            params['type'] = type;
+            params['orgId'] = this.searchSchool;
+            this.$axios.get('/sys/classroom/list', params).then((res) => {
                 this.permission = this.creatPermit(res.data.permit);
                 let building = []; //临时教学楼数据
                 res.data.resData.forEach((buildingItem, bIndex) => {
@@ -214,6 +263,9 @@ export default {
 
                 this.buildingList = Object.assign([], building); // 拷贝数据 建立响应式数据
             });
+        },
+        search() {
+            this.getBuildingList();
         },
         // 添加教室
         AddClassRoom(bindex, findex, cindex) {
@@ -502,6 +554,12 @@ export default {
         allowDrop: function (event) {
             event.preventDefault();
         },
+        //获取学校列表
+        getSchoolList() {
+            this.$axios.get('/sys/org/listSchool').then((res) => {
+                this.schoolList = res.data;
+            });
+        },
     },
 };
 </script>
@@ -510,7 +568,7 @@ export default {
 .content-main-wrap {
     .null-data {
         width: 100%;
-        height: 100%;
+        height: 80%;
         position: relative;
         .null-box {
             position: absolute;

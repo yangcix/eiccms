@@ -58,7 +58,8 @@
                         :importUrl="importUrl"
                         :templateUrl="templateUrl"
                         :templateParams="templateParams"
-                        :afterImportMethod="getTableData"
+                        :afterImportMethod="getGradeList"
+                        :fileConfig="fileConfig"
                     ></importResult>
                 </div>
             </div>
@@ -269,10 +270,19 @@ export default {
             loading: false, // 表格加载
             gradeNameIdMap: {},
             searchSchool: '',
-            uploadUrl: baseUrl + '/sys/user/importUserInfo',
-            importUrl: baseUrl + '/sys/user/importUserInfo',
-            templateUrl: baseUrl + '/sys/user/importUserInfo',
+            uploadUrl: baseUrl + '/sm/grade/importGrade',
+            importUrl: '/sm/grade/importGrade',
+            templateUrl: baseUrl + '/sm/grade/exportGradeTemplate',
             templateParams: {},
+            fileConfig: {
+                年级编号: 'code',
+                年级名称: 'name',
+                入学年份: 'year',
+                学校: 'orgName',
+                负责人: 'principalName',
+                状态: 'status',
+                异常原因: 'msg',
+            },
             // uploadErrorShow: false,
             // failSize: 0,
             // successSize: 0,
@@ -299,7 +309,7 @@ export default {
                 pageSize: 10,
                 keyWord: this.searchKey,
                 status: this.searchStatus,
-                // school: this.searchSchool,
+                orgId: this.searchSchool,
             };
             this.$axios.get('/sm/grade/list', data).then((res) => {
                 this.loading = false; // 表格加载

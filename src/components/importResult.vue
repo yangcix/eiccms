@@ -11,8 +11,9 @@
         >
             <el-button class="width-1" icon="el-icon-upload2" v-if="isShowImportBtn">导入</el-button>
         </el-upload>
-        <el-button class="width-1" icon="el-icon-download" @click="downloadTemplate" v-if="isShowTemplateBtn"
-            >模板</el-button
+
+        <el-button class="width-1 template-btn" icon="el-icon-download" v-if="isShowTemplateBtn"
+            ><a :href="templateUrl" id="downloadBtn">模板</a></el-button
         >
         <el-dialog title="系统提示" :close-on-click-modal="false" :visible.sync="uploadErrorShow" width="420px">
             <div class="dialog-wrap">
@@ -36,6 +37,7 @@
 </template>
 <script>
 import axios from 'axios';
+import {exportToExcel} from '@/utils/exportExcel';
 export default {
     props: {
         isShowImportBtn: {
@@ -62,6 +64,18 @@ export default {
             type: Object,
             default: () => {},
         },
+        fileConfig: {
+            type: Object,
+            default: () => {},
+        },
+        exceptionFileName: {
+            type: String,
+            default: '异常数据.xlsx',
+        },
+        exceptionSheetName: {
+            type: String,
+            default: '异常数据',
+        },
         afterImportMethod: Function,
     },
     data() {
@@ -72,18 +86,18 @@ export default {
             failSize: 0,
             successSize: 0,
             downErrorInfo: {},
+            exceptionFileData: [],
         };
     },
     methods: {
         downloadError() {
-            let link = document.createElement('a');
-            link.style.display = 'none';
-            link.href = this.downErrorInfo.url;
-            link.setAttribute('download', decodeURIComponent(this.downErrorInfo.filename));
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            this.uploadErrorShow = false;
+            exportToExcel(this.exceptionFileData, this.fileConfig, this.exceptionFileName, this.exceptionSheetName)
+                .then(() => {
+                    console.log('导出成功');
+                })
+                .catch((error) => {
+                    console.error('导出失败', error);
+                });
         },
         //选择上传文件
         selectFile() {
@@ -96,69 +110,38 @@ export default {
         },
         //覆盖默认上传，手动上传
         httpRequest(param) {
-            let fileObj = param.file;
             let formData = new FormData();
             formData.append('file', param.file);
             axios({
                 method: 'post',
                 url: this.importUrl,
                 data: formData,
-                responseType: 'blob',
-            }).then(
-                (response) => {
-                    let res = '';
-                    if (response.headers.result_data) {
-                        res = JSON.parse(decodeURIComponent(response.headers.result_data));
-                    }
-                    if (res.code == 200) {
-                        this.uploadSuccessShow = true;
-                        this.successSize = res.data.successSize;
-                        this.failSize = res.data.failSize;
-                        this.afterImportMethod();
-                    } else if (res.code == -10001) {
-                        this.uploadErrorShow = true;
-                        this.successSize = res.data.successSize;
-                        this.failSize = res.data.failSize;
-                        this.downErrorInfo.url = window.URL.createObjectURL(new Blob([response.data]));
-                        this.downErrorInfo.filename = decodeURIComponent(response.headers.filename);
-                        this.afterImportMethod();
-                    } else {
-                        if (response.config.responseType == 'blob' && !response.headers.result_data) {
-                            this.afterImportMethod(); // token失效，取巧刷新token
-                            this.$message('导入失败，请再次尝试导入', 'error');
+            })
+                .then(
+                    (res) => {
+                        this.loading.close();
+                        if (res.code == 200) {
+                            this.successSize = res.data.successCount;
+                            this.failSize = res.data.failCount;
+                            if (res.data.failCount != 0) {
+                                this.uploadErrorShow = true;
+                                this.exceptionFileData = res.data.failDataList;
+                            } else {
+                                this.uploadSuccessShow = true;
+                            }
+                            this.afterImportMethod();
                         } else {
                             this.$message(res.message, 'error');
                         }
+                    },
+                    (err) => {
+                        this.loading.close();
+                        console.log(err);
+                        reject(err);
                     }
-                    this.loading.close();
-                },
-                (err) => {
-                    this.loading.close();
-                    console.log(err);
-                    reject(err);
-                }
-            );
-        },
-        //下载模板
-        downloadTemplate() {
-            axios
-                .get(this.templateUrl, {
-                    params: this.templateParams,
-                    responseType: 'blob',
-                })
+                )
                 .then((res) => {
-                    let url = window.URL.createObjectURL(new Blob([res.data]));
-                    let link = document.createElement('a');
-                    link.style.display = 'none';
-                    link.href = url;
-                    link.setAttribute('download', decodeURIComponent(res.headers.filename));
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    reject(err);
+                    console.log(res);
                 });
         },
     },
@@ -167,5 +150,10 @@ export default {
 <style lang="scss" scoped>
 .import-btn {
     display: inline-block;
+}
+.template-btn {
+    a {
+        color: #606266;
+    }
 }
 </style>

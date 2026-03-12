@@ -193,10 +193,13 @@
 
 .operat-list {
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     color: #409eff;
     font-size: 14px;
     cursor: pointer;
+    li {
+        margin-right: 10px;
+    }
 }
 
 .operat-list .disable {

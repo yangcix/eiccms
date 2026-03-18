@@ -29,52 +29,52 @@ import '@/assets/css/common.css';
 import VueBus from '@/assets/js/bus.js'
 import preventReClick from '@/assets/js/preventReClick'
 Vue.use(preventReClick)
-// use
+    // use
 Vue.use(mavonEditor)
 Vue.use(VueBus)
 
 Vue.prototype.$comjs = $comjs
 window.axiosCancel = []
-// 将上传文件请求的cancel方法,挂载到vue原型上
-Vue.prototype.cancel = function(item){
-  // 获取缓存的 请求取消标识 数组，取消所有关联的请求
-  console.log(window.axiosCancel,'window.axiosCancel')
-  let cancelArr = window.axiosCancel;
-  // cancelArr.cancel(`取消了上传${item.name}`);
-  cancelArr.forEach((ele, index) => {
-    console.log(ele,'取消视频上传')
-    if(ele.uploadId === item.uploadId){
-      ele.cancel(`取消成功`)  // 在失败函数中返回这里自定义的错误信息
-      delete window.axiosCancel[index]
-    }
-  })
+    // 将上传文件请求的cancel方法,挂载到vue原型上
+Vue.prototype.cancel = function(item) {
+    // 获取缓存的 请求取消标识 数组，取消所有关联的请求
+    console.log(window.axiosCancel, 'window.axiosCancel')
+    let cancelArr = window.axiosCancel;
+    // cancelArr.cancel(`取消了上传${item.name}`);
+    cancelArr.forEach((ele, index) => {
+        console.log(ele, '取消视频上传')
+        if (ele.uploadId === item.uploadId) {
+            ele.cancel(`取消成功`) // 在失败函数中返回这里自定义的错误信息
+            delete window.axiosCancel[index]
+        }
+    })
 }
 
 
 Vue.config.productionTip = false;
 if (!Array.prototype.includes) {
-  Array.prototype.includes = function(search) {
-    return !!~this.indexOf(search);
-  }
+    Array.prototype.includes = function(search) {
+        return !!~this.indexOf(search);
+    }
 }
 
 
 window.axiosCancelTerminal = []
-// 将上传文件请求的cancel方法,挂载到vue原型上
-Vue.prototype.cancelTerminal = function(){
-  // 获取缓存的 请求取消标识 数组，取消所有关联的请求
-  let cancelArr = window.axiosCancelTerminal;
-  // cancelArr.cancel(`取消了上传${item.name}`);
-  cancelArr.forEach((ele, index) => {
-    ele.cancel(`取消了获取状态`)  // 在失败函数中返回这里自定义的错误信息
-    delete window.axiosCancelTerminal[index]
-  })
-}
-// router.afterEach((to,from,next) => {
-//   window.scrollTo(0,0);
-// });
+    // 将上传文件请求的cancel方法,挂载到vue原型上
+Vue.prototype.cancelTerminal = function() {
+        // 获取缓存的 请求取消标识 数组，取消所有关联的请求
+        let cancelArr = window.axiosCancelTerminal;
+        // cancelArr.cancel(`取消了上传${item.name}`);
+        cancelArr.forEach((ele, index) => {
+            ele.cancel(`取消了获取状态`) // 在失败函数中返回这里自定义的错误信息
+            delete window.axiosCancelTerminal[index]
+        })
+    }
+    // router.afterEach((to,from,next) => {
+    //   window.scrollTo(0,0);
+    // });
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+    router,
+    store,
+    render: h => h(App)
 }).$mount('#app')

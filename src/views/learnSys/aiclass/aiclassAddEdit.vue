@@ -1208,6 +1208,10 @@ export default {
                                 formData.append('teacherVideoNew', this.isChangeVideo ? 1 : 0);
                             }
                         }
+                        // 暂存传值：type == -1
+                        if (isTranslationPending) {
+                            formData.append('type', -1);
+                        }
                         // 判断编辑是否有替换视频
                         let uploadId;
                         if (this.addEditInfo.resources == 2) {

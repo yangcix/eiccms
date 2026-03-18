@@ -406,7 +406,7 @@ export default {
                 // 编辑更新
                 url = '/aiPreClassGuidance/update';
             }
-            // 暂存传值：type == 7
+            // 暂存传值：type == -1
             formData.append('status', isTranslationPending ? -1 : 0);
             this.$axios.post(url, formData).then(
                 (res) => {

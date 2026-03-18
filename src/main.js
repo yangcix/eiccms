@@ -28,6 +28,15 @@ import '@/assets/css/common.css';
 
 import VueBus from '@/assets/js/bus.js'
 import preventReClick from '@/assets/js/preventReClick'
+// 在 main.js 中全局引入
+import moment from 'moment'
+
+// 设置中文语言
+moment.locale('zh-cn')
+
+// 挂载到 Vue 原型上（可选）
+Vue.prototype.$moment = moment
+
 Vue.use(preventReClick)
     // use
 Vue.use(mavonEditor)

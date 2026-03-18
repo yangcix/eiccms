@@ -3,7 +3,7 @@
         <p class="content-title">AI磨课管理</p>
 
         <div class="main-wrap">
-            <div class="search-operat" style="min-width: 1350px">
+            <div class="search-operat" style="min-width: 1650px">
                 <div>
                     <el-input
                         class="width-3"
@@ -30,10 +30,27 @@
                         style="width: 190px"
                         v-show="curShowType == 1 || (curOrgType == 1 && curShowType == 3)"
                     ></el-cascader>
-                    <span class="search-desc">状态：</span>
-                    <el-select v-model="searchThemeStatus" placeholder="选择状态" class="width-3" style="width: 110px">
+                    <span class="search-desc">录制状态：</span>
+                    <el-select
+                        v-model="searchTypeList"
+                        placeholder="录制状态"
+                        class="width-3"
+                        style="width: 110px"
+                        multiple
+                    >
+                        <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <span class="search-desc">分析状态：</span>
+                    <el-select
+                        v-model="searchAiStatusList"
+                        placeholder="分析状态"
+                        class="width-3"
+                        style="width: 110px"
+                        multiple
+                    >
                         <el-option
-                            v-for="item in searchThemeList"
+                            v-for="item in aiStatusList"
                             :key="item.value"
                             :label="item.label"
                             :value="item.value"
@@ -69,12 +86,12 @@
                 </div>
                 <div>
                     <el-button icon="el-icon-plus" v-if="permission.save" @click="add()">新增</el-button>
-                    <el-button icon="el-icon-download" v-if="permission.save" @click="showExportDialog()"
+                    <el-button icon="el-icon-upload2" v-if="permission.save" @click="showExportDialog()"
                         >导出</el-button
                     >
                 </div>
             </div>
-            <div class="data-table table-border" style="min-width: 1150px">
+            <div class="data-table table-border" style="min-width: 1650px">
                 <el-table
                     :row-style="{height: '10px'}"
                     :cell-style="{padding: '12px 0'}"
@@ -89,7 +106,7 @@
                     </el-table-column>
                     <el-table-column prop="subjectName" align="center" label="学科"> </el-table-column>
                     <el-table-column prop="teacherName" align="center" label="教师"> </el-table-column>
-                    <el-table-column prop="gradeName" align="center" label="年级"></el-table-column>
+                    <el-table-column prop="grindingGradeName" align="center" label="年级"></el-table-column>
                     <!-- 全部数据或者市级/区县的下级数据 -->
                     <el-table-column
                         v-if="curShowType == 1 || ((curOrgLevel == 2 || curOrgLevel == 3) && curShowType == 3)"
@@ -106,27 +123,29 @@
                         label="区县"
                     >
                     </el-table-column>
-                    <el-table-column align="center" label="状态">
+                    <el-table-column align="center" label="录制状态">
                         <template slot-scope="scope">
                             <ul>
+                                <li v-if="scope.row.type === -1">待提交</li>
                                 <li v-if="scope.row.type === 0">未开始</li>
                                 <li v-if="scope.row.type === 1">录制中</li>
-                                <li v-if="scope.row.type === 2">录制失败</li>
-                                <li v-if="scope.row.type === 3">
-                                    排队中...
-                                    <el-tooltip :content="scope.row.msg" effect="light" placement="top-start">
+                                <li v-if="scope.row.type === 2">录制完成</li>
+                                <li v-if="scope.row.type === 3">录制失败</li>
+                            </ul>
+                        </template>
+                    </el-table-column>
+                    <el-table-column align="center" label="分析状态">
+                        <template slot-scope="scope">
+                            <ul>
+                                <li v-if="scope.row.aiStatus === -1">排队中</li>
+                                <li v-if="scope.row.aiStatus === 0">待分析</li>
+                                <li v-if="scope.row.aiStatus === 1">分析中</li>
+                                <li v-if="scope.row.aiStatus === 2">分析成功</li>
+                                <li v-if="scope.row.aiStatus === 3">
+                                    分析失败<el-tooltip :content="scope.row.msg" placement="top-start">
                                         <i class="el-icon-question"></i>
                                     </el-tooltip>
                                 </li>
-                                <li v-if="scope.row.type === 4">分析中</li>
-                                <li v-if="scope.row.type === 5">分析成功</li>
-                                <li v-if="scope.row.type === 6">
-                                    分析失败
-                                    <el-tooltip :content="scope.row.msg" effect="light" placement="top-start">
-                                        <i class="el-icon-question"></i>
-                                    </el-tooltip>
-                                </li>
-                                <li v-if="scope.row.type === 7">待提交</li>
                             </ul>
                         </template>
                     </el-table-column>
@@ -140,41 +159,49 @@
                             </ul>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="createDate" align="center" min-width="100" label="添加时间">
+                    <el-table-column prop="createDate" align="center" min-width="140" label="添加时间">
                     </el-table-column>
-                    <el-table-column align="center" min-width="140px" label="操作">
+                    <el-table-column align="center" min-width="180px" label="操作">
                         <template slot-scope="scope">
                             <div class="btnList" v-if="scope.row.type == 1 && scope.row.resources == 3"></div>
                             <div class="btnList" v-else>
-                                <!-- 未开始、录制失败、待提交、分析失败且资源来源不是排课录制 -->
+                                <!-- 待提交、未开始、录制失败、分析失败且资源来源不是排课录制 -->
                                 <el-button
                                     v-if="
                                         permission.update &&
-                                        (scope.row.type == 0 ||
-                                            scope.row.type == 2 ||
-                                            scope.row.type == 7 ||
-                                            (scope.row.type == 6 && scope.row.resources !== 1))
+                                        (scope.row.type == -1 ||
+                                            scope.row.type == 0 ||
+                                            scope.row.type == 3 ||
+                                            (scope.row.aiStatus == 3 && scope.row.resources !== 1))
                                     "
                                     type="text"
                                     @click="add(0, scope.row)"
                                     >编辑</el-button
                                 >
-                                <!-- v-if="permission.report && scope.row.type == 5 && scope.row.aiStatus != 3" -->
-                                <el-button type="text" @click="openDialog(scope.row)">查看报告</el-button>
                                 <el-button
-                                    v-if="permission.report && scope.row.type == 5 && scope.row.aiStatus != 3"
+                                    type="text"
+                                    @click="openDialog(scope.row)"
+                                    v-if="permission.report && scope.row.type == 2 && scope.row.aiStatus == 2"
+                                    >查看报告</el-button
+                                >
+                                <el-button
+                                    v-if="permission.report && scope.row.type == 2 && scope.row.aiStatus == 2"
                                     type="text"
                                     @click="openReport(scope.row)"
                                     >课堂复盘</el-button
                                 >
                                 <el-button
-                                    v-if="permission.watchVideo && scope.row.type != 0 && scope.row.type != 1"
+                                    v-if="
+                                        permission.watchVideo &&
+                                        ((scope.row.type == 2 && scope.row.aiStatus == 2) ||
+                                            (scope.row.aiStatus == 3 && scope.row.resources == 1))
+                                    "
                                     type="text"
                                     @click="watchVideo(scope.row)"
                                     >观看视频</el-button
                                 >
                                 <el-button
-                                    v-if="permission.report && scope.row.type == 6 && scope.row.resources == 1"
+                                    v-if="permission.report && scope.row.aiStatus == 3 && scope.row.resources == 1"
                                     type="text"
                                     @click="resetting(scope.row)"
                                     >重置分析</el-button
@@ -182,10 +209,10 @@
                                 <el-button
                                     v-if="
                                         permission.delete &&
-                                        scope.row.type !== 1 &&
-                                        scope.row.type !== 3 &&
-                                        scope.row.type !== 4 &&
-                                        scope.row.type !== 5
+                                        (scope.row.type == -1 ||
+                                            scope.row.type == 0 ||
+                                            scope.row.type == 3 ||
+                                            (scope.row.aiStatus == 3 && scope.row.resources !== 1))
                                     "
                                     type="text"
                                     style="color: #f56c6c"
@@ -480,7 +507,6 @@
                 :visible.sync="isShowDataExport"
                 width="600px"
                 class="videoBox"
-                :before-close="handleClose"
             >
                 <div class="dialog-content">
                     <div class="dialog-item">
@@ -496,32 +522,32 @@
                             start-placeholder="开始日期"
                             end-placeholder="结束日期"
                             @change="changeExportFilter"
+                            value-format="yyyy-MM-dd"
                             class="width-5"
                         >
                         </el-date-picker>
                     </div>
                     <div class="dialog-item">
-                        <p>所在区域：</p>
-                        <el-select
-                            :popper-append-to-body="false"
-                            v-model="exportData.grindingSchool"
+                        <p>学校：</p>
+                        <el-cascader
+                            v-model="exportData.orgIdList"
+                            :props="cascaderProps"
+                            :options="departmentTree"
                             @change="changeExportFilter"
-                            placeholder="请选择学校"
-                            class="width-5"
-                            style="margin-right: 10px"
-                            filterable
-                            multiple
                             collapse-tags
-                        >
-                            <el-option v-for="item in schoolOptions" :key="item.id" :label="item.name" :value="item.id">
-                            </el-option>
-                        </el-select>
+                            clearable
+                            filterable
+                            class="width-5"
+                            @visible-change="getDepartmentList"
+                            multiple
+                            v-show="curShowType == 1 || (curOrgType == 1 && curShowType == 3)"
+                        ></el-cascader>
                     </div>
                     <div class="dialog-item">
                         <p>学科：</p>
                         <el-select
                             :popper-append-to-body="false"
-                            v-model="exportData.subjectId"
+                            v-model="exportData.subjectIdList"
                             placeholder="请选择学科"
                             class="width-5"
                             filterable
@@ -530,7 +556,7 @@
                             collapse-tags
                         >
                             <el-option
-                                v-for="item in subjectOptions"
+                                v-for="item in dialogSubjectList"
                                 :key="item.id"
                                 :label="item.name"
                                 :value="item.id"
@@ -542,7 +568,7 @@
                         <p>年级：</p>
                         <el-select
                             :popper-append-to-body="false"
-                            v-model="exportData.grindingGrade"
+                            v-model="exportData.gradeNameList"
                             placeholder="请选择年级"
                             class="width-5"
                             filterable
@@ -550,7 +576,12 @@
                             multiple
                             collapse-tags
                         >
-                            <el-option v-for="item in gradeOptions" :key="item.id" :label="item.name" :value="item.id">
+                            <el-option
+                                v-for="item in gradeOptions"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.name"
+                            >
                             </el-option>
                         </el-select>
                     </div>
@@ -558,28 +589,31 @@
                         <p>教师：</p>
                         <el-select
                             :popper-append-to-body="false"
-                            v-model="exportData.teacherId"
+                            v-model="exportData.teacherIdList"
                             placeholder="请选择教师"
                             class="width-5"
                             filterable
                             @change="changeExportFilter"
                             multiple
-                            collapse-tags
+                            remote
+                            clearable
+                            :remote-method="getTeacherList"
+                            @clear="getTeacherList"
                         >
                             <el-option
-                                v-for="item in teacherOptions"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id"
+                                v-for="item in teacherList"
+                                :key="item.userId"
+                                :label="item.name + (item.schoolName ? '-' + item.schoolName : '') + '-' + item.code"
+                                :value="item.userId"
                             >
                             </el-option>
                         </el-select>
                     </div>
                     <div class="dialog-item">
-                        <p>状态：</p>
+                        <p>分析状态：</p>
                         <el-select
                             :popper-append-to-body="false"
-                            v-model="exportData.statusId"
+                            v-model="exportData.aiStatusList"
                             placeholder="请选择状态"
                             class="width-5"
                             filterable
@@ -587,7 +621,12 @@
                             multiple
                             collapse-tags
                         >
-                            <el-option v-for="item in statusOptions" :key="item.id" :label="item.name" :value="item.id">
+                            <el-option
+                                v-for="item in aiStatusList"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                            >
                             </el-option>
                         </el-select>
                     </div>
@@ -607,6 +646,7 @@ import {baseUrl, session} from '@/assets/js/utils';
 import Player from 'xgplayer';
 import FlvJsPlayer from 'xgplayer-flv.js';
 import {creatTree} from '../../../assets/js/utils';
+import {DICT} from '@/utils/dict.js';
 export default {
     name: '',
     data() {
@@ -627,20 +667,11 @@ export default {
                           {value: 1, label: '排课录制'},
                           {value: 2, label: '本地上传'},
                       ],
-            // searchThemeList: [
-            //     {value: '', label: '全部'},
-            //     {value: 0, label: '未开始'},
-            //     {value: 1, label: '录制中'},
-            //     {value: 2, label: '录制失败'},
-            //     {value: 3, label: '待分析'},
-            //     {value: 4, label: '分析中'},
-            //     {value: 5, label: '分析成功'},
-            //     {value: 6, label: '分析失败'},
-            //     {value: 7, label: '待提交'},
-            // ],
-            searchThemeList: [],
+            typeList: DICT.RECORD_STATUS,
             searchLiveStatus: '',
-            searchThemeStatus: '',
+            searchTypeList: [],
+            searchAiStatusList: [],
+            aiStatusList: DICT.ANALYSIS_STATUS,
             deleteVal: {},
             themeTypeList: [],
             themeData: [
@@ -714,11 +745,13 @@ export default {
             isShowDataExport: false,
             schoolOptions: [],
             subjectOptions: [],
-            exportData: [],
+            exportData: {},
             gradeOptions: [],
             teacherOptions: [],
-            statusOptions: [],
             exportDataNum: 0,
+            dialogSubjectList: [],
+            teacherList: [],
+            exportUrl: baseUrl + '/aiGrinding/exportGrinding',
         };
     },
     created() {},
@@ -729,7 +762,8 @@ export default {
                 if (!(from.path == '/sm/aiclassAddEdit' || from.path == '/aiGrinding/detail')) {
                     this.pageNum = 1;
                     this.searchKey = '';
-                    this.searchThemeStatus = '';
+                    this.searchTypeList = [];
+                    this.searchAiStatusList = [];
                     this.searchLiveStatus = '';
                     this.searchResourcesStatus = '';
                     this.orgIdList = [];
@@ -747,7 +781,8 @@ export default {
                     }
                 }
                 this.searchKey = '';
-                this.searchThemeStatus = '';
+                this.searchTypeList = [];
+                this.searchAiStatusList = [];
                 this.searchLiveStatus = '';
                 this.searchResourcesStatus = '';
                 this.orgIdList = [];
@@ -761,7 +796,8 @@ export default {
         }
         this.getSubjectList();
         this.pageNum = 1;
-        this.searchThemeStatus = '';
+        this.searchTypeList = [];
+        this.searchAiStatusList = [];
         this.searchLiveStatus = '';
         this.searchResourcesStatus = '';
         this.orgIdList = [];
@@ -772,7 +808,6 @@ export default {
         // this.$bus.emit('getAiList');
         this.getSubjectId();
         this.getUserInfo();
-        this.getStatusOptions();
     },
     methods: {
         getUserInfo() {
@@ -833,6 +868,7 @@ export default {
         getSubjectList() {
             this.$axios.get('/aiGrinding/getSubject').then((res) => {
                 this.subjectList = res.data;
+                this.dialogSubjectList = res.data;
                 this.subjectList.unshift({
                     id: '',
                     name: '全部',
@@ -936,7 +972,8 @@ export default {
                 .post('/aiGrinding/list', {
                     subjectId: this.searchLiveStatus,
                     resources: this.searchResourcesStatus,
-                    grindingType: this.searchThemeStatus,
+                    typeList: this.searchTypeList,
+                    aiStatusList: this.searchAiStatusList,
                     orgIdList: this.orgIdList,
                     keyWord: this.searchKey,
                     pageNum: this.pageNum, // 页数
@@ -1293,7 +1330,8 @@ export default {
                 .post('/aiGrinding/list', {
                     resources: this.searchResourcesStatus,
                     subjectId: this.searchLiveStatus,
-                    grindingType: this.searchThemeStatus,
+                    typeList: this.searchTypeList,
+                    aiStatusList: this.searchAiStatusList,
                     orgIdList: this.orgIdList,
                     keyWord: this.searchKey,
                     pageNum: this.pageNum, // 页数
@@ -1407,12 +1445,8 @@ export default {
         },
         showExportDialog() {
             this.changeExportFilter();
-            this.isShowDataExport = true;
-            this.getSchoolOptions();
-            this.getSubjectOptions();
             this.getGradeOptions();
-            this.getTeacherOptions();
-            // this.getStatusOptions();
+            this.isShowDataExport = true;
         },
         // 导出
         exportTable() {},
@@ -1428,7 +1462,7 @@ export default {
             });
         },
         getGradeOptions() {
-            this.$axios.get('/aiGrinding/getSubject').then((res) => {
+            this.$axios.get('/sm/label/listLabel', {parentId: 13}).then((res) => {
                 this.gradeOptions = res.data;
             });
         },
@@ -1437,26 +1471,52 @@ export default {
                 this.teacherOptions = res.data;
             });
         },
-        getStatusOptions() {
-            this.$axios.get('/aiGrinding/getStatus').then((res) => {
-                this.searchThemeList = res.data;
-            });
-        },
         // 导出弹窗数据改变
         changeExportFilter() {
-            this.$axios.get('', this.exportData).then((res) => {
-                if (res) {
-                    this.exportDataNum = res.data.num;
-                }
-            });
+            console.log(this.exportData);
+            this.$axios
+                .post('/aiGrinding/list', {
+                    startDate: this.exportData.time ? this.exportData.time[0] : '',
+                    endDate: this.exportData.time ? this.exportData.time[1] : '',
+                    gradeNameList: this.exportData.gradeNameList,
+                    orgIdList: this.exportData.orgIdList
+                        ? this.exportData.orgIdList.map((subArray) => parseInt(subArray.at(-1)))
+                        : [],
+                    teacherIdList: this.exportData.teacherIdList,
+                    subjectIdList: this.exportData.subjectIdList,
+                    aiStatusList: this.exportData.aiStatusList,
+                    pageSize: -1, // 请求显示条数
+                })
+                .then((res) => {
+                    if (res.code === 200) {
+                        this.exportDataNum = res.data.length;
+                    }
+                });
         },
         handleCloseExportDialog() {
             this.isShowDataExport = false;
             this.exportData = {};
         },
         handleExportData() {
-            let url = '/sm/theme/exportVisitedData';
-            this.$comjs.exportTableData(url, this.exportData);
+            this.exportData['startDate'] = this.exportData.time ? this.exportData.time[0] : '';
+            this.exportData['endDate'] = this.exportData.time ? this.exportData.time[1] : '';
+            this.exportData['orgIdList'] = this.exportData.orgIdList
+                ? this.exportData.orgIdList.map((subArray) => parseInt(subArray.at(-1)))
+                : [];
+
+            const now = this.$moment();
+            let fileName = '磨课数据_' + now.format('YYYY-MM-DD HHmmss');
+            this.$comjs.exportTableData('/aiGrinding/exportGrinding', this.exportData, fileName);
+        },
+        getTeacherList(name) {
+            // 如果没有关键字或者清空文本框，就不请求数据且清掉下拉缓存数据。数据过多，请求全部的话，会因为渲染导致页面卡顿
+            if (!name) {
+                this.teacherList = [];
+                return;
+            }
+            this.$axios.post('/sm/interactive/getUserList', {nickName: name}).then((res) => {
+                this.teacherList = res.data;
+            });
         },
     },
 };

@@ -176,7 +176,7 @@ export function setColumnsOperate(val, that) {
     }
     return that.$comjs.setColumns(that.columns, hiddenColumnsArray, false);
 }
-export function exportTableData(url, data) {
+export function exportTableData(url, data, fileName) {
     axios({
         method: 'post',
         url: url,
@@ -184,19 +184,18 @@ export function exportTableData(url, data) {
         responseType: 'blob',
     }).then(
         (res) => {
-            let url = window.URL.createObjectURL(new Blob([res.data]));
-            let link = document.createElement('a');
-            link.style.display = 'none';
-            link.href = url;
-
-            link.setAttribute('download', decodeURIComponent(res.headers.filename));
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const blob = new Blob([res], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            window.URL.revokeObjectURL(url);
         },
         (err) => {
             console.log(err);
-            reject(err);
         }
     );
 }

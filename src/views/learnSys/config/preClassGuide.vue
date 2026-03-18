@@ -100,7 +100,7 @@
                                 <li v-if="scope.row.status === 2">分析成功</li>
                                 <li v-if="scope.row.status === 3">
                                     分析失败
-                                    <el-tooltip :content="scope.row.msg" effect="light" placement="top-start">
+                                    <el-tooltip :content="scope.row.msg" placement="top-start">
                                         <i class="el-icon-question"></i>
                                     </el-tooltip>
                                 </li>

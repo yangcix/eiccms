@@ -20,7 +20,10 @@
                 <el-table-column property="size" align="center" label="大小" width="150"> </el-table-column>
                 <el-table-column property="status" label="进度" align="center" width="100">
                     <template slot-scope="scope">
-                        <div class="flex-x-center">
+                        <div class="flex-x-center" v-if="scope.row.progress === 0">
+                            <span>上传中</span>&nbsp;
+                        </div>
+                        <div class="flex-x-center" v-else>
                             <span>{{ scope.row.progress }}%</span>&nbsp;
                             <el-progress
                                 type="circle"

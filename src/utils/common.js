@@ -1,4 +1,5 @@
 import axios from 'axios';
+const store = require('../store').default;
 export function setColumns(columns, props, isShow) {
     columns.forEach((item) => {
         if (props.includes(item.prop)) {
@@ -199,32 +200,6 @@ export function exportTableData(url, data, fileName) {
         }
     );
 }
-export function connectWS(fileName, formData, callback) {
-    const wsUrl = 'ws://192.168.161.166:8081/link';
-    const ws = new WebSocket(wsUrl);
-    console.log('ws', ws, fileName);
-
-    ws.onopen = () => {
-        console.log('连接成功');
-        // 核心：发送文件名绑定消息给后端
-        ws.send(
-            JSON.stringify({
-                type: '20', // 对应后端枚举值
-                body: fileName,
-            })
-        );
-    };
-
-    // 接收进度消息
-    ws.onmessage = (e) => {
-        const msg = JSON.parse(e.data);
-        console.log('收到msg：' + msg);
-        if (msg.type === '20') {
-            console.log(`文件【${fileName}】进度：${msg.body.progress}%`);
-            callback(formData, msg.body);
-        }
-    };
-}
 
 // 关闭连接
 export function closeWS() {
@@ -259,4 +234,22 @@ export function createDuraTionMin(startDate, endDate) {
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
 
     return diffMinutes;
+}
+
+export function updateAiUploadTable(formData, msg) {
+    if (!msg) return
+    let updateData = {};
+    if (msg.progress == 100) {
+        updateData = {
+            type: 'splice',
+            detail: formData, // 视频id
+        };
+    } else {
+        updateData = {
+            type: 'update',
+            fileName: msg.fileName,
+            progress: msg.progress,
+        };
+    }
+    store.dispatch('commitAiUploadTable', updateData);
 }

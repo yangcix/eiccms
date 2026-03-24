@@ -1692,6 +1692,11 @@ export default {
                                             type: 1, //1 评课 2 AI
                                             id: this.evaluationid ? this.evaluationid : -1, // 视频id
                                             detail: formData,
+                                            fileName: this.addEditInfo.teacherVideo.name.slice(
+                                                0,
+                                                this.addEditInfo.teacherVideo.name.length - 4
+                                            ),
+                                            progress: 0,
                                         },
                                     };
                                     this.commitAiUploadTable(uploadTbaleData);
@@ -1712,6 +1717,11 @@ export default {
                                             type: 1, //1 评课 2 AI
                                             id: this.evaluationid ? this.evaluationid : -1, // 视频id
                                             detail: formData,
+                                            fileName: this.addEditInfo.studentVideo.name.slice(
+                                                0,
+                                                this.addEditInfo.studentVideo.name.length - 4
+                                            ),
+                                            progress: 0,
                                         },
                                     };
                                     this.commitAiUploadTable(uploadTbaleData);
@@ -1726,12 +1736,45 @@ export default {
                                     this.commitAiUploadBoxVisible(true);
                                 }
                             }
-                            console.log('评课类型：', formData.get('evaluationType'));
-                            // console.log("保存听评课的数据：",formData);
                             this.$axios
                                 .post(url, formData, {
                                     headers: {
                                         uploadId: uploadId,
+                                    },
+                                    timeout: 600000,
+                                    onUploadProgress: (progressEvent) => {
+                                        if (this.radio2 == 3) {
+                                            // 这就是 真·上传进度
+                                            let percent = Math.round(
+                                                (progressEvent.loaded / progressEvent.total) * 100
+                                            );
+                                            let msg = {};
+                                            if (
+                                                typeof this.addEditInfo.teacherVideo !== 'string' &&
+                                                this.addEditInfo.teacherVideo
+                                            ) {
+                                                msg = {
+                                                    fileName: this.addEditInfo.teacherVideo.name.slice(
+                                                        0,
+                                                        this.addEditInfo.teacherVideo.name.length - 4
+                                                    ),
+                                                    progress: percent,
+                                                };
+                                            }
+                                            if (
+                                                typeof this.addEditInfo.studentVideo !== 'string' &&
+                                                this.addEditInfo.studentVideo
+                                            ) {
+                                                msg = {
+                                                    fileName: this.addEditInfo.studentVideo.name.slice(
+                                                        0,
+                                                        this.addEditInfo.studentVideo.name.length - 4
+                                                    ),
+                                                    progress: percent,
+                                                };
+                                            }
+                                            this.$comjs.updateAiUploadTable(formData, msg);
+                                        }
                                     },
                                 })
                                 .then(

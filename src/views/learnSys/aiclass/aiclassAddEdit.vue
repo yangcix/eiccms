@@ -1213,11 +1213,11 @@ export default {
                             formData.append('type', -1);
                         }
                         // 判断编辑是否有替换视频
-                        let uploadId;
+                        let uploadId = '';
                         if (this.addEditInfo.resources == 2) {
                             if (this.addEditInfo.teacherVideo) {
-                                // 上传列表s
                                 uploadId = this.aiUploadTable.length;
+                                // 上传列表
                                 let uploadTbaleData = {
                                     type: 'push',
                                     item: {
@@ -1239,22 +1239,6 @@ export default {
                                     },
                                 };
                                 this.commitAiUploadTable(uploadTbaleData);
-                                console.log(
-                                    'this.teacherVideo---,',
-                                    this.addEditInfo.teacherVideo.name.slice(
-                                        0,
-                                        this.addEditInfo.teacherVideo.name.length - 4
-                                    )
-                                );
-
-                                this.$comjs.connectWS(
-                                    this.addEditInfo.teacherVideo.name.slice(
-                                        0,
-                                        this.addEditInfo.teacherVideo.name.length - 4
-                                    ),
-                                    formData,
-                                    this.updateAiUploadTable
-                                );
                             }
                             if (this.addEditInfo.studentVideo) {
                                 // 上传列表s
@@ -1277,30 +1261,43 @@ export default {
                                     },
                                 };
                                 this.commitAiUploadTable(uploadTbaleData);
-                                this.$comjs.connectWS(
-                                    this.addEditInfo.studentVideo.name.slice(
-                                        0,
-                                        this.addEditInfo.studentVideo.name.length - 4
-                                    ),
-                                    formData,
-                                    this.updateAiUploadTable
-                                );
                             }
                             this.$router.push('/aiGrinding');
                             if (this.addEditInfo.teacherVideo && this.addEditInfo.teacherVideo !== null) {
                                 this.commitAiUploadBoxVisible(true);
                             }
                         }
-                        console.log('资源来源：', formData.get('resources'));
-                        console.log('历史记录ID：', formData.get('recordId'));
-                        // 暂存传值：type == -1
-                        if (isTranslationPending) {
-                            formData.append('type', -1);
-                        }
                         this.$axios
                             .post(url, formData, {
                                 headers: {
                                     uploadId: uploadId,
+                                },
+                                timeout: 600000,
+                                onUploadProgress: (progressEvent) => {
+                                    if (this.addEditInfo.resources == 2) {
+                                        // 这就是 真·上传进度
+                                        let percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                                        let msg = {};
+                                        if (this.addEditInfo.teacherVideo) {
+                                            msg = {
+                                                fileName: this.addEditInfo.teacherVideo.name.slice(
+                                                    0,
+                                                    this.addEditInfo.teacherVideo.name.length - 4
+                                                ),
+                                                progress: percent,
+                                            };
+                                        }
+                                        if (this.addEditInfo.studentVideo) {
+                                            msg = {
+                                                fileName: this.addEditInfo.studentVideo.name.slice(
+                                                    0,
+                                                    this.addEditInfo.studentVideo.name.length - 4
+                                                ),
+                                                progress: percent,
+                                            };
+                                        }
+                                        this.$comjs.updateAiUploadTable(formData, msg);
+                                    }
                                 },
                             })
                             .then(
@@ -1318,18 +1315,10 @@ export default {
                                         this.upErrorMsg = res.message;
                                         this.upErrorShow = true;
                                     } else if (res.code == -10000) {
-                                        // this.commitAiUploadTable({
-                                        //     type: 'splice',
-                                        //     detail: formData, // 视频id
-                                        // });
-                                        // this.editShow = false;
-                                        // // 判断编辑是否有替换视频
-                                        // if (this.addEditInfo.video) {
-                                        //   this.commitAiUploadDataState({
-                                        //     uploadId: uploadId,
-                                        //     status: 0,
-                                        //   });
-                                        // }
+                                        this.commitAiUploadTable({
+                                            type: 'splice',
+                                            detail: formData, // 视频id
+                                        });
                                     }
                                 },
                                 (err) => {
@@ -1572,21 +1561,6 @@ export default {
             if (this.teachingFileIds.length == 0) {
                 this.$message('教案必须上传！', 'error');
                 return true;
-            }
-        },
-        updateAiUploadTable(msg) {
-            if (msg.progress == 100) {
-                this.commitAiUploadTable({
-                    type: 'splice',
-                    detail: formData, // 视频id
-                });
-            } else {
-                let uploadTbaleData = {
-                    type: 'update',
-                    fileName: msg.name,
-                    progress: msg.progress,
-                };
-                this.commitAiUploadTable(uploadTbaleData);
             }
         },
     },

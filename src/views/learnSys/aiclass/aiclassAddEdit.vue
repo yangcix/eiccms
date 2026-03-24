@@ -365,7 +365,7 @@
                         </div>
                     </div>
                     <el-button :loading="loadingBtn" class="edit-btn" @click="httpRequest(true)">暂存</el-button>
-                    <el-button :loading="loadingBtn" type="primary" class="edit-btn" @click="httpRequest"
+                    <el-button :loading="loadingBtn" type="primary" class="edit-btn" @click="httpRequest(false)"
                         >确认</el-button
                     >
                 </div>
@@ -392,19 +392,6 @@
                         </div>
                         <div>
                             <el-table v-loading="loading" :data="videoList" style="width: 100%">
-                                <!--                <el-table-column align="center" prop="name" tooltip="true" label="视频名称">
-                  <template slot-scope="scope">
-                    <el-tooltip v-if="scope.row.name.replace(/\s+/g,'').length> 20" :content="scope.row.name" placement="top"></el-tooltip>
-                    <span
-                      style="display: -webkit-box;
-                             text-overflow: ellipsis;
-                             overflow: hidden;
-                             -webkit-line-clamp: 1;
-                             -webkit-box-orient: vertical;
-                             white-space: pre-line;"
-                             class="video-name" @click="play(scope.row.url)"><i class="el-icon-video-play"></i> {{ scope.row.name }}</span>
-                  </template>
-                </el-table-column>-->
                                 <el-table-column align="left" prop="name" label="视频名称">
                                     <template slot-scope="scope">
                                         <el-tooltip class="item" effect="light" placement="top">
@@ -626,6 +613,7 @@ export default {
         removet() {
             this.teacherVideo = [];
             this.addEditInfo.teacherVideo = '';
+            this.isChangeVideo = true;
         },
         getMp4Time(file) {
             return new Promise(async (resolve, reject) => {
@@ -718,12 +706,13 @@ export default {
                 errorTips: '暂无视频源',
                 lang: 'zh-cn',
             });
-            console.log('this.vp', this.vp);
             if (this.vp) {
                 this.$nextTick(() => {
                     let vp = document.querySelector('#vp>video');
-                    vp.style.zIndex = -100;
-                    vp.addEventListener('loadeddata', this.captureImage);
+                    if (vp) {
+                        vp.style.zIndex = -100;
+                        vp.addEventListener('loadeddata', this.captureImage);
+                    }
                 });
             }
         },
@@ -1474,13 +1463,21 @@ export default {
                 return true;
             }
             if (this.addEditInfo.resources == 2) {
-                if (this.$verify.isEmpty(this.addEditInfo.teacherVideo)) {
-                    this.$message(this.aiType == 1 ? '请上传教师画面视频' : '请上传视频', 'error');
-                    return true;
-                }
-                if (!this.addEditInfo.id && this.$verify.isEmpty(this.addEditInfo.studentVideo) && this.aiType == 1) {
-                    this.$message('请上传学生画面视频', 'error');
-                    return true;
+                console.log('this.addEditInfo.teacherVideo', this.addEditInfo.teacherVideo);
+                // 编辑且重新上传了视频
+                if (this.addEditInfo.id && this.isChangeVideo) {
+                    if (this.$verify.isEmpty(this.addEditInfo.teacherVideo)) {
+                        this.$message(this.aiType == 1 ? '请上传教师画面视频' : '请上传视频', 'error');
+                        return true;
+                    }
+                    if (
+                        !this.addEditInfo.id &&
+                        this.$verify.isEmpty(this.addEditInfo.studentVideo) &&
+                        this.aiType == 1
+                    ) {
+                        this.$message('请上传学生画面视频', 'error');
+                        return true;
+                    }
                 }
             }
             if (this.addEditInfo.resources == 4) {

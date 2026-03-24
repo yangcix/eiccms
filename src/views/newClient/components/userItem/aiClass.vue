@@ -528,7 +528,8 @@
                 </div>
             </div>
             <div style="text-align: center; margin: 10px 0 20px 0">
-                <el-button size="mini" type="primary" class="edit-btn" @click="httpRequest">保存 </el-button>
+                <el-button size="mini" class="edit-btn" @click="httpRequest(true)">暂存</el-button>
+                <el-button size="mini" type="primary" class="edit-btn" @click="httpRequest(false)">确认</el-button>
             </div>
 
             <el-dialog
@@ -735,6 +736,7 @@ export default {
                 {name: '自动录制', id: 0},
                 {name: '手动录制', id: 1},
             ],
+            isChangeVideo:false,
         };
     },
     computed: {
@@ -778,6 +780,7 @@ export default {
         removet() {
             this.teacherVideo = [];
             this.addEditInfo.teacherVideo = '';
+            this.isChangeVideo = true;
         },
         getMp4Time(file) {
             return new Promise(async (resolve, reject) => {
@@ -826,6 +829,7 @@ export default {
                 this.initVP();
                 this.videoId = 1;
                 this.addEditInfo.teacherVideo = file.raw;
+                this.isChangeVideo = true;
             }
         },
         async selectVideos(file) {
@@ -1539,7 +1543,7 @@ export default {
             });
         },
         //覆盖默认上传，手动上传
-        httpRequest(param) {
+        httpRequest(isTranslationPending) {
             if (this.verify()) {
                 return;
             }
@@ -1606,12 +1610,17 @@ export default {
                             // 编辑更新
                             url = '/index/personal/aiGrinding/update';
                             formData.append('id', this.addEditInfo.id);
-                            formData.append('type', this.addEditInfo.type);
                             if (!this.addEditInfo.file && this.addEditInfo.coverUrl) {
                                 formData.append('coverUrl', this.addEditInfo.coverUrl);
                             }
-                        } else {
-                            formData.append('type', 0);
+                            // 编辑的时候且是本地视频：才需要判断视频是否有更换
+                            if (this.addEditInfo.resources == 2) {
+                                formData.append('teacherVideoNew', this.isChangeVideo ? 1 : 0);
+                            }
+                        }
+                        // 暂存传值：type == -1
+                        if (isTranslationPending) {
+                            formData.append('type', -1);
                         }
                         let uploadId;
                         if (this.addEditInfo.resources == 2) {
@@ -1877,13 +1886,19 @@ export default {
                 return true;
             }
             if (this.addEditInfo.resources == 2) {
-                if (!this.addEditInfo.id && this.$verify.isEmpty(this.addEditInfo.teacherVideo)) {
-                    this.$message(this.aiType == 1 ? '请上传教师画面视频' : '请上传视频', 'error');
-                    return true;
-                }
-                if (!this.addEditInfo.id && this.$verify.isEmpty(this.addEditInfo.studentVideo) && this.aiType == 1) {
-                    this.$message('请上传学生画面视频', 'error');
-                    return true;
+                if (this.addEditInfo.id && this.isChangeVideo) {
+                    if (!this.addEditInfo.id && this.$verify.isEmpty(this.addEditInfo.teacherVideo)) {
+                        this.$message(this.aiType == 1 ? '请上传教师画面视频' : '请上传视频', 'error');
+                        return true;
+                    }
+                    if (
+                        !this.addEditInfo.id &&
+                        this.$verify.isEmpty(this.addEditInfo.studentVideo) &&
+                        this.aiType == 1
+                    ) {
+                        this.$message('请上传学生画面视频', 'error');
+                        return true;
+                    }
                 }
             } else if (this.addEditInfo.resources == 1 || this.addEditInfo.resources == 3) {
                 if (

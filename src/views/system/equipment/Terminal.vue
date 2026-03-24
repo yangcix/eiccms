@@ -235,16 +235,11 @@ export default {
       this.loading = true;
       const listResp = await this.$axios.get('/sys/terminal/list', data);
       if (listResp.code === 200) {
-        // this.tableData = listResp.data.pageList;
-        // this.cancelTerminal();
         this.tableData = await this.getTerminalStatus(listResp.data.pageList);
         this.permission = this.creatPermit(listResp.data.permit);
         this.pages = listResp.data.pages;
         this.totalS = listResp.data.total;
         this.loading = false;
-        // if (this.tableData.length) {
-        //   this.getTerminalStatus();
-        // }
       }
     },
     // 获取所有设备规则
@@ -293,58 +288,6 @@ export default {
       })
       return tableData;
     },
-    // getTerminalStatus(tableData) {
-    //   if (tableData.length) {
-    //     return;
-    //   }
-    //   this.tableData.forEach((val, index) => {
-    //     val.online = '获取中';
-    //     this.$set(this.tableData, index, val);
-    //   });
-    //   this.tableData.forEach((item, i) => {
-    //     let getStatus = (i) => {
-    //       if (this.tableData.length - 1 < i) {
-    //         return
-    //       }
-    //       let terminal = this.tableData[i];
-    //       if (terminal.ipAddress) {
-    //         this.$axios.get('/sys/terminal/getTerminalStatus', {
-    //           ip: terminal.ipAddress,
-    //           port: 0,
-    //           password: terminal.terminalPassword ? terminal.terminalPassword : 'test',
-    //           name: terminal.terminalName,
-    //           user: terminal.terminalAccount ? terminal.terminalAccount : 'test',
-    //         }).then(res => {
-    //           if (this.tableData.length - 1 < i) {
-    //             return
-    //           }
-    //           if (res.code == 200) {
-    //             terminal.online = res.data.status == 1 ? '在线' : '不在线';
-    //             this.$set(this.tableData, i, terminal);
-    //             console.log("设备 " + terminal.terminalName + " 状态：" + terminal.online)
-    //             // this.$forceUpdate()
-    //           }
-    //         }, err => {
-    //           terminal.online = '不在线';
-    //           this.$set(this.tableData, i, terminal);
-    //           console.log(err)
-    //         })
-    //       } else {
-    //         terminal.online = '-';
-    //         this.$set(this.tableData, i, terminal);
-    //       }
-    //       // if(this.currentIndex == this.tableData.length - 1){
-    //       // 	this.currentIndex = 0;
-    //       // 	return;
-    //       // }
-    //       // setTimeout(() => {
-    //       // 	this.currentIndex++;
-    //       // 	getStatus(this.currentIndex);
-    //       // }, 500);
-    //     }
-    //     getStatus(i);
-    //   })
-    // },
     //获取学校列表 type 0编辑 1新增
     getSchoolList(type) {
       this.$axios.get('/sys/org/listSchool').then(res => {

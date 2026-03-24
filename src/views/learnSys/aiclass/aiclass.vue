@@ -137,12 +137,24 @@
                     <el-table-column align="center" label="分析状态">
                         <template slot-scope="scope">
                             <ul>
-                                <li v-if="scope.row.aiStatus === -1">排队中</li>
+                                <li v-if="scope.row.aiStatus === -1">
+                                    排队中<el-tooltip
+                                        :content="scope.row.msg"
+                                        placement="top-start"
+                                        v-if="scope.row.msg"
+                                    >
+                                        <i class="el-icon-question"></i>
+                                    </el-tooltip>
+                                </li>
                                 <li v-if="scope.row.aiStatus === 0">待分析</li>
                                 <li v-if="scope.row.aiStatus === 1">分析中</li>
                                 <li v-if="scope.row.aiStatus === 2">分析成功</li>
                                 <li v-if="scope.row.aiStatus === 3">
-                                    分析失败<el-tooltip :content="scope.row.msg" placement="top-start">
+                                    分析失败<el-tooltip
+                                        :content="scope.row.msg"
+                                        placement="top-start"
+                                        v-if="scope.row.msg"
+                                    >
                                         <i class="el-icon-question"></i>
                                     </el-tooltip>
                                 </li>

@@ -27,8 +27,13 @@
                         </el-option>
                     </el-select>
                     <span class="search-desc">分类：</span>
-                    <el-select v-model="classTypeId" placeholder="选择分类" style="margin-left: 10px; width: 150px">
-                        <el-option v-for="item in classificationList" :key="item.id" :label="item.name" :value="item.id">
+                    <el-select v-model="classification" placeholder="选择分类" style="margin-left: 10px; width: 150px">
+                        <el-option
+                            v-for="item in classificationList"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        >
                         </el-option>
                     </el-select>
                     <el-button type="primary" class="search-btn" @click="handleSearch">查询</el-button>
@@ -48,7 +53,14 @@
                     <el-table-column prop="subjectName" align="center" label="学科"></el-table-column>
                     <el-table-column prop="gradeName" align="center" label="学段"></el-table-column>
                     <el-table-column prop="classTypeName" align="center" label="课堂类型"></el-table-column>
-                    <el-table-column prop="classificationName" align="center" label="分类"></el-table-column>
+                    <el-table-column align="center" label="分类">
+                        <template slot-scope="scope">
+                            <ul>
+                                <li v-if="scope.row.classification === 0">教学指导</li>
+                                <li v-if="scope.row.classification === 1">课前指导</li>
+                            </ul>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="center" align="center" label="提示词">
                         <template slot-scope="scope">
                             <div class="btnList">
@@ -129,6 +141,7 @@ export default {
             subjectId: '',
             gradeId: '',
             classTypeId: '',
+            classification: '',
             subjectList: [],
             studyGradeList: [],
             classTypeList: [],
@@ -140,7 +153,11 @@ export default {
                 gradeName: '',
                 classTypeName: '',
             },
-            classificationList: [],
+            classificationList: [
+                {value: '', label: '全部'},
+                {value: 0, label: '教学指导'},
+                {value: 1, label: '课前指导'},
+            ],
         };
     },
     created() {},
@@ -150,7 +167,6 @@ export default {
         this.getStudyGradeList();
         this.getClassTypeList();
         this.handleGetData();
-        this.getClassificationList();
     },
     methods: {
         getSubjectList() {
@@ -180,15 +196,6 @@ export default {
                 });
             });
         },
-        getClassificationList() {
-            this.$axios.get('/sm/label/listLabel', {parentId: 33}).then((res) => {
-                this.classificationList = res.data;
-                this.classificationList.unshift({
-                    id: '',
-                    name: '全部',
-                });
-            });
-        },
         viewPromptWordsDialog(row) {
             this.promptWordsDialog = true;
             this.teachingSuggestion = row;
@@ -203,6 +210,7 @@ export default {
                     subjectId: this.subjectId,
                     gradeId: this.gradeId,
                     classTypeId: this.classTypeId,
+                    classification: this.classification,
                     pageNum: this.pageNum,
                     pageSize: 10,
                 })
@@ -252,6 +260,7 @@ export default {
             this.subjectId = '';
             this.gradeId = '';
             this.classTypeId = '';
+            this.classification = '';
         },
         scrollTo0() {
             let bodyWrapper = document.getElementsByClassName('el-table__body-wrapper');

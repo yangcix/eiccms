@@ -9,13 +9,12 @@
         <el-main style="margin: 20px 0 0 0">
             <el-form :model="editInfo" ref="form" label-width="120px">
                 <el-form-item style="margin-bottom: 8px" label="分类：" required>
-                    <el-radio-group v-model="editInfo.classificationId">
+                    <el-radio-group v-model="editInfo.classification">
                         <el-radio
                             v-for="classification in classificationList"
-                            :key="classification.id"
-                            :disabled="editInfo.defaultFlag === 1"
-                            :label="classification.id"
-                            >{{ classification.name }}
+                            :key="classification.value"
+                            :label="classification.value"
+                            >{{ classification.label }}
                         </el-radio>
                     </el-radio-group>
                 </el-form-item>
@@ -96,7 +95,7 @@ export default {
                 classTypeId: '',
                 promptWords: '',
                 defalutFlag: 0,
-                classificationId: '',
+                classification: 0,
             },
             subjectList: [],
             studyGradeList: [],
@@ -104,7 +103,10 @@ export default {
             pageNum: 1,
             currentLength: 0,
             maxLength: 5000,
-            classificationList: [],
+            classificationList: [
+                {value: 0, label: '教学指导'},
+                {value: 1, label: '课前指导'},
+            ],
         };
     },
     components: {},
@@ -119,7 +121,6 @@ export default {
         this.getSubjectList();
         this.getStudyGradeList();
         this.getClassTypeList();
-        this.getClassificationList();
     },
     methods: {
         getConfig() {
@@ -146,12 +147,10 @@ export default {
                 this.classTypeList = res.data;
             });
         },
-        getClassificationList() {
-            this.$axios.get('/sm/label/listLabel', {parentId: 1}).then((res) => {
-                this.classificationList = res.data;
-            });
-        },
         confirm() {
+            if (this.editInfo.classification === null) {
+                return this.$message('请先选择分类！', 'error');
+            }
             if (this.editInfo.subjectId == '' || this.editInfo.subjectId < 1) {
                 return this.$message('请先选择学科！', 'error');
             }
@@ -172,6 +171,7 @@ export default {
             let formData = new FormData();
             formData.append('id', this.editInfo.id);
             formData.append('subjectId', this.editInfo.subjectId);
+            formData.append('classification', this.editInfo.classification);
             if (this.editInfo.gradeId) {
                 formData.append('gradeId', this.editInfo.gradeId);
             }

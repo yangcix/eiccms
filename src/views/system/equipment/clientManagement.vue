@@ -161,7 +161,6 @@ export default {
     methods: {
         //获取设备
         async getClientList() {
-            // type: localStorage.getItem('sysModule') == 1 ? 0 : -1,
             let data = {
                 pageNum: this.pageNum,
                 pageSize: 10,

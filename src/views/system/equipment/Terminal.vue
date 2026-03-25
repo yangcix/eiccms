@@ -227,7 +227,7 @@ export default {
     //获取设备
     async getTerminalList() {
       let data = {
-        type: localStorage.getItem('sysModule') == 1 ? 0 : -1,
+        type: 1,
         pageNum: this.pageNum,
         pageSize: 10,
         keyWord: this.searchKey,

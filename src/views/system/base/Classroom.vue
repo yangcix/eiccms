@@ -207,7 +207,7 @@ export default {
             });
             let type = localStorage.getItem('sysModule') == 1 ? 0 : -1;
             let params = {};
-            params['type'] = type;
+            params['type'] = 1;
             params['orgId'] = this.searchSchool;
             this.$axios.get('/sys/classroom/list', params).then((res) => {
                 this.permission = this.creatPermit(res.data.permit);

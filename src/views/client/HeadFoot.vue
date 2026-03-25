@@ -406,7 +406,7 @@ export default {
     //进入后台
     enterSystem() {
       let routeUrl = this.$router.resolve({
-        path: `/sys?time=${storage.get('time')}`
+        path: `/traininghome?time=${storage.get('time')}`
       });
       this.$axios.get('/auth/menu').then(res => {
         if (res.data) {

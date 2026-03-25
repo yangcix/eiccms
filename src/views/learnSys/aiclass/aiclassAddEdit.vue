@@ -1072,6 +1072,7 @@ export default {
                 endTime: this.addEditInfo.endTime,
                 type: 2,
                 resources: this.addEditInfo.resources,
+                userId: this.teacherId,
             };
             if (this.themeId) {
                 data.themeId = this.themeId;
@@ -1082,11 +1083,8 @@ export default {
                     this.terminalIdList[0] && this.terminalIdList[0].terminalName
                         ? this.terminalIdList[0].terminalName
                         : '';
-                if (!this.$route.query.themeid || room === 'room') {
-                    // 新增
-                    const id = this.terminalIdList.length > 0 ? this.terminalIdList[0].id : '';
-                    this.addEditInfo.terminalId = id ? id : '';
-                }
+                const id = this.terminalIdList.length > 0 ? this.terminalIdList[0].id : '';
+                this.addEditInfo.terminalId = id ? id : '';
             });
         },
         //获取用户组列表

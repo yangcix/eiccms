@@ -65,7 +65,6 @@
                             <span class="moduleTitle" :class="sysModule == 1 ? 'mActive' : ''" @click="changeModule(1)"
                                 >智慧教育</span
                             >
-                            <!-- v-if="userInfo.recordType == 1" -->
                             <span class="moduleTitle" :class="sysModule == 2 ? 'mActive' : ''" @click="changeModule(2)"
                                 >微集控录播</span
                             >

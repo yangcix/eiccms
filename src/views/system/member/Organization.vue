@@ -26,13 +26,6 @@
                 >
                     <el-table-column label="组织机构层级" :show-overflow-tooltip="true">
                         <template slot-scope="scope">
-                            <!-- <el-tooltip
-                class="item"
-                :disabled="scope.row.name.length <= 9"
-                effect="dark"
-                :content="scope.row.name"
-                placement="top-start"
-              > -->
                             <span>
                                 {{ scope.row.name }}
                             </span>
@@ -150,117 +143,6 @@
                         isAddSuper ? '更 新' : '添加'
                     }}</el-button>
                     <el-button @click="hiddenAddSuper">取 消</el-button>
-                </div>
-            </div>
-        </el-dialog>
-
-        <el-dialog
-            :title="addEditType == 0 ? '编辑组织' : '新增组织'"
-            :close-on-click-modal="false"
-            :visible.sync="addEditShow"
-            :before-close="closeAddShow"
-            width="500px"
-        >
-            <div class="dialog-wrap">
-                <p class="err-title" v-if="errorInfo">提示：{{ errorInfo }}</p>
-                <div class="dialog-item">
-                    <p>部门名称</p>
-                    <p><em>*</em>：</p>
-                    <el-input class="width-4" v-model="addEditInfo.name"></el-input>
-                </div>
-
-                <div class="dialog-item" v-if="topLevelEdit">
-                    <p>上级部门</p>
-                    <p><em>*</em>：</p>
-                    <el-input class="width-4" :disabled="true" v-model="sectionName"></el-input>
-                </div>
-
-                <div class="dialog-item">
-                    <p>类型</p>
-                    <p><em>*</em>：</p>
-                    <el-select v-model="addEditInfo.orgType" placeholder="请选择类型" class="width-4">
-                        <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div v-if="addEditInfo.orgType == 2 && version == 3" class="dialog-item">
-                    <p>图片</p>
-                    <p><em style="opacity: 0">*</em>：</p>
-                    <div class="upload-wrap">
-                        <el-upload
-                            :limit="1"
-                            :on-exceed="handleOnExceed"
-                            class="upload-demo"
-                            :action="uploadImg"
-                            accept=".png,.jpg"
-                            :file-list="fileLists"
-                            :on-change="selectFiles"
-                            :on-remove="removeFile"
-                            list-type="picture"
-                            :auto-upload="false"
-                            drag
-                        >
-                            <i class="el-icon-upload"></i>
-                            <div class="el-upload__text">
-                                将图片拖到此处，或<em style="color: #409eff">点击上传</em>
-                            </div>
-                            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-                        </el-upload>
-                    </div>
-                </div>
-                <div v-if="addEditInfo.orgType == 2 && uiType == 1" class="dialog-item">
-                    <p>位置</p>
-                    <p><em>*</em>：</p>
-                    <div class="dialog-item-box">
-                        <el-input
-                            v-model="addEditInfo.longitude"
-                            style="width: 110px"
-                            placeholder="经度"
-                            disabled
-                        ></el-input>
-                        <el-input
-                            v-model="addEditInfo.latitude"
-                            style="width: 110px"
-                            placeholder="纬度"
-                            disabled
-                        ></el-input>
-                        <!-- <el-button @click="clearMap()">清空</el-button> -->
-                        <el-button @click="openMap()">选择</el-button>
-                    </div>
-                </div>
-                <div class="dialog-item" v-if="!addEditType">
-                    <p style="width: 66px">负责人</p>
-                    <p>：</p>
-                    <el-select
-                        v-model="addEditInfo.principalIdList"
-                        @change="principalChange"
-                        multiple
-                        placeholder="请选择负责人"
-                        class="width-4"
-                        filterable
-                    >
-                        <el-option v-for="item in chargeList" :key="item.id" :label="item.nickName" :value="item.id">
-                        </el-option>
-                    </el-select>
-                </div>
-
-                <div class="dialog-item">
-                    <p>状态</p>
-                    <p><em>*</em>：</p>
-                    <el-select v-model="addEditInfo.status" placeholder="请选择" class="width-4">
-                        <el-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value">
-                        </el-option>
-                    </el-select>
-                </div>
-                <div class="dialog-btn">
-                    <el-button type="primary" @click="addEditConfirm">确 定</el-button>
-                    <el-button
-                        @click="
-                            addEditShow = false;
-                            fileLists = [];
-                        "
-                        >取 消</el-button
-                    >
                 </div>
             </div>
         </el-dialog>
@@ -386,7 +268,6 @@
                     "
                 >
                     <p>所在地区</p>
-                    <!-- <p><em>*</em>：</p> -->
                     <p>：</p>
                     <el-cascader
                         v-model="addEditInfo.ancestralStr"
@@ -401,7 +282,6 @@
                             curRow.orgLevel > 3
                         "
                     />
-                    <!-- :disabled="isHaveChildren" -->
                 </div>
                 <div class="dialog-item">
                     <p>状态</p>
@@ -715,62 +595,6 @@ export default {
                 this.tableData = creatTree(res.data.resData);
             });
         },
-        add(type, val) {
-            this.errorInfo = '';
-            this.addEditType = type;
-            this.topLevelEdit = true;
-            this.typeList = this.originList.slice(val.orgType - 1);
-            if (type == 0) {
-                //0编辑
-                if (val.code == '000001') {
-                    this.topLevelEdit = false;
-                    this.typeList = this.originList.slice(val.orgType - 1, val.orgType);
-                } else {
-                    this.sectionName = this.getOriginInfo(val.parentId).name;
-                }
-                this.addEditInfo = {
-                    name: val.name,
-                    status: val.status,
-                    orgType: val.orgType,
-                    principalIdList: val.principalIdList,
-                    id: val.id,
-                    parentId: val.parentId,
-                };
-                if (val.latitude) {
-                    this.addEditInfo.latitude = val.latitude;
-                    this.addEditInfo.longitude = val.longitude;
-                }
-                if (val.avatar) {
-                    this.addEditInfo.file = val.avatar;
-                    this.fileLists = [{name: '', url: val.avatar}];
-                } else {
-                    this.fileLists = [];
-                }
-                this.originStatus = val.status;
-                this.$axios.get('/sys/org/listPrincipal', {orgId: val.id}).then((res) => {
-                    this.chargeList = res.data;
-                    if (this.chargeList.length == 0) {
-                        this.chargeList = val.principals;
-                    }
-                    this.addEditShow = true;
-                });
-            } else {
-                //1新增
-                this.addEditInfo = {
-                    orgType: 3,
-                    status: 1,
-                    name: '',
-                    parentId: val.id,
-                    parentType: val.orgType,
-                    file: '',
-                    longitude: '',
-                    latitude: '',
-                };
-                this.fileLists = [];
-                this.sectionName = val.name;
-                this.addEditShow = true;
-            }
-        },
         //获取上级信息
         getOriginInfo(parentId) {
             for (let i = 0; i < this.originalList.length; i++) {
@@ -892,10 +716,6 @@ export default {
                 this.errorInfo = '平台名称限制30字符内！';
                 return true;
             }
-            // if(this.$verify.ip(this.addSuperInfo.ip)){
-            // 	this.errorInfo = '请输入正确的ip格式！';
-            // 	return true;
-            // }
             if (!this.addSuperInfo.ip || this.addSuperInfo.ip.length > 50) {
                 this.errorInfo = '请输入访问地址限制50字符！';
                 return true;
@@ -925,15 +745,6 @@ export default {
                 this.errorInfo = '类型不能为空！';
                 return true;
             }
-            // if (this.addEditInfo.orgType != 2 && !this.addEditInfo.orgLevel) {
-            //     this.errorInfo = '类型不能为空！';
-            //     return true;
-            // }
-            // 所在区域目前先设置为不必填
-            // if (!this.addEditInfo.ancestralStr) {
-            //     this.errorInfo = '所在区域不能为空！';
-            //     return true;
-            // }
             return false;
         },
         //限制负责人最多三个
@@ -1027,7 +838,6 @@ export default {
                 };
                 this.levelList = this.allLevelList;
                 this.filterAreaList(row.orgLevel + 1);
-                // this.upRow = this.getOriginInfo(row.parentId);
                 this.filterOrgTypeList();
                 this.isShowOrgDialog = true;
             }
@@ -1104,7 +914,6 @@ export default {
                 }
             } else {
                 if (this.isEditData) {
-                    console.log('this.upRow', this.upRow);
                     this.preAreaList = this.upRow.ancestralStr?.split('/');
                 } else {
                     console.log('this.curRow', this.curRow);
@@ -1121,8 +930,6 @@ export default {
                 } else {
                     name = this.preAreaList?.at(-1);
                 }
-                console.log('当前数据的上级地区是：', name, 'val是：', val);
-
                 // 省级新增下级/市属校编辑，显示市级城市名 市属校id == 2
                 if (
                     val == 2 ||

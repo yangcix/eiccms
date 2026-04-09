@@ -7,7 +7,7 @@
         </div>
         <div v-else class="main-wrap">
             <div class="tab-menu">
-                <el-button icon="el-icon-plus" @click="showSyncOrgDialog()" class="sync-btn">同步机构</el-button>
+                <el-button @click="showSyncOrgDialog()" class="sync-btn">同步机构</el-button>
                 <el-menu class="el-menu-demo" mode="horizontal" :default-active="activeIndex" @select="tabChange">
                     <el-menu-item v-for="(val, index) in tabMenu" :index="val.id" :key="index">{{
                         val.name
@@ -32,7 +32,7 @@
                             <!-- </el-tooltip> -->
                         </template>
                     </el-table-column>
-                    <el-table-column label="分类" align="center">
+                    <el-table-column label="类型" align="center">
                         <template slot-scope="scope">
                             {{ scope.row.orgLevelName }}
                         </template>
@@ -183,13 +183,7 @@
                     <el-input class="width-4" v-model="orgName"></el-input>
                 </div>
                 <div class="dialog-btn">
-                    <el-button
-                        @click="
-                            isShowSyncOrgDialog = false;
-                            orgName = '';
-                        "
-                        >取 消</el-button
-                    >
+                    <el-button @click="isShowSyncOrgDialog = false">取 消</el-button>
                     <el-button type="primary" @click="syncOrganization">确 定</el-button>
                 </div>
             </div>
@@ -235,7 +229,7 @@
                         <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
-                    <!-- 当前层级是学校/部门或者选择的类型是学校或者区县新增下级，则不显示第二个下拉框 -->
+                    <!-- 当前层级是学校/部门或者区县新增下级，则不显示第二个下拉框 -->
 
                     <el-select
                         v-model="addEditInfo.orgLevel"
@@ -282,6 +276,21 @@
                             curRow.orgLevel > 3
                         "
                     />
+                </div>
+                <div class="dialog-item" v-if="isEditData">
+                    <p style="width: 66px">负责人</p>
+                    <p>：</p>
+                    <el-select
+                        v-model="addEditInfo.principalIdList"
+                        @change="principalChange"
+                        multiple
+                        placeholder="请选择负责人"
+                        class="width-4"
+                        filterable
+                    >
+                        <el-option v-for="item in chargeList" :key="item.id" :label="item.nickName" :value="item.id">
+                        </el-option>
+                    </el-select>
                 </div>
                 <div class="dialog-item">
                     <p>状态</p>
@@ -680,15 +689,18 @@ export default {
             data.append('orgType', this.addEditInfo.orgType);
             data.append('status', this.addEditInfo.status);
             data.append('statusUpdate', this.addEditInfo.statusUpdate);
-            if (this.topLevelEdit) {
-                data.append('ancestralStr', this.addEditInfo.ancestralStr.join('/'));
-            } else if (this.addEditInfo.id == 2 || this.curRow.orgLevel > 3 || this.curRow.orgType == 3) {
-                // 市属校
-                data.append('ancestralStr', this.preAreaList.join('/'));
-            } else {
-                data.append('ancestralStr', this.preAreaList.concat(this.addEditInfo.ancestralStr).join('/'));
+            data.append('principalIdList', this.addEditInfo.principalIdList);
+            if (!this.isSchoolOrPart) {
+                if (this.topLevelEdit) {
+                    data.append('ancestralStr', this.addEditInfo.ancestralStr.join('/'));
+                } else if (this.addEditInfo.id == 2 || this.curRow.orgLevel > 3 || this.curRow.orgType == 3) {
+                    // 市属校
+                    data.append('ancestralStr', this.preAreaList.join('/'));
+                } else {
+                    data.append('ancestralStr', this.preAreaList.concat(this.addEditInfo.ancestralStr).join('/'));
+                }
+                data.append('orgLevel', this.addEditInfo.orgLevel ? this.addEditInfo.orgLevel : '');
             }
-            data.append('orgLevel', this.addEditInfo.orgLevel ? this.addEditInfo.orgLevel : '');
             this.$axios.post('/sys/org/update', data).then((res) => {
                 if (res.code == 200) {
                     this.isShowOrgDialog = false;
@@ -750,12 +762,12 @@ export default {
         //限制负责人最多三个
         principalChange() {
             if (this.addEditInfo.principalIdList.length > 3) {
-                // this.addEditInfo.principalIdList =
-                //   this.addEditInfo.principalIdList.splice(0, 3);
+                this.addEditInfo.principalIdList = this.addEditInfo.principalIdList.splice(0, 3);
                 this.$message('最多选择三个负责人', 'error');
             }
         },
         showSyncOrgDialog() {
+            this.orgName = '';
             this.isShowSyncOrgDialog = true;
         },
         // 同步机构
@@ -805,6 +817,7 @@ export default {
                                 orgType: row?.orgType,
                                 orgLevel: row?.orgLevel,
                                 ancestralStr: row?.ancestralStr ? row.ancestralStr.split('/') : '',
+                                principalIdList: row.principalIdList,
                             };
                         } else {
                             this.topLevelEdit = false;
@@ -816,14 +829,21 @@ export default {
                                 parentId: row.id,
                                 id: row.id,
                                 ancestralStr: row.ancestralStr ? row.ancestralStr.split('/').at(-1) : '',
+                                principalIdList: row.principalIdList,
                             };
                             this.sectionName = this.getOriginInfo(row.parentId).name;
                             this.upRow = this.getOriginInfo(row.parentId);
                             this.filterAreaList(row.orgLevel);
                             this.levelList = this.allLevelList;
                         }
-                        this.filterOrgTypeList();
-                        this.isShowOrgDialog = true;
+                        this.$axios.get('/sys/org/listPrincipal', {orgId: row.id}).then((res) => {
+                            this.chargeList = res.data;
+                            if (this.chargeList.length == 0) {
+                                this.chargeList = row.principals;
+                            }
+                            this.filterOrgTypeList();
+                            this.isShowOrgDialog = true;
+                        });
                     }
                 });
             } else {

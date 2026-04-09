@@ -253,3 +253,8 @@ export function updateAiUploadTable(formData, msg) {
     }
     store.dispatch('commitAiUploadTable', updateData);
 }
+
+export function formatValue(value) {
+    if (value) return value;
+    else return '-';
+}

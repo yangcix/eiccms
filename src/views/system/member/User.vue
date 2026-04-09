@@ -72,7 +72,7 @@
                         <el-button class="width-1" icon="el-icon-download" @click="downLoad" v-if="permission.getExcel"
                             >模板</el-button
                         >
-                        <el-button class="width-1" @click="showSyncTeacherDialog" v-show="activeIndex == 1"
+                        <el-button class="width-4" @click="showSyncTeacherDialog" v-show="activeIndex == 1"
                             >同步教师</el-button
                         >
                     </div>
@@ -147,7 +147,7 @@
                         </el-table-column>
                         <el-table-column prop="createDate" align="center" min-width="110" label="创建时间">
                         </el-table-column>
-                        <el-table-column align="center" width="220px" label="操作">
+                        <el-table-column align="center" width="250px" label="操作">
                             <template slot-scope="scope">
                                 <ul class="operat-list">
                                     <li @click="add(0, scope.row)" v-if="permission.update">编辑</li>
@@ -474,21 +474,19 @@
             >
                 <div class="dialog-content">
                     <div class="dialog-item">
-                        <p>所属机构</p>
-                        <p><em>*</em>：</p>
+                        <p><em>*</em>所属机构：</p>
                         <el-cascader
                             v-model="teacherInfo.orgId"
                             :props="cascaderProps"
                             :options="departmentOptions"
-                            collapse-tags
                             clearable
-                            filterable
+                            :show-all-levels="false"
                             class="width-5"
+                            placeholder="请选择所属机构"
                         ></el-cascader>
                     </div>
                     <div class="dialog-item">
-                        <p>教师姓名</p>
-                        <p><em>*</em>：</p>
+                        <p><em>*</em>教师姓名：</p>
                         <el-input
                             class="width-5"
                             v-model="teacherInfo.teacherName"
@@ -594,6 +592,8 @@ export default {
             cascaderProps: {
                 value: 'id',
                 label: 'name',
+                emitPath: false,
+                checkStrictly: true,
             },
             isSynced: true,
         };
@@ -1206,16 +1206,22 @@ export default {
             return false;
         },
         showSyncTeacherDialog() {
+            this.teacherInfo = {};
+            this.isSynced = true;
             this.isShowSyncTeacherDialog = true;
             this.getOrgOptions();
         },
         syncTeacher() {
-            if (this.teacherInfo.teacherName.length == 0 || this.teacherInfo.teacherName.length > 20) {
-                this.$message('教师名称为必填，由中文或大小写字母或数字组成，最长20位！', 'error');
+            if (!this.teacherInfo.orgId) {
+                this.$message('请选择所属机构！', 'error');
                 return;
             }
-            if (this.teacherInfo.orgId.length == 0) {
-                this.$message('请选择所属机构！', 'error');
+            if (
+                !this.teacherInfo.teacherName ||
+                this.teacherInfo.teacherName.length == 0 ||
+                this.teacherInfo.teacherName.length > 20
+            ) {
+                this.$message('教师名称为必填，由中文或大小写字母或数字组成，最长20位！', 'error');
                 return;
             }
             let params = {};
@@ -1236,12 +1242,6 @@ export default {
             await this.$axios.get('/sys/org/listDepartmentAndUser', {isAll: 1}).then((res) => {
                 this.departmentOptions = [];
                 this.departmentOptions = res.data;
-                let dataArray = JSON.parse(JSON.stringify(this.departmentOptions));
-                // 如果第一级只有一项，跳过，显示下级
-                while (dataArray.length == 1) {
-                    dataArray = JSON.parse(JSON.stringify(dataArray[0].children));
-                }
-                this.departmentOptions = dataArray;
             });
             return this.departmentOptions;
         },

@@ -346,10 +346,15 @@ export default {
             this.menuUrl = `/auth/menu?type=-1`;
             this.homeMenu.url = '/recordhome';
             this.changeMenu();
-        } else if (this.$route.path.includes('/traininghome') || this.$route.path.includes('/aiConfig')) {
+        } else if (this.$route.path.includes('/traininghome')) {
             this.commitSysModule(3); //修改系统类型
             this.menuUrl = `/auth/menu?type=-2`;
             this.homeMenu.url = '/traininghome';
+            this.changeMenu();
+        } else if (this.$route.path.includes('/aiConfig')) {
+            this.commitSysModule(6); //修改系统类型
+            this.menuUrl = `/auth/menu?type=-6`;
+            this.homeMenu.url = '/aiConfig';
             this.changeMenu();
         } else if (
             this.$route.path.includes('/sys/terminal') ||
@@ -377,7 +382,7 @@ export default {
         } else if (this.sysModule == 3) {
             this.homeMenu.url = '/traininghome';
         } else if (this.sysModule == 5) {
-            this.homeMenu.url = 'sys/home';
+            this.homeMenu.url = '/aiAnalysisRecharge';
         } else if (this.sysModule == 6) {
             this.homeMenu.url = '/sys/serverConfig';
         }
@@ -544,9 +549,8 @@ export default {
                 this.menuUrl = `/auth/menu?type=-2`;
                 this.selectMenu(this.homeMenu);
             } else if (this.sysModule == 5) {
-                // TODO 5和6默认打开的节点需要修改，等后端接口修改之后再统一修改
                 // 项目次数管理：-5
-                this.homeMenu = {url: '/sys/home', name: '概览'};
+                this.homeMenu = {url: '/aiAnalysisRecharge', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-5`;
                 this.selectMenu(this.homeMenu);
             } else if (this.sysModule == 6) {
@@ -675,7 +679,8 @@ export default {
                     this.$route.path !== '/sm/themeaddedit' &&
                     this.$route.path !== '/sm/clip' &&
                     this.$route.path !== '/sys/terminal' &&
-                    this.$route.path !== '/sys/system/trial'
+                    this.$route.path !== '/sys/system/trial'&&
+                    this.$route.path !== '/aiConfig'
                 ) {
                     this.$router.push(this.menuList[0].children[0].url);
                 }

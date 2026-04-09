@@ -1055,7 +1055,6 @@ export default {
                 this.addEditInfo.startTime,
                 this.addEditInfo.durationMinutes
             );
-            console.log('获取到的结束时间---', this.addEditInfo.endTime);
         },
         //类型最多选择三个
         typeChange(val) {
@@ -1183,6 +1182,10 @@ export default {
                         formData.append('teacherId', this.addEditInfo.teacherId);
                         formData.append('planFile', this.teachingFileIds);
                         let url = '/aiGrinding/save';
+                        // 暂存传值：type == -1
+                        if (isTranslationPending) {
+                            formData.append('type', -1);
+                        }
                         if (this.addEditInfo.id) {
                             // 编辑更新
                             url = '/aiGrinding/update';
@@ -1194,10 +1197,12 @@ export default {
                             if (this.addEditInfo.resources == 2) {
                                 formData.append('teacherVideoNew', this.isChangeVideo ? 1 : 0);
                             }
-                        }
-                        // 暂存传值：type == -1
-                        if (isTranslationPending) {
-                            formData.append('type', -1);
+                            // 如果是提交，录制状态为失败（type == 3），将type改为0传给后端，表示重新录制
+                            if (!isTranslationPending) {
+                                if (this.addEditInfo.type == 3) {
+                                    formData.append('type', 0);
+                                }
+                            }
                         }
                         // 判断编辑是否有替换视频
                         let uploadId = '';
@@ -1517,6 +1522,7 @@ export default {
                 }
                 if (this.addEditInfo.startTime < getNowDate()) {
                     this.addEditInfo.startTime = getNowDate();
+                    this.calcEndTime();
                 }
             }
             if (!this.addEditInfo.subjectId) {

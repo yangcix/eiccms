@@ -133,6 +133,10 @@
                 <el-input class="width-5" placeholder="请输入组织架构名称" v-model.trim="orgName"></el-input>
                 <el-input class="width-5" placeholder="请输入主办单位" v-model.trim="sponsor"></el-input>
                 <el-input class="width-5" placeholder="请输入运维单位" v-model.trim="company"></el-input>
+                <el-select class="width-5" v-model="curOrgType" v-if="orgType == 2 || orgType == 3 || orgType == 1">
+                    <el-option v-for="item in orgTypeList" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
             </div>
             <div class="step">
                 <!-- <el-button type="primary" @click="orgPre">上一步</el-button> -->
@@ -260,6 +264,8 @@ export default {
                 account: '',
                 password: '',
             },
+            orgTypeList: [],
+            curOrgType: '',
         };
     },
     components: {},
@@ -359,6 +365,17 @@ export default {
         //智能录播设置
         recordTypeSet() {
             if (this.recordType) {
+                this.curOrgType = '';
+                if (this.orgType == 2) {
+                    this.orgTypeList = [{value: 2, label: '学校'}];
+                } else if (this.orgType == 3) {
+                    this.orgTypeList = [
+                        {value: 0, label: '教育厅'},
+                        {value: 1, label: '教育局'},
+                    ];
+                } else if (this.orgType == 1) {
+                    this.orgTypeList = [{value: 1, label: '教育局'}];
+                }
                 this.stepIndex = 6;
             } else {
                 this.$message('请选择是否安装', 'error');
@@ -373,7 +390,7 @@ export default {
         },
         //系统名称设置
         orgNameSet() {
-            if (this.orgName && this.name && this.sponsor && this.company) {
+            if (this.orgName && this.name && this.sponsor && this.company && this.curOrgType !== '') {
                 if (this.name.length > 20) {
                     return this.$message('平台名称不能超过20字符', 'error');
                 }
@@ -400,6 +417,8 @@ export default {
                     this.$message('请输入主办单位', 'error');
                 } else if (!this.company) {
                     this.$message('请输入运维单位', 'error');
+                } else if (this.curOrgType == '') {
+                    this.$message('请选择机构类型', 'error');
                 }
             }
         },
@@ -424,7 +443,7 @@ export default {
                 // this.stepIndex = 5;
                 let data = {
                     version: this.version,
-                    orgType: this.orgType == 2 ? 2 : 1,
+                    orgType: this.curOrgType,
                     orgName: this.orgName,
                     sponsor: this.sponsor,
                     company: this.company,
@@ -468,7 +487,7 @@ export default {
             this.$axios
                 .post('/sys/init/init', {
                     version: this.version,
-                    orgType: this.orgType == 2 ? 2 : 1,
+                    orgType: this.curOrgType,
                     orgName: this.orgName,
                     name: this.name,
                     password: MD5(this.password),

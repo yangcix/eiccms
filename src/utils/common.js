@@ -237,7 +237,7 @@ export function createDuraTionMin(startDate, endDate) {
 }
 
 export function updateAiUploadTable(formData, msg) {
-    if (!msg) return
+    if (!msg) return;
     let updateData = {};
     if (msg.progress == 100) {
         updateData = {

@@ -175,8 +175,7 @@
                     </el-table-column>
                     <el-table-column align="center" min-width="180px" label="操作">
                         <template slot-scope="scope">
-                            <div class="btnList" v-if="scope.row.type == 1 && scope.row.resources == 3"></div>
-                            <div class="btnList" v-else>
+                            <div class="btnList">
                                 <!-- 待提交、未开始、录制失败、分析失败且资源来源不是排课录制 -->
                                 <el-button
                                     v-if="
@@ -190,6 +189,7 @@
                                     @click="add(0, scope.row)"
                                     >编辑</el-button
                                 >
+                                <!-- 录制完成且分析成功 -->
                                 <el-button
                                     type="text"
                                     @click="openDialog(scope.row)"
@@ -202,22 +202,27 @@
                                     @click="openReport(scope.row)"
                                     >课堂复盘</el-button
                                 >
+                                <!-- 录制中、排队中、分析失败、录制完成 -->
                                 <el-button
                                     v-if="
                                         permission.watchVideo &&
-                                        ((scope.row.type == 2 && scope.row.aiStatus == 2) ||
-                                            (scope.row.aiStatus == 3 && scope.row.resources == 1))
+                                        (scope.row.type == 1 ||
+                                            scope.row.aiStatus == -1 ||
+                                            scope.row.aiStatus == 3 ||
+                                            scope.row.type == 2)
                                     "
                                     type="text"
                                     @click="watchVideo(scope.row)"
                                     >观看视频</el-button
                                 >
+                                <!-- 分析失败且排课录制 -->
                                 <el-button
                                     v-if="permission.report && scope.row.aiStatus == 3 && scope.row.resources == 1"
                                     type="text"
                                     @click="resetting(scope.row)"
                                     >重置分析</el-button
                                 >
+                                <!-- 待提交、未开始、录制失败、分析失败且资源来源不是排课录制 -->
                                 <el-button
                                     v-if="
                                         permission.delete &&

@@ -13,7 +13,7 @@
                         clearable
                     ></el-input>
                     <span class="search-desc">学校：</span>
-                    <el-select v-model="searchSchool" placeholder="选择学校" style="width: 200px" clearable>
+                    <el-select v-model="searchSchool" placeholder="选择学校" style="width: 200px" clearable filterable>
                         <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
@@ -34,24 +34,8 @@
                     <el-button class="width-1" icon="el-icon-plus" @click="add(1)" v-if="permission.save"
                         >新增</el-button
                     >
-                    <!-- TODO 按钮的显示到时候需要修改一下 -->
-                    <!-- <el-upload
-                        v-if="!permission.importUserInfo"
-                        class="upload-demo upload-btn"
-                        :action="uploadUrl"
-                        accept=".xls,.xlsx"
-                        :before-upload="selectFile"
-                        :show-file-list="false"
-                        :http-request="httpRequest"
-                    >
-                        <el-button class="width-1" icon="el-icon-upload2" v-if="!permission.importUserInfo"
-                            >导入</el-button
-                        >
-                    </el-upload>
-                    <el-button class="width-1" icon="el-icon-download" @click="downLoad" v-if="!permission.getExcel"
-                        >模板</el-button
-                    > -->
                     <importResult
+                        v-if="permission.save"
                         :isShowImportBtn="true"
                         :isShowTemplateBtn="true"
                         :uploadUrl="uploadUrl"

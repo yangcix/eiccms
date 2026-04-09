@@ -6,7 +6,13 @@
                 <div class="search-operat">
                     <div>
                         <span class="search-desc">学校：</span>
-                        <el-select v-model="searchSchool" placeholder="选择学校" style="width: 200px" clearable>
+                        <el-select
+                            v-model="searchSchool"
+                            placeholder="选择学校"
+                            style="width: 200px"
+                            clearable
+                            filterable
+                        >
                             <el-option v-for="item in schoolList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
@@ -15,6 +21,7 @@
 
                     <div>
                         <importResult
+                            v-if="permission.save"
                             :isShowImportBtn="true"
                             :isShowTemplateBtn="true"
                             :uploadUrl="uploadUrl"

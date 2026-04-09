@@ -683,6 +683,30 @@ const routes = [{
                 component: () =>
                     import ( /* webpackChunkName: "lessonPlanAnalysis" */ '@/views/usageManagement/aiAnalysisRecharge.vue'),
             },
+            {
+                // 次数分配管理
+                path: '/aiAnalysisAllocation',
+                name: 'aiAnalysisAllocation',
+                meta: { keepAlive: true },
+                component: () =>
+                    import ( /* webpackChunkName: "lessonPlanAnalysis" */ '@/views/usageManagement/aiAnalysisAllocation.vue'),
+            },
+            {
+                // 次数分配管理-教育局
+                path: '/viewEducationBureau',
+                name: 'viewEducationBureau',
+                meta: { keepAlive: true },
+                component: () =>
+                    import ( /* webpackChunkName: "lessonPlanAnalysis" */ '@/views/usageManagement/viewEducationBureau.vue'),
+            },
+            {
+                // 次数分配管理-学校
+                path: '/viewSchoolSharing',
+                name: 'viewSchoolSharing',
+                meta: { keepAlive: true },
+                component: () =>
+                    import ( /* webpackChunkName: "lessonPlanAnalysis" */ '@/views/usageManagement/viewSchoolSharing.vue'),
+            },
         ],
     },
     {

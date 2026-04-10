@@ -820,6 +820,7 @@ export default {
                         this.isShowQuotaAllocation = false;
                         this.getList();
                         this.getTotal();
+                        this.$message('额度分配成功！', 'success');
                     } else {
                         this.$message(res.message, 'error');
                     }

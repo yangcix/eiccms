@@ -17,17 +17,50 @@
                             <el-radio :label="1">全部数据</el-radio>
                         </el-radio-group>
                     </div>
-                    <!-- <div class="item-wrap">
-						<p>选择数据权限 <em style="margin-top: 5px;">*</em>：</p>
-            <el-radio-group v-model="addEditInfo.chooseRole">
-              <el-radio :label="3">个人数据</el-radio>
-              <el-radio :label="2">学校数据</el-radio>
-              <el-radio :label="1">全部数据</el-radio>
-            </el-radio-group>
-					</div> -->
                     <div class="item-wraps">
                         <p>功能权限 <em style="margin-top: 5px">*</em>：</p>
                         <div style="margin-top: 10px">
+                            <el-checkbox
+                                v-model="authListChecked3"
+                                @change="setAuthList3"
+                                style="margin-top: 10px; font-size: 16px; font-weight: 600"
+                                >智能研修</el-checkbox
+                            >
+                            <el-table :data="authList3" border style="min-width: 1320px; margin-top: 10px">
+                                <el-table-column prop="name" align="left" width="120" label="一级菜单">
+                                    <template slot-scope="scope">
+                                        <el-checkbox
+                                            v-model="scope.row.checked"
+                                            @change="setAuthList1One(scope.row, 3)"
+                                            >{{ scope.row.name }}</el-checkbox
+                                        >
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="name" align="left" width="160" label="二级菜单">
+                                    <template v-if="scope.row.children" slot-scope="scope">
+                                        <el-checkbox
+                                            v-for="(item, index) in scope.row.children"
+                                            :key="index"
+                                            v-model="item.checked"
+                                            @change="setAuthList1Two(item, 3)"
+                                            >{{ item.name }}</el-checkbox
+                                        >
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="name" align="left" label="页面与按钮权限">
+                                    <template v-if="scope.row.children" slot-scope="scope">
+                                        <div v-for="(item, index) in scope.row.children" :key="index">
+                                            <el-checkbox
+                                                v-for="(items, indexs) in item.children"
+                                                :key="indexs"
+                                                v-model="items.checked"
+                                                @change="setAuthList3Three(items)"
+                                                >{{ items.name }}</el-checkbox
+                                            >
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
                             <el-checkbox
                                 v-model="authListChecked1"
                                 @change="setAuthList1"
@@ -35,7 +68,7 @@
                                 >智慧教育</el-checkbox
                             >
                             <el-table :data="authList1" border style="min-width: 1320px; margin-top: 10px">
-                                <el-table-column prop="name" align="letf" width="120" label="一级菜单">
+                                <el-table-column prop="name" align="left" width="120" label="一级菜单">
                                     <template slot-scope="scope">
                                         <el-checkbox
                                             v-model="scope.row.checked"
@@ -73,10 +106,10 @@
                                 v-model="authListChecked2"
                                 @change="setAuthList2"
                                 style="margin-top: 10px; font-size: 16px; font-weight: 600"
-                                >智能录播</el-checkbox
+                                >微集控录播</el-checkbox
                             >
                             <el-table :data="authList2" border style="min-width: 1320px; margin-top: 10px">
-                                <el-table-column prop="name" align="letf" width="120" label="一级菜单">
+                                <el-table-column prop="name" align="left" width="120" label="一级菜单">
                                     <template slot-scope="scope">
                                         <el-checkbox
                                             v-model="scope.row.checked"
@@ -91,7 +124,7 @@
                                             v-for="(item, index) in scope.row.children"
                                             :key="index"
                                             v-model="item.checked"
-                                            @change="setAuthList1Two(item, 1)"
+                                            @change="setAuthList1Two(item, 2)"
                                             >{{ item.name }}</el-checkbox
                                         >
                                     </template>
@@ -111,17 +144,17 @@
                                 </el-table-column>
                             </el-table>
                             <el-checkbox
-                                v-model="authListChecked3"
-                                @change="setAuthList3"
+                                v-model="authListChecked6"
+                                @change="setAuthList6"
                                 style="margin-top: 10px; font-size: 16px; font-weight: 600"
-                                >智能研修</el-checkbox
+                                >项目次数管理</el-checkbox
                             >
-                            <el-table :data="authList3" border style="min-width: 1320px; margin-top: 10px">
-                                <el-table-column prop="name" align="letf" width="120" label="一级菜单">
+                            <el-table :data="authList6" border style="min-width: 1320px; margin-top: 10px">
+                                <el-table-column prop="name" align="left" width="120" label="一级菜单">
                                     <template slot-scope="scope">
                                         <el-checkbox
                                             v-model="scope.row.checked"
-                                            @change="setAuthList1One(scope.row, 3)"
+                                            @change="setAuthList1One(scope.row, 6)"
                                             >{{ scope.row.name }}</el-checkbox
                                         >
                                     </template>
@@ -132,7 +165,7 @@
                                             v-for="(item, index) in scope.row.children"
                                             :key="index"
                                             v-model="item.checked"
-                                            @change="setAuthList1Two(item, 3)"
+                                            @change="setAuthList1Two(item, 6)"
                                             >{{ item.name }}</el-checkbox
                                         >
                                     </template>
@@ -144,7 +177,48 @@
                                                 v-for="(items, indexs) in item.children"
                                                 :key="indexs"
                                                 v-model="items.checked"
-                                                @change="setAuthList3Three(items)"
+                                                @change="setAuthList6Three(items)"
+                                                >{{ items.name }}</el-checkbox
+                                            >
+                                        </div>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <el-checkbox
+                                v-model="authListChecked7"
+                                @change="setAuthList7"
+                                style="margin-top: 10px; font-size: 16px; font-weight: 600"
+                                >系统管理</el-checkbox
+                            >
+                            <el-table :data="authList7" border style="min-width: 1320px; margin-top: 10px">
+                                <el-table-column prop="name" align="left" width="120" label="一级菜单">
+                                    <template slot-scope="scope">
+                                        <el-checkbox
+                                            v-model="scope.row.checked"
+                                            @change="setAuthList1One(scope.row, 7)"
+                                            >{{ scope.row.name }}</el-checkbox
+                                        >
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="name" align="left" width="160" label="二级菜单">
+                                    <template v-if="scope.row.children" slot-scope="scope">
+                                        <el-checkbox
+                                            v-for="(item, index) in scope.row.children"
+                                            :key="index"
+                                            v-model="item.checked"
+                                            @change="setAuthList1Two(item, 7)"
+                                            >{{ item.name }}</el-checkbox
+                                        >
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="name" align="left" label="页面与按钮权限">
+                                    <template v-if="scope.row.children" slot-scope="scope">
+                                        <div v-for="(item, index) in scope.row.children" :key="index">
+                                            <el-checkbox
+                                                v-for="(items, indexs) in item.children"
+                                                :key="indexs"
+                                                v-model="items.checked"
+                                                @change="setAuthList7Three(items)"
                                                 >{{ items.name }}</el-checkbox
                                             >
                                         </div>
@@ -158,7 +232,7 @@
                                 >个人中心</el-checkbox
                             >
                             <el-table :data="authList4" border style="min-width: 1320px; margin-top: 10px">
-                                <el-table-column prop="name" align="letf" width="120" label="一级菜单">
+                                <el-table-column prop="name" align="left" width="120" label="一级菜单">
                                     <template slot-scope="scope">
                                         <el-checkbox
                                             v-model="scope.row.checked"
@@ -178,16 +252,6 @@
                                         >
                                     </template>
                                 </el-table-column>
-                                <!-- <el-table-column
-                prop="name"
-                align="left"
-                label="页面与按钮权限">
-                <template v-if="scope.row.children" slot-scope="scope">
-                  <div v-for="(item, index) in scope.row.children" :key="index">
-                    <el-checkbox v-for="(items, indexs) in item.children" :key="indexs" v-model="items.checked" @change="setAuthList3Three(items)">{{ items.name }}</el-checkbox>
-                  </div>
-                </template>
-              </el-table-column> -->
                             </el-table>
 
                             <el-checkbox
@@ -197,7 +261,7 @@
                                 >大数据看板</el-checkbox
                             >
                             <el-table :data="authList5" border style="min-width: 1320px; margin-top: 10px">
-                                <el-table-column prop="name" align="letf" width="120" label="一级菜单">
+                                <el-table-column prop="name" align="left" width="120" label="一级菜单">
                                     <template slot-scope="scope">
                                         <el-checkbox
                                             v-model="scope.row.checked"
@@ -241,6 +305,10 @@ export default {
             authListChecked4: this.$route.query.id == 6 ? true : false,
             authList5: [],
             authListChecked5: this.$route.query.id == 6 ? true : false,
+            authList6: [],
+            authListChecked6: this.$route.query.id == 6 ? true : false,
+            authList7: [],
+            authListChecked7: this.$route.query.id == 6 ? true : false,
         };
     },
     components: {},
@@ -291,6 +359,10 @@ export default {
                     this.authListChecked4 = true;
                 } else if (type == 5) {
                     this.authListChecked5 = true;
+                } else if (type == 6) {
+                    this.authListChecked6 = true;
+                } else if (type == 7) {
+                    this.authListChecked7 = true;
                 }
                 if (val.children) {
                     val.children.forEach((el) => {
@@ -359,6 +431,20 @@ export default {
                             el.checked = true;
                         }
                     });
+                } else if (type == 6) {
+                    this.authListChecked6 = true;
+                    this.authList6.forEach((el) => {
+                        if (val.parentId == el.id) {
+                            el.checked = true;
+                        }
+                    });
+                } else if (type == 7) {
+                    this.authListChecked7 = true;
+                    this.authList7.forEach((el) => {
+                        if (val.parentId == el.id) {
+                            el.checked = true;
+                        }
+                    });
                 }
             } else {
                 if (val.children) {
@@ -408,6 +494,40 @@ export default {
             if (val.checked == true) {
                 this.authListChecked3 = true;
                 this.authList3.forEach((el) => {
+                    if (el.children) {
+                        el.children.forEach((ele) => {
+                            if (ele.id == val.parentId) {
+                                ele.checked = true;
+                                if (ele.parentId == el.id) {
+                                    el.checked = true;
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        },
+        setAuthList6Three(val) {
+            if (val.checked == true) {
+                this.authListChecked6 = true;
+                this.authList6.forEach((el) => {
+                    if (el.children) {
+                        el.children.forEach((ele) => {
+                            if (ele.id == val.parentId) {
+                                ele.checked = true;
+                                if (ele.parentId == el.id) {
+                                    el.checked = true;
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        },
+        setAuthList7Three(val) {
+            if (val.checked == true) {
+                this.authListChecked7 = true;
+                this.authList7.forEach((el) => {
                     if (el.children) {
                         el.children.forEach((ele) => {
                             if (ele.id == val.parentId) {
@@ -525,6 +645,48 @@ export default {
                 });
             }
         },
+        setAuthList6(val) {
+            if (val == true) {
+                this.authList6.forEach((el) => {
+                    el.checked = true;
+                    if (el.children) {
+                        el.children.forEach((ele) => {
+                            ele.checked = true;
+                        });
+                    }
+                });
+            } else {
+                this.authList6.forEach((el) => {
+                    el.checked = false;
+                    if (el.children) {
+                        el.children.forEach((ele) => {
+                            ele.checked = false;
+                        });
+                    }
+                });
+            }
+        },
+        setAuthList7(val) {
+            if (val == true) {
+                this.authList7.forEach((el) => {
+                    el.checked = true;
+                    if (el.children) {
+                        el.children.forEach((ele) => {
+                            ele.checked = true;
+                        });
+                    }
+                });
+            } else {
+                this.authList7.forEach((el) => {
+                    el.checked = false;
+                    if (el.children) {
+                        el.children.forEach((ele) => {
+                            ele.checked = false;
+                        });
+                    }
+                });
+            }
+        },
         goBack() {
             this.$router.go(-1);
         },
@@ -611,6 +773,44 @@ export default {
                     });
                 }
             });
+            this.authList6.forEach((el) => {
+                if (el.checked == true) {
+                    data.push(el.id);
+                }
+                if (el.children) {
+                    el.children.forEach((ele) => {
+                        if (ele.checked == true) {
+                            data.push(ele.id);
+                        }
+                        if (ele.children) {
+                            ele.children.forEach((eles) => {
+                                if (eles.checked == true) {
+                                    data.push(eles.id);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            this.authList7.forEach((el) => {
+                if (el.checked == true) {
+                    data.push(el.id);
+                }
+                if (el.children) {
+                    el.children.forEach((ele) => {
+                        if (ele.checked == true) {
+                            data.push(ele.id);
+                        }
+                        if (ele.children) {
+                            ele.children.forEach((eles) => {
+                                if (eles.checked == true) {
+                                    data.push(eles.id);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
             this.$axios
                 .post('/sys/role/updateRoleOptAuth', {
                     menuIds: data,
@@ -631,6 +831,8 @@ export default {
             this.authList3 = [];
             this.authList4 = [];
             this.authList5 = [];
+            this.authList6 = [];
+            this.authList7 = [];
             this.$axios.get('/sys/role/getMenuInfo', {roleId: this.$route.query.id}).then((res) => {
                 let arr = [];
                 console.log('this.$route.query.id: ', this.$route.query.id);
@@ -659,7 +861,7 @@ export default {
                 });
                 this.authList = creatTree(arr);
                 this.authList.forEach((el) => {
-                    if (el.type == 0) {
+                    if (el.type == -7) {
                         this.authList1.push(el);
                     }
                     if (el.type == -1) {
@@ -673,6 +875,12 @@ export default {
                     }
                     if (el.type == -4) {
                         this.authList5.push(el);
+                    }
+                    if (el.type == -5) {
+                        this.authList6.push(el);
+                    }
+                    if (el.type == -6) {
+                        this.authList7.push(el);
                     }
                 });
                 this.authList1.forEach((el) => {
@@ -744,6 +952,24 @@ export default {
                         });
                     }
                 });
+                this.authList6.forEach((el) => {
+                    if (el.children) {
+                        el.children.forEach((ele) => {
+                            if (ele.checked == true) {
+                                el.checked = true;
+                            }
+                        });
+                    }
+                });
+                this.authList7.forEach((el) => {
+                    if (el.children) {
+                        el.children.forEach((ele) => {
+                            if (ele.checked == true) {
+                                el.checked = true;
+                            }
+                        });
+                    }
+                });
                 for (let i = 0; i < this.authList1.length; i++) {
                     if (this.authList1[i].checked == true) {
                         this.authListChecked1 = true;
@@ -767,6 +993,16 @@ export default {
                 for (let i = 0; i < this.authList5.length; i++) {
                     if (this.authList5[i].checked == true) {
                         this.authListChecked5 = true;
+                    }
+                }
+                for (let i = 0; i < this.authList6.length; i++) {
+                    if (this.authList6[i].checked == true) {
+                        this.authListChecked6 = true;
+                    }
+                }
+                for (let i = 0; i < this.authList7.length; i++) {
+                    if (this.authList7[i].checked == true) {
+                        this.authListChecked7 = true;
                     }
                 }
                 this.addEditInfo.chooseRole = res.data.chooseRole;

@@ -14,7 +14,21 @@
                 <div class="box">
                     <div class="item-wrap" v-if="aiType == 2 && feeModel == 1">
                         <p style="width: 112px">AI分析剩余次数<em></em>：</p>
-                        {{ aiNum }}次
+                        <p>{{ aiNum }}次</p>
+                        <p class="err-notice"><em>*</em>数据在选择教师后显示！</p>
+                    </div>
+                    <div class="item-wrap">
+                        <p>优先使用：</p>
+                        <el-select :popper-append-to-body="false" v-model="addEditInfo.aiProjectId" class="width-2">
+                            <el-option
+                                v-for="item in useList"
+                                :key="item.allocationId"
+                                :label="item.projectName + '-' + item.residueNum + '次'"
+                                :value="item.allocationId"
+                            >
+                            </el-option>
+                        </el-select>
+                        <p class="err-notice"><em>*</em>数据在选择教师后显示！</p>
                     </div>
                     <div class="item-wrap" v-show="!$route.query.themeid">
                         <p>资源来源<em>*</em>：</p>
@@ -225,6 +239,7 @@
                             :remote-method="getTeacherList"
                             :loading="teacherSelectLoading"
                             @clear="getTeacherList"
+                            @change="changeTeacher"
                         >
                             <el-option
                                 v-for="item in teacherList"
@@ -538,6 +553,7 @@ export default {
                 {name: '手动录制', id: 1},
             ],
             isChangeVideo: false, // 是否替换视频
+            useList: [],
         };
     },
     components: {},
@@ -554,6 +570,7 @@ export default {
             )
         ) {
             this.getTeacherList(JSON.parse(localStorage.getItem('userInfo')).nickName);
+            this.getUseList();
         }
         this.getClassTypeList(); // 获取课型
         this.getSchoolList(); //获取学校列表
@@ -566,6 +583,7 @@ export default {
             // 编辑
             if (this.$route.query.teacherName) {
                 this.getTeacherList(this.$route.query.teacherName);
+                this.getUseList();
             }
         }
         if (this.$route.query.type == 3 && this.aiType == 2) {
@@ -573,13 +591,13 @@ export default {
         }
         if (this.aiType == 2 && this.feeModel == 1) {
             this.getCount();
-            this.getAiNum();
         }
         if (this.$route.query.videoId) {
             this.addEditInfo.resources = 4;
             this.addEditInfo.recordId = this.$route.query.videoId;
             if (this.$route.query.teacherId) {
                 this.getTeacherList(this.$route.query.teacherName);
+                this.getUseList();
             }
             this.addEditInfo.teacherId = this.$route.query.teacherId ? this.$route.query.teacherId : '';
             this.objectName = this.$route.query.name;
@@ -596,13 +614,6 @@ export default {
             this.$axios.get('/aiGrinding/getCount').then((res) => {
                 if (res.code != 200) {
                     return;
-                }
-            });
-        },
-        getAiNum() {
-            this.$axios.get('/aiRecharge/count').then((res) => {
-                if (res.code == 200) {
-                    this.aiNum = res.data.aiClass;
                 }
             });
         },
@@ -1562,6 +1573,26 @@ export default {
             if (this.teachingFileIds.length == 0) {
                 this.$message('教案必须上传！', 'error');
                 return true;
+            }
+        },
+        getUseList() {
+            // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
+            this.$axios
+                .get('/aiAnalysisRecharge/quota', {productType: 1, currentUserId: this.addEditInfo.teacherId})
+                .then((res) => {
+                    if (res.code == 200) {
+                        this.useList = res.data.options;
+                        this.aiNum = res.data.totalResidue;
+                        // 有数据的话默认选中第一项
+                        if (this.useList.length != 0) {
+                            this.$set(this.addEditInfo, 'aiProjectId', this.useList[0].allocationId);
+                        }
+                    }
+                });
+        },
+        changeTeacher(val) {
+            if (val) {
+                this.getUseList();
             }
         },
     },

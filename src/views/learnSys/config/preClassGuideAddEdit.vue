@@ -10,15 +10,22 @@
             <div class="item-scroll">
                 <div class="box">
                     <div class="item-wrap">
-                        <p style="width: 112px">剩余分析次数<em></em>：</p>
-                        {{ aiNum }}次
+                        <p style="width: 112px">AI分析剩余次数<em></em>：</p>
+                        <p>{{ aiNum }}次</p>
+                        <p class="err-notice"><em>*</em>数据在选择教师后显示！</p>
                     </div>
                     <div class="item-wrap">
                         <p>优先使用：</p>
                         <el-select :popper-append-to-body="false" v-model="addEditInfo.aiProjectId" class="width-2">
-                            <el-option v-for="item in useList" :key="item.id" :label="item.name" :value="item.id">
+                            <el-option
+                                v-for="item in useList"
+                                :key="item.allocationId"
+                                :label="item.projectName + '-' + item.residueNum + '次'"
+                                :value="item.allocationId"
+                            >
                             </el-option>
                         </el-select>
+                        <p class="err-notice"><em>*</em>数据在选择教师后显示！</p>
                     </div>
                     <div class="item-wrap">
                         <p>课程名称<em>*</em>：</p>
@@ -32,16 +39,14 @@
                     </div>
                     <div class="item-wrap">
                         <p>课堂类型<em>*</em>：</p>
-                        <el-select
-                            :popper-append-to-body="false"
+                        <el-radio-group
                             v-model="addEditInfo.classTypeId"
-                            placeholder="选择课堂类型"
-                            class="width-2"
-                            filterable
+                            style="display: flex; justify-content: center; align-items: center"
                         >
-                            <el-option v-for="item in classTypeList" :key="item.id" :label="item.name" :value="item.id">
-                            </el-option>
-                        </el-select>
+                            <el-radio v-for="(item, index) in classTypeList" :label="item.id" :key="index">{{
+                                item.name
+                            }}</el-radio>
+                        </el-radio-group>
                     </div>
                     <div class="item-wrap">
                         <p>学校<em>*</em>：</p>
@@ -187,7 +192,7 @@ export default {
             eduFileList: [], // 已上传文件
             teachingFileIds: [], // 一键发布时上传文件数组
             loading: false,
-            useList: [{id: 1, name: '庆阳市AI项目-85次'}],
+            useList: [],
             historyCourseList: [{id: 1, name: '《语文八年级》'}],
             teacherSelectLoading: false,
             typeList: [
@@ -206,6 +211,7 @@ export default {
             )
         ) {
             this.getTeacherList(JSON.parse(localStorage.getItem('userInfo')).nickName);
+            this.getUseList();
         }
         if (this.$route.query.themeid) {
             this.themeId = this.$route.query.themeid;
@@ -213,23 +219,15 @@ export default {
             // 编辑
             if (this.$route.query.teacherName) {
                 this.getTeacherList(this.$route.query.teacherName);
+                this.getUseList();
             }
         }
-        this.getAiNum();
         this.getClassTypeList(); // 获取课型
         this.getSchoolList(); //获取学校列表
         this.getSubjectList();
         this.getGradeList();
-        // this.getUseList();
     },
     methods: {
-        getAiNum() {
-            this.$axios.get('/aiRecharge/count').then((res) => {
-                if (res.code == 200) {
-                    this.aiNum = res.data.aiClass;
-                }
-            });
-        },
         getClassTypeList() {
             this.$axios.get('/sm/label/listLabel', {parentId: 33}).then((res) => {
                 this.classTypeList = res.data;
@@ -437,7 +435,7 @@ export default {
         verify() {
             Message.closeAll();
             if (this.aiNum == 0 && this.$route.query.themeid == '') {
-                this.$message('剩余分析次数不足！', 'error');
+                this.$message('AI分析剩余次数不足！', 'error');
                 return true;
             }
             if (!this.addEditInfo.name) {
@@ -478,15 +476,19 @@ export default {
             }
         },
         getUseList() {
-            this.$axios.get('/getUseList').then((res) => {
-                if (res.code == 200) {
-                    this.useList = res.data;
-                    // 有数据的话默认选中第一项
-                    if (this.useList.length != 0) {
-                        this.addEditInfo.aiProjectId = this.useList[0].id;
+            // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
+            this.$axios
+                .get('/aiAnalysisRecharge/quota', {productType: 4, currentUserId: this.addEditInfo.teacherId})
+                .then((res) => {
+                    if (res.code == 200) {
+                        this.useList = res.data.options;
+                        this.aiNum = res.data.totalResidue;
+                        // 有数据的话默认选中第一项
+                        if (this.useList.length != 0) {
+                            this.$set(this.addEditInfo, 'aiProjectId', this.useList[0].allocationId);
+                        }
                     }
-                }
-            });
+                });
         },
         getHistoryCourseList() {
             this.$axios.post(this.curUrl, this.curParams).then((res) => {
@@ -512,6 +514,7 @@ export default {
                 if (this.curUrl) {
                     this.getHistoryCourseList();
                 }
+                this.getUseList();
             } else {
                 this.historyCourseList = [];
                 this.$set(this.addEditInfo, 'historyCourseId', '');

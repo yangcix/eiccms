@@ -14,7 +14,21 @@
                     </p>
                     <div class="item-wrap" v-if="aiType == 2 && radio1 == 2 && feeModel == 1">
                         <p style="width: 112px">AI分析剩余次数<em></em>：</p>
-                        {{ aiNum }}次
+                        <p>{{ aiNum }}次</p>
+                        <p class="err-notice"><em>*</em>数据在选择教师后显示！</p>
+                    </div>
+                    <div class="item-wrap">
+                        <p>优先使用：</p>
+                        <el-select :popper-append-to-body="false" v-model="addEditInfo.aiProjectId" class="width-2">
+                            <el-option
+                                v-for="item in useList"
+                                :key="item.allocationId"
+                                :label="item.projectName + '-' + item.residueNum + '次'"
+                                :value="item.allocationId"
+                            >
+                            </el-option>
+                        </el-select>
+                        <p class="err-notice"><em>*</em>数据在选择教师后显示！</p>
                     </div>
                     <div class="item-wrap">
                         <p>评课名称<em>*</em>：</p>
@@ -114,6 +128,7 @@
                             :remote-method="getTeacherList"
                             :loading="teacherSelectLoading"
                             @clear="getTeacherList"
+                            @change="changeTeacher"
                         >
                             <el-option
                                 v-for="item in judgedIdList"
@@ -816,6 +831,7 @@ export default {
                 {name: '手动录制', id: 1},
             ],
             terminalName: '',
+            useList: [],
         };
     },
     components: {},
@@ -849,10 +865,12 @@ export default {
             this.getCommentInfo(); //编辑获取主体信息
             if (this.$route.query.teacherName) {
                 this.getTeacherList(this.$route.query.teacherName);
+                this.getUseList();
             }
         } else {
             if (JSON.parse(localStorage.getItem('userInfo')).roleType == 1) {
                 this.getTeacherList(JSON.parse(localStorage.getItem('userInfo')).nickName);
+                this.getUseList();
                 this.addEditInfo.teacherId = JSON.parse(localStorage.getItem('userInfo')).userId;
             } else {
                 this.addEditInfo.teacherId = '';
@@ -861,7 +879,6 @@ export default {
         if (this.aiType == 2 && this.aiStatus == 1 && this.$route.query.type == 2 && this.feeModel == 1) {
             console.log('按量分析获取AI分析剩余次数...');
             this.getCount();
-            this.getAiNum();
         }
     },
     methods: {
@@ -885,13 +902,6 @@ export default {
             this.$axios.get('/aiGrinding/getCount').then((res) => {
                 if (res.code != 200) {
                     return;
-                }
-            });
-        },
-        getAiNum() {
-            this.$axios.get('/aiRecharge/count').then((res) => {
-                if (res.code == 200) {
-                    this.aiNum = res.data.aiClass;
                 }
             });
         },
@@ -2121,6 +2131,26 @@ export default {
             this.pageNumT = val;
             // console.log(val);
             this.handleVideo();
+        },
+        getUseList() {
+            // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
+            this.$axios
+                .get('/aiAnalysisRecharge/quota', {productType: 1, currentUserId: this.addEditInfo.teacherId})
+                .then((res) => {
+                    if (res.code == 200) {
+                        this.useList = res.data.options;
+                        this.aiNum = res.data.totalResidue;
+                        // 有数据的话默认选中第一项
+                        if (this.useList.length != 0) {
+                            this.$set(this.addEditInfo, 'aiProjectId', this.useList[0].allocationId);
+                        }
+                    }
+                });
+        },
+        changeTeacher(val) {
+            if (val) {
+                this.getUseList();
+            }
         },
     },
 };

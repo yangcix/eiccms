@@ -8,16 +8,55 @@
                 <div style="width: 100%; min-width: 1160px">
                     <div class="item-scroll-left">
                         <div class="item-wrap" v-if="aiConfigType == 1">
-                            <p style="width: 150px">大单元分析剩余次数<em></em>：</p>
-                            {{ largeUnitCount }}次
+                            <p style="width: 150px">AI分析剩余次数<em></em>：</p>
+                            <p>{{ aiNum }}次</p>
+                            <p class="err-notice"><em>*</em>剩余次数、优先使用的数据在选择教师后显示！</p>
                         </div>
                         <div class="item-wrap">
-                            <p style="width: 145px; margin-right: 10px">大单元分析名称<em>*</em></p>
+                            <p>优先使用：</p>
+                            <el-select :popper-append-to-body="false" v-model="addEditInfo.aiProjectId" class="width-2">
+                                <el-option
+                                    v-for="item in useList"
+                                    :key="item.allocationId"
+                                    :label="item.projectName + '-' + item.residueNum + '次'"
+                                    :value="item.allocationId"
+                                >
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <div class="item-wrap">
+                            <p>教师<em>*</em>：</p>
+                            <el-select
+                                :popper-append-to-body="false"
+                                v-model="addEditInfo.teacherId"
+                                placeholder="选择教师"
+                                class="width-2"
+                                filterable
+                                remote
+                                clearable
+                                :remote-method="getTeacherList"
+                                :loading="teacherSelectLoading"
+                                @clear="getTeacherList"
+                                @change="changeTeacher"
+                            >
+                                <el-option
+                                    v-for="item in teacherList"
+                                    :key="item.userId"
+                                    :label="
+                                        item.name + (item.schoolName ? '-' + item.schoolName : '') + '-' + item.code
+                                    "
+                                    :value="item.userId"
+                                >
+                                </el-option>
+                            </el-select>
+                        </div>
+                        <div class="item-wrap">
+                            <p>大单元分析名称<em>*</em>：</p>
                             <el-input class="width-2" v-model="addEditInfo.name" clearable></el-input>
                             <!--          <el-button type="primary" class="save-btn" @click="save()">创建分析</el-button>-->
                         </div>
                         <div class="item-wrap">
-                            <p style="width: 145px; margin-right: 10px">科目<em>*</em></p>
+                            <p>科目<em>*</em>：</p>
                             <el-select
                                 :popper-append-to-body="false"
                                 v-model="addEditInfo.subjectId"
@@ -204,7 +243,7 @@ export default {
     name: '',
     data() {
         return {
-            largeUnitCount: 0,
+            aiNum: 0,
             subjectList: [],
             versions: JSON.parse(sessionStorage.getItem('userInfo')) || [],
             aiType: JSON.parse(localStorage.getItem('sysInfo')).aiConfigId,
@@ -216,6 +255,11 @@ export default {
                 subjectId: '', // 科目id
                 aiConfigId: '',
                 largeUnitClassList: [], //已选课堂数据
+                teacherId:
+                    JSON.parse(localStorage.getItem('userInfo')).userId == 1 ||
+                    JSON.parse(localStorage.getItem('userInfo')).userId == 2
+                        ? ''
+                        : JSON.parse(localStorage.getItem('userInfo')).userId,
             },
             classroomList: [], // 添加课堂列表课堂数据
             selectClassroomList: [], // 选中的课堂数据
@@ -226,9 +270,21 @@ export default {
             pageNum: 1,
             pages: 0,
             totalS: '',
+            useList: [],
+            teacherSelectLoading: false,
+            teacherList: [],
         };
     },
     mounted() {
+        if (
+            !(
+                JSON.parse(localStorage.getItem('userInfo')).userId == 1 ||
+                JSON.parse(localStorage.getItem('userInfo')).userId == 2
+            )
+        ) {
+            this.getTeacherList(JSON.parse(localStorage.getItem('userInfo')).nickName);
+            this.getUseList();
+        }
         this.getSubjectList();
         this.getUserAiBalance();
         if (this.$route.query.id) {
@@ -249,7 +305,7 @@ export default {
         // 获取用户AI剩余次数
         getUserAiBalance() {
             this.$axios.get('/aiDistributionPersonal/getUserAiBalance').then((res) => {
-                this.largeUnitCount = res.data.aiLargeUnitBalanceNumber;
+                this.aiNum = res.data.aiLargeUnitBalanceNumber;
             });
         },
         // 课堂管理列表数据
@@ -488,8 +544,12 @@ export default {
                 this.$message('可分析课堂节数，仅可在2-20节课之间！', 'error');
                 return true;
             }
-            if (this.largeUnitCount == 0) {
+            if (this.aiNum == 0) {
                 this.$message('大单元分析剩余次数不足！', 'error');
+                return true;
+            }
+            if (!this.addEditInfo.teacherId) {
+                this.$message('请选择教师', 'error');
                 return true;
             }
         },
@@ -552,6 +612,38 @@ export default {
                 this.$router.push('/aiLargeUnit');
             } else {
                 this.$router.go(-1);
+            }
+        },
+        getTeacherList(name) {
+            // 如果没有关键字或者清空文本框，就不请求数据且清掉下拉缓存数据。数据过多，请求全部的话，会因为渲染导致页面卡顿
+            if (!name) {
+                this.teacherList = [];
+                return;
+            }
+            this.teacherSelectLoading = true;
+            this.$axios.post('/sm/interactive/getUserList', {nickName: name}).then((res) => {
+                this.teacherList = res.data;
+                this.teacherSelectLoading = false;
+            });
+        },
+        getUseList() {
+            // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
+            this.$axios
+                .get('/aiAnalysisRecharge/quota', {productType: 3, currentUserId: this.addEditInfo.teacherId})
+                .then((res) => {
+                    if (res.code == 200) {
+                        this.useList = res.data.options;
+                        this.aiNum = res.data.totalResidue;
+                        // 有数据的话默认选中第一项
+                        if (this.useList.length != 0) {
+                            this.$set(this.addEditInfo, 'aiProjectId', this.useList[0].allocationId);
+                        }
+                    }
+                });
+        },
+        changeTeacher(val) {
+            if (val) {
+                this.getUseList();
             }
         },
     },
@@ -745,5 +837,14 @@ export default {
 
 .el-pagination {
     padding: 0 5px 20px;
+}
+.err-notice {
+    margin-left: 14px;
+    color: #b3b6ba;
+    font-size: 12px;
+
+    &.err-color {
+        color: #f64646;
+    }
 }
 </style>

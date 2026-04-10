@@ -835,6 +835,7 @@ export default {
             this.quotaInfo['projectId'] = this.$route.query.id;
             this.quotaInfo['eduOrgId'] = this.$route.query.orgId;
             this.quotaInfo['orgId'] = this.curRow.teacherId;
+            this.quotaInfo['allocateType'] = 1;
             this.getProductList();
         },
         // 验证
@@ -972,6 +973,7 @@ export default {
             this.batchInfo['projectId'] = this.$route.query.id;
             this.batchInfo['orgId'] = this.$route.query.orgId;
             this.batchInfo['teacherList'] = teacherList;
+            this.batchInfo['allocateType'] = 1;
             this.$axios.post('/aiAnalysisAllocation/allocation/batchAllocate', this.batchInfo).then((res) => {
                 if (res.code == 200) {
                     this.$message('分配成功！', 'success');

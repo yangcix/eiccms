@@ -613,6 +613,7 @@ export default {
             this.quotaInfo['projectId'] = this.$route.query.id;
             this.quotaInfo['eduOrgId'] = this.$route.query.orgId;
             this.quotaInfo['orgId'] = this.curRow.id;
+            this.quotaInfo['allocateType'] = 0;
             this.getProductList();
         },
         // 验证

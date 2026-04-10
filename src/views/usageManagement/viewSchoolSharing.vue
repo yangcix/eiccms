@@ -309,7 +309,7 @@
                             <el-table-column align="center" prop="remark" label="备注" width="238px">
                                 <template #default="scoped">
                                     <el-tooltip
-                                        v-if="scoped.row.remark.replace(/\s+/g, '').length > 15"
+                                        v-if="scoped.row.remark?.replace(/\s+/g, '').length > 15"
                                         :content="scoped.row.remark"
                                         placement="top"
                                     >

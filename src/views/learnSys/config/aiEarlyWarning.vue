@@ -41,6 +41,10 @@
                         v-model="form.users"
                         style="width: 320px"
                         placeholder="请选择提醒人员"
+                        remote
+                        clearable
+                        :remote-method="getUsers"
+                        @clear="getUsers"
                     >
                         <el-option
                             v-for="item in remindUsers"
@@ -93,7 +97,6 @@ export default {
     mounted() {
         // this.$nextTick(() => {
         this.getConfig();
-        this.getUsers();
         this.getCount();
         // });
     },
@@ -108,10 +111,14 @@ export default {
                 }
             });
         },
-        getUsers() {
-            this.$axios.get('/sys/user/listUserExcludeStudent').then((res) => {
-                this.remindUsers = res.data;
-            });
+        getUsers(val) {
+            if (val) {
+                this.$axios.get('/sys/user/listUserExcludeStudent', {keyWord: val}).then((res) => {
+                    this.remindUsers = res.data;
+                });
+            } else {
+                this.remindUsers = [];
+            }
         },
         getCount() {
             this.$axios.get('/Api/getTotalRemaining').then((res) => {

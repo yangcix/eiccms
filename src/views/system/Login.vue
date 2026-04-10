@@ -78,7 +78,7 @@
 							}
 							else {
 								if(res.data.systemPermission){
-								this.$router.replace('/sys/home');
+								this.$router.replace('/traininghome');
 								this.$message('登录成功', 'success');
 								res.data.password = MD5(this.password);
 								window.localStorage.setItem('isAdmin', res.data.adminOrSuper);

@@ -537,27 +537,22 @@ export default {
             if (this.sysModule == 1) {
                 this.homeMenu = {url: '/sys/home', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-7`;
-                this.selectMenu(this.homeMenu);
             } else if (this.sysModule == 2) {
                 // 微集控录播：-2
                 this.homeMenu = {url: '/recordhome', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-1`;
-                this.selectMenu(this.homeMenu);
             } else if (this.sysModule == 3) {
                 // 智能研修：-2
                 this.homeMenu = {url: '/traininghome', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-2`;
-                this.selectMenu(this.homeMenu);
             } else if (this.sysModule == 5) {
                 // 项目次数管理：-5
                 this.homeMenu = {url: '/aiAnalysisRecharge', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-5`;
-                this.selectMenu(this.homeMenu);
             } else if (this.sysModule == 6) {
                 // 系统管理：-6
                 this.homeMenu = {url: '/sys/serverConfig', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-6`;
-                this.selectMenu(this.homeMenu);
             }
             this.changeMenu();
         },
@@ -575,6 +570,10 @@ export default {
             let sixTrue = 0;
             console.log('this.menuUrl: ', this.menuUrl);
             this.$axios.get(this.menuUrl).then((res) => {
+                if (res.data.length == 0) {
+                    return;
+                }
+                this.selectMenu(this.homeMenu);
                 res.data.forEach((ele) => {
                     if (ele.id != '207' && ele.id != '205' && ele.id != '204') {
                         if (ele.id == 1 && this.sysModule == 1) {
@@ -679,7 +678,7 @@ export default {
                     this.$route.path !== '/sm/themeaddedit' &&
                     this.$route.path !== '/sm/clip' &&
                     this.$route.path !== '/sys/terminal' &&
-                    this.$route.path !== '/sys/system/trial'&&
+                    this.$route.path !== '/sys/system/trial' &&
                     this.$route.path !== '/aiConfig'
                 ) {
                     this.$router.push(this.menuList[0].children[0].url);

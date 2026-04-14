@@ -2782,10 +2782,10 @@ export default {
                                             id: this.addEditInfo.id ? this.addEditInfo.id : -1, // 视频id
                                             detail: formData,
                                             fileName: this.addEditInfo.studentVideo.name.slice(
-                                            0,
-                                            this.addEditInfo.studentVideo.name.length - 4
-                                        ),
-                                        progress: 0,
+                                                0,
+                                                this.addEditInfo.studentVideo.name.length - 4
+                                            ),
+                                            progress: 0,
                                         },
                                     };
                                     this.commitAiUploadTable(uploadTbaleData);

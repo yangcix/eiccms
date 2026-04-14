@@ -1,6 +1,6 @@
 <template>
     <div class="content-main-wrap second-parent-wrap">
-        <p class="content-title">直播管理</p>
+        <p class="content-title">课程录制</p>
 
         <div class="main-wrap">
             <div class="search-operat">
@@ -22,7 +22,7 @@
                         >
                         </el-option>
                     </el-select>
-                    <span class="search-desc">直播状态：</span>
+                    <span class="search-desc">录制状态：</span>
                     <el-select v-model="searchLiveStatus" placeholder="请选择" class="width-4">
                         <el-option
                             v-for="item in searchLiveList"
@@ -69,19 +69,19 @@
                             </p>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="直播状态">
+                    <el-table-column align="center" label="录制状态">
                         <template slot-scope="scope">
                             <p>{{ scope.row.liveStatus | live }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="公网直播">
+                    <el-table-column align="center" label="公网录制">
                         <template slot-scope="scope">
                             <p>{{ scope.row.publicLive === 0 ? '否' : '是' }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="直播模式">
+                    <el-table-column align="center" label="录制模式">
                         <template slot-scope="scope">
-                            <p>{{ scope.row.liveMode === 1 ? '录播直播' : '远程教学' }}</p>
+                            <p>{{ scope.row.liveMode === 1 ? '录播录制' : '远程教学' }}</p>
                         </template>
                     </el-table-column>
                     <el-table-column align="center" label="最大在线人数">

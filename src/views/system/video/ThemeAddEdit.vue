@@ -3,7 +3,7 @@
         <p class="content-title">
             <el-page-header
                 @back="goBack"
-                :content="`${$route.query.themeid ? '编辑' : '新增'}直播主题页`"
+                :content="`${$route.query.themeid ? '编辑' : '新增'}录制主题页`"
             ></el-page-header>
         </p>
         <div class="content-wrap">
@@ -11,18 +11,18 @@
                 <div class="box">
                     <div class="notice-wrap">
                         <p>
-                            关于录制的主题时间：录制的直播时间建议小于{{
+                            关于录制的主题时间：录制的录制时间建议小于{{
                                 versions.version === 1 ? 6 : 8
-                            }}小时，若一场录制的直播时间超{{
+                            }}小时，若一场录制的录制时间超{{
                                 versions.version === 1 ? 6 : 8
-                            }}小时建议分上中下场拆分为多个直播录制；
+                            }}小时建议分上中下场拆分为多个录制；
                         </p>
                         <p>
                             关于存储：若录制中的视频超过存储硬盘上限，将导致录制的视频无效，故出现存储预警则无法进行录制应采取相应处理腾出存储空间；
                         </p>
-                        <p>关于未填课堂时长：①开启录制-结束直播需管理员后台手动操作；</p>
+                        <p>关于未填课堂时长：①开启录制-结束录制需管理员后台手动操作；</p>
                         <p style="margin-left: 126px">
-                            ②开启录制-若直播{{ versions.version === 1 ? 6 : 8 }}小时未手动结束，则系统自动结束直播；
+                            ②开启录制-若录制{{ versions.version === 1 ? 6 : 8 }}小时未手动结束，则系统自动结束录制；
                         </p>
                     </div>
 
@@ -91,12 +91,12 @@
                         <p><em>*</em>：</p>
                         <el-input class="width-2" v-model="addEditInfo.name" clearable></el-input>
                         <p class="err-notice">
-                            注：教学类直播主题名称规则为课程名称+教师名称，例如：自由落体运动【周杰】
+                            注：教学类录制主题名称规则为课程名称+教师名称，例如：自由落体运动【周杰】
                         </p>
                     </div>
 
                     <div class="item-wrap">
-                        <p>直播模式</p>
+                        <p>录制模式</p>
                         <p><em>*</em>：</p>
                         <div class="class-type" @click="handleType('classroom')">
                             <img
@@ -104,7 +104,7 @@
                                 src="@/assets/imgs/live-mode1.png"
                                 alt=""
                             />
-                            <p>录播直播</p>
+                            <p>录播录制</p>
                         </div>
 
                         <div class="class-type" @click="handleType('teaching')" style="padding-left: 30px">
@@ -145,7 +145,7 @@
                         <p class="err-notice">注：未填写则默认需手动结束</p>
                     </div>
                     <div class="item-wrap">
-                        <p>{{ addEditInfo.liveMode === 1 ? '直播位置' : '所属学校' }}</p>
+                        <p>{{ addEditInfo.liveMode === 1 ? '录制位置' : '所属学校' }}</p>
                         <p><em>*</em>：</p>
                         <el-select
                             :popper-append-to-body="false"
@@ -187,7 +187,7 @@
                     </div>
 
                     <div class="item-wrap" v-if="addEditInfo.liveMode === 1">
-                        <p>直播设备</p>
+                        <p>录制设备</p>
                         <p><em>*</em>：</p>
                         <el-select
                             :popper-append-to-body="false"
@@ -204,7 +204,7 @@
                             >
                             </el-option>
                         </el-select>
-                        <p class="err-notice">注：提前添加设备并绑定至直播教室</p>
+                        <p class="err-notice">注：提前添加设备并绑定至录制教室</p>
                     </div>
                     <div class="item-wrap">
                         <p>授课教师</p>
@@ -323,14 +323,14 @@
                         <p>录制</p>
                         <p><em>*</em>：</p>
                         <el-switch v-model="addEditInfo.recode"> </el-switch>
-                        <!-- <p class="err-notice">注：同时开启录制和公网直播，视频会自动进行公网点播</p> -->
+                        <!-- <p class="err-notice">注：同时开启录制和公网录制，视频会自动进行公网点播</p> -->
                     </div>
 
                     <div class="item-wrap">
-                        <p>公网直播</p>
+                        <p>公网录制</p>
                         <p><em>*</em>：</p>
                         <el-switch :active-value="1" :inactive-value="0" v-model="addEditInfo.publicLive"> </el-switch>
-                        <p class="err-notice">注：公网直播需保证艾课云账号中有足够的流量，否则可能影响直播</p>
+                        <p class="err-notice">注：公网录制需保证艾课云账号中有足够的流量，否则可能影响录制</p>
                     </div>
 
                     <div class="item-wrap" v-if="addEditInfo.publicLive === 1">
@@ -409,15 +409,15 @@
                 :visible.sync="innerVisible"
                 append-to-body
             >
-                <div class="tip">艾课云直播流量不足，请联系管理员！</div>
+                <div class="tip">艾课云录制流量不足，请联系管理员！</div>
                 <div slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="innerVisible = false">确认</el-button>
                 </div>
             </el-dialog>
-            <div class="tip">艾课云流量不足，无法创建公网直播</div>
+            <div class="tip">艾课云流量不足，无法创建公网录制</div>
             <div slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="handleInstation">仅创建内网直播</el-button>
-                <el-button @click="innerVisible = true">仍创建公网直播</el-button>
+                <el-button type="primary" @click="handleInstation">仅创建内网录制</el-button>
+                <el-button @click="innerVisible = true">仍创建公网录制</el-button>
             </div>
         </el-dialog>
 
@@ -430,7 +430,7 @@
                 :visible.sync="onDemandInner"
                 append-to-body
             >
-                <div class="tip">艾课云直播流量不足，请联系管理员！</div>
+                <div class="tip">艾课云录制流量不足，请联系管理员！</div>
                 <div slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="onDemandInner = false">确认</el-button>
                 </div>
@@ -471,23 +471,23 @@ export default {
                 classroomId: '', //教室id
                 buildingId: '', //教学楼id
                 mode: '0', // 播放方式h5/falsh
-                // terminalIdList: [], //选择的 直播设备 数组
-                terminalIdList: '', //选择的 直播设备
+                // terminalIdList: [], //选择的 录制设备 数组
+                terminalIdList: '', //选择的 录制设备
                 recode: false, // 是否录制
                 // recodeIdList: [], //选择的 录制设备 数组
                 // recodeIdList: '', //选择的 录制设备
                 groupId: '', //选择的 观看权限 人员
-                publicLive: 0, // 是否开启公网直播
+                publicLive: 0, // 是否开启公网录制
                 watchType: 0, // 公网观看权限
                 watchPassword: '', // 公网观看密码
-                liveMode: 1, // 直播模式
+                liveMode: 1, // 录制模式
                 joiner: 0, //是否连麦
-                publicVod: 0, // 默认公网点播关闭，同时开启录制和直播打开
+                publicVod: 0, // 默认公网点播关闭，同时开启录制和录制打开
             },
             schoolList: [], // 可选择的学校
             buildlList: [], // 可选的教学楼
             classroomList: [], // 可选的教室
-            terminalIdList: [], //可选的 直播设备 数组
+            terminalIdList: [], //可选的 录制设备 数组
             groupList: [], // 可选的 观看权限 人员类型
             // recodeList: [], // 可选的 录制机器 数组
             themeValue: '', // 主题类型主类
@@ -813,7 +813,7 @@ export default {
             this.classroomChange();
             this.getClassroomList(id);
         },
-        //教室改变后直播设备改变 录制机位改变
+        //教室改变后录制设备改变 录制机位改变
         classroomChange(type) {
             // this.recodeList = [];
             this.terminalIdList = [];
@@ -825,7 +825,7 @@ export default {
             }
             // this.terminalChange();
         },
-        // // 直播设备改变
+        // // 录制设备改变
         // terminalChange(){
         // 	this.addEditInfo.recodeIdList = this.addEditInfo.terminalIdList
         // },
@@ -833,17 +833,17 @@ export default {
         // 	let temp = [];
         // 	this.terminalIdList.forEach(val => {
         // 		if(this.addEditInfo.terminalIdList.includes(val.id)){
-        // 			temp.push(val); // 当前已选择的直播设备 添加 到 temp
+        // 			temp.push(val); // 当前已选择的录制设备 添加 到 temp
         // 		}
         // 	});
         // 	let terminalIdList = [];
         // 	temp.forEach(val => {
         // 		if(this.addEditInfo.recodeIdList.includes(val.id)){
-        // 			terminalIdList.push(val.id); // 在已选的直播设备中 添加已选择的录制设备 到 terminalIdList
+        // 			terminalIdList.push(val.id); // 在已选的录制设备中 添加已选择的录制设备 到 terminalIdList
         // 		}
         // 	});
         // 	this.addEditInfo.recodeIdList = terminalIdList;
-        // 	this.recodeList = temp; // 已选的直播设备作为 录制设备的可选值 数组
+        // 	this.recodeList = temp; // 已选的录制设备作为 录制设备的可选值 数组
         // 	// if (this.recodeList.length > 0) {
         // 	// 	this.addEditInfo.recodeIdList = [this.recodeList[0].id];
         // 	// }
@@ -877,7 +877,7 @@ export default {
                 this.$message('最多选择三个类型', 'error');
             }
         },
-        //获取 直播设备列表
+        //获取 录制设备列表
         getTerminalIdList(room) {
             let data = {
                 classroomId: this.addEditInfo.classroomId,
@@ -902,7 +902,7 @@ export default {
                 }
                 // console.log(this.terminalIdList.length,this.addEditInfo.terminalIdList.length);
 
-                //根据直播机位默认设置录制机位可选数组   []
+                //根据录制机位默认设置录制机位可选数组   []
                 // if (this.terminalIdList.length > 0 && this.addEditInfo.terminalIdList) {
                 // 	this.recodeList = res.data
 
@@ -1094,10 +1094,6 @@ export default {
             if (this.addEditInfo.startTime < getNowDate()) {
                 this.addEditInfo.startTime = getNowDate();
             }
-            if (!this.addEditInfo.durationMinutes) {
-                this.$message('课堂时长不能为空', 'error');
-                return true;
-            }
             if (this.addEditInfo.durationMinutes) {
                 if (this.$verify.numStr(this.addEditInfo.durationMinutes)) {
                     this.$message('课堂时长只能输入正整数', 'error');
@@ -1122,7 +1118,7 @@ export default {
                     return true;
                 }
                 if (this.$verify.isEmpty(this.addEditInfo.terminalIdList)) {
-                    this.$message('请选择直播设备', 'error');
+                    this.$message('请选择录制设备', 'error');
                     return true;
                 }
                 if (this.$verify.isEmpty(this.addEditInfo.teacherId)) {

@@ -1216,12 +1216,8 @@ export default {
                 this.$message('请选择所属机构！', 'error');
                 return;
             }
-            if (
-                !this.teacherInfo.teacherName ||
-                this.teacherInfo.teacherName.length == 0 ||
-                this.teacherInfo.teacherName.length > 20
-            ) {
-                this.$message('教师名称为必填，由中文或大小写字母或数字组成，最长20位！', 'error');
+            if (this.$verify.chLetterNum(this.teacherInfo.teacherName, 20)) {
+                this.$message('机构名称为必填，由中文或大小写字母或数字组成，最长20位！', 'error');
                 return;
             }
             let params = {};

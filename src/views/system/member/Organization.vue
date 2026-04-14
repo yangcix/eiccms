@@ -789,7 +789,7 @@ export default {
         },
         // 同步机构
         syncOrganization() {
-            if (this.orgName.length == 0 || this.orgName.length > 20) {
+            if (this.$verify.chLetterNum(this.orgName, 20)) {
                 this.$message('机构名称为必填，由中文或大小写字母或数字组成，最长20位！', 'error');
                 return;
             }

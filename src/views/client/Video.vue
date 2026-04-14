@@ -4,7 +4,7 @@
 		<div class="video-catalog ">
 			<p class="home-title">
 				<!-- <i class="iconfont iconnav-vedio"></i> -->
-				<span>精彩视频</span>
+				<span>精彩课程</span>
 			</p>
 			
 			<div class="select-wrap" v-if="release === 1">

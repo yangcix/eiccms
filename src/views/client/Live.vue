@@ -4,7 +4,7 @@
 		<div class="video-catalog ">
 			<p class="home-title">
 				<!-- <i class="iconfont iconnav-vedio"></i> -->
-				<span>正在直播</span>
+				<span>正在录制</span>
 			</p>
 			
 			<div class="select-wrap" v-if="release === 1">

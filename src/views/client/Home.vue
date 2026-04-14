@@ -18,7 +18,7 @@
 		<div class="video-catalog ">
 			<p class="home-title">
 				<!-- <i class="iconfont iconnav-vedio"></i> -->
-				<span>最新视频上传</span>
+				<span>最新课程上传</span>
 				<router-link to="/video" class="more" v-if="isMoreLists > 8">更多 <img src="@/assets/imgs/arrow-r.png" alt="" class="moreImg"><img src="@/assets/imgs/arrow-r.png" alt="" class="moreImg"></router-link>
 			</p>
 			<div class="null-data" v-if="!newestList.length">

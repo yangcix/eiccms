@@ -239,7 +239,7 @@ export default {
         url: 'hplay'
       },
         {
-          name: '视频上传',
+          name: '课程上传',
           route: '/video',
           url: 'vplay'
         },

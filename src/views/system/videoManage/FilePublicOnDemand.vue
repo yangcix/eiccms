@@ -31,7 +31,7 @@
 						prop="name"
 						align="center"
 						:show-overflow-tooltip="true"
-						label="视频名称">
+						label="课程名称">
 					</el-table-column>
 					<el-table-column
 						prop="operTime"
@@ -70,7 +70,7 @@
 			:visible.sync="deleteShow"
 			width="420px">
 			<div class="dialog-wrap">
-				<p class="err-delete">确认取消上传该视频？</p>
+				<p class="err-delete">确认取消上传该课程？</p>
 				<div class="dialog-btn">
 					<el-button type="primary" @click="cancelUpload()">确 定</el-button>
 					<el-button @click="deleteShow = false">取 消</el-button>
@@ -97,7 +97,7 @@
 				pages: 0,
 				totalS: '',
 				permission:'',
-				id:'', // 视频id
+				id:'', // 课程id
 				stateOptions: [
 					{
           value: '',

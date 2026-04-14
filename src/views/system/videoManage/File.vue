@@ -1,6 +1,6 @@
 <template>
     <div class="content-main-wrap">
-        <p class="content-title">视频管理</p>
+        <p class="content-title">课程上传</p>
 
         <div class="main-wrap">
             <div class="search-operat">
@@ -8,7 +8,7 @@
                     <el-input
                         v-model="searchKey"
                         class="width-2"
-                        placeholder="请输入视频名称关键字进行查询"
+                        placeholder="请输入课程名称关键字进行查询"
                         v-search="search"
                         clearable
                     ></el-input>
@@ -42,7 +42,7 @@
                     :data="tableData"
                     style="width: 100%"
                 >
-                    <el-table-column align="center" :show-overflow-tooltip="true" label="视频名称">
+                    <el-table-column align="center" :show-overflow-tooltip="true" label="课程名称">
                         <template slot-scope="scope">
                             <ul class="operat-list">
                                 <li class="active" @click="detail(scope.row)">{{ scope.row.name }}</li>
@@ -52,7 +52,7 @@
                     <el-table-column prop="time" align="center" min-width="110" label="时长"> </el-table-column>
                     <el-table-column prop="createUserName" align="center" label="创建者"> </el-table-column>
                     <el-table-column prop="groupName" align="center" label="观看权限"> </el-table-column>
-                    <el-table-column align="center" :show-overflow-tooltip="true" label="视频分类">
+                    <el-table-column align="center" :show-overflow-tooltip="true" label="课程分类">
                         <template slot-scope="scope">
                             <div v-if="scope.row.labelNameList" class="videoSort">
                                 {{ scope.row.categoryName }} - {{ labelString(scope.row.labelNameList) }}
@@ -206,7 +206,7 @@
                         <el-input disabled clearable :value="_cutRange[1]" class="width-5"></el-input>
                     </div>
                     <div class="dialog-item">
-                        <p>视频分类</p>
+                        <p>课程分类</p>
                         <p><em>*</em>：</p>
                         <el-select class="width-5" @change="handleTheme" v-model="themeValue" placeholder="请选择">
                             <el-option v-for="item in themeData" :key="item.id" :label="item.name" :value="item.id">
@@ -252,7 +252,7 @@
 					</div> -->
 
                     <div class="dialog-item">
-                        <p>视频名称</p>
+                        <p>课程名称</p>
                         <p><em>*</em>：</p>
                         <el-input clearable v-model.trim="film.name" class="width-5"></el-input>
                     </div>
@@ -291,7 +291,7 @@
 
         <el-dialog title="系统提示" :close-on-click-modal="false" :visible.sync="submitShow" width="420px">
             <div class="dialog-wrap">
-                <p class="err-delete">送审后无法修改该视频，确认送审？</p>
+                <p class="err-delete">送审后无法修改该课程，确认送审？</p>
                 <div class="dialog-btn">
                     <el-button type="primary" @click="submit(1)">确 定</el-button>
                     <el-button @click="submitShow = false">取 消</el-button>
@@ -300,7 +300,7 @@
         </el-dialog>
 
         <el-dialog
-            title="视频审核"
+            title="课程审核"
             :close-on-click-modal="false"
             :visible.sync="auditShow"
             :before-close="auditShowClose"
@@ -329,9 +329,9 @@
             </div>
         </el-dialog>
 
-        <el-dialog title="删除视频" :close-on-click-modal="false" :visible.sync="deleteShow" width="420px">
+        <el-dialog title="删除课程" :close-on-click-modal="false" :visible.sync="deleteShow" width="420px">
             <div class="dialog-wrap">
-                <p class="err-delete">确认删除该视频？</p>
+                <p class="err-delete">确认删除该课程？</p>
                 <div class="dialog-btn">
                     <el-button type="primary" @click="deleteData(1)">确 定</el-button>
                     <el-button @click="deleteShow = false">取 消</el-button>
@@ -370,7 +370,7 @@
         >
             <div class="dialog-wrap">
                 <div class="dialog-item">
-                    <p>视频名称</p>
+                    <p>课程名称</p>
                     <p><em>*</em>：</p>
                     <el-input v-model.trim="name" clearable class="width-2"></el-input>
                 </div>
@@ -504,12 +504,12 @@ export default {
 
             joinPublicVodShow: false, // 加入公网点播弹窗
             flowLack: false, // 流量不足
-            name: '', // 视频标题名称
+            name: '', // 课程标题名称
             description: '', // 简介描述
             watchType: 0, // 观看类型
             watchPassword: '', // 观看密码
-            id: '', // 视频id
-            auditFilm: '', // 审核视频
+            id: '', // 课程id
+            auditFilm: '', // 审核课程
             loading: false, // 表格加载
         };
     },
@@ -597,7 +597,7 @@ export default {
                     // 兼容IE8和Firefox 4之前的版本
                     if (e) {
                         // console.log(e)
-                        _this.$message('有正在上传的视频任务', 'warning', 70, 3000);
+                        _this.$message('有正在上传的课程任务', 'warning', 70, 3000);
                     }
                     console.log(e);
                     // Chrome, Safari, Firefox 4+, Opera 12+ , IE 9+
@@ -711,7 +711,7 @@ export default {
                     }
                 });
         },
-        // 视频分类change
+        // 课程分类change
         handleTheme() {
             this.getTypeList();
         },
@@ -749,7 +749,7 @@ export default {
         changeRange() {
             this.limitTime = Math.abs(this.videoList.cutRange[0] - this.videoList.cutRange[1]);
             if (this.limitTime < 15) {
-                this.$message('视频时长不能少于15秒', 'error');
+                this.$message('课程时长不能少于15秒', 'error');
                 return true;
             }
         },
@@ -853,7 +853,7 @@ export default {
             let time = this.currentData.time;
             const [h, m, s] = time.split(':');
             const second = h * 60 * 60 + m * 60 + s * 1;
-            this.videoList.duration = second; // 视频总时长 通过接口返回
+            this.videoList.duration = second; // 课程总时长 通过接口返回
             this.$set(this.videoList.cutRange, 1, second);
 
             // this.ceshi = this.ceshi += 1; // 默认删掉
@@ -881,7 +881,7 @@ export default {
                 this.closeWindowTips();
             });
         },
-        //视频1上传 0编辑
+        //课程1上传 0编辑
         add(type, val) {
             if (
                 val &&
@@ -889,7 +889,7 @@ export default {
                     return el.id == val.id;
                 }) !== -1
             ) {
-                return this.$message('该视频正在上传,请待上传成功之后再进行编辑', 'error');
+                return this.$message('该课程正在上传,请待上传成功之后再进行编辑', 'error');
             }
             if (type == 0) {
                 if ((val.status == 0 || val.status == 2 || val.status == -2) && val.convertStatus > 0) {
@@ -1030,11 +1030,11 @@ export default {
         //验证
         verify() {
             if (!this.name) {
-                this.$message('请输入视频名称', 'error');
+                this.$message('请输入课程名称', 'error');
                 return true;
             }
             if (this.name.length > 20) {
-                this.$message('视频名称不能超过20字', 'error');
+                this.$message('课程名称不能超过20字', 'error');
                 return true;
             }
             if (this.description && this.description.length > 50) {

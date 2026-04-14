@@ -1,12 +1,12 @@
 <template>
 	<div class="second-wrap">
-		<p class="content-title"><el-page-header @back="goBack" :content="`${$route.query.id ? '视频编辑页' : '视频上传页'}`"></el-page-header></p>
+		<p class="content-title"><el-page-header @back="goBack" :content="`${$route.query.id ? '课程编辑页' : '课程上传页'}`"></el-page-header></p>
 		<video id="ifVideo" style="border:solid 1px red; width:300px;height:300px;display:none"></video>
 		<div class="content-wrap">
 			<div class="item-scroll">
 				<div class="box" v-loading="addloading">
 					<div class="item-wrap upload-box videoList">
-						<p>视频上传</p>
+						<p>课程上传</p>
 						<p class="p1"><em>*</em>：</p>
 						<div class="upload-wrap">
 							<el-upload
@@ -35,7 +35,7 @@
 					</div>
 					<div></div>
 					<div class="item-wrap" style="margin-top: 50px">
-						<p>视频名称</p>
+						<p>课程名称</p>
 						<p><em>*</em>：</p>
 						<el-input class="width-2" v-model="addEditInfo.name"></el-input>
 					</div>
@@ -55,7 +55,7 @@
 					</div> -->
 					<div class="item-wrap">
 						<div style="display:flex">
-							<p style="line-height:32px">视频分类</p>
+							<p style="line-height:32px">课程分类</p>
 							<p style="padding-top:6px"><em>*</em>：</p>
 						</div>
 						<div>
@@ -311,6 +311,7 @@
 			...mapState({
       uploadTable:'uploadTable'
     })
+	
 		},
 
 		mounted() {
@@ -856,7 +857,7 @@
 						});
 
 					}else {
-						this.$message('视频名称重复，该视频正在上传', 'error');
+						this.$message('课程名称重复，该课程正在上传', 'error');
 					}
 			},
 			//验证
@@ -866,11 +867,11 @@
 					return true;
 				}
 				if (this.$verify.isEmpty(this.addEditInfo.name)) {
-					this.$message('请输入视频名称', 'error');
+					this.$message('请输入课程名称', 'error');
 					return true;
 				}
 				if (this.addEditInfo.name.length > 20) {
-					this.$message('视频名称不能超过20字', 'error');
+					this.$message('课程名称不能超过20字', 'error');
 					return true;
 				}
 				// if(this.$verify.chLetterNum(this.addEditInfo.name, 20)){

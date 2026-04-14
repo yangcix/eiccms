@@ -329,9 +329,9 @@
 		},
 		methods: {
 			...mapActions({
-				commitUploadBoxVisible:'commitUploadBoxVisible',
-				commitUploadTable:'commitUploadTable',
-				commitUploadDataState:'commitUploadDataState'
+				commitAiUploadBoxVisible: 'commitAiUploadBoxVisible',
+				commitAiUploadTable: 'commitAiUploadTable',
+				commitAiUploadDataState: 'commitAiUploadDataState',
 			}),
 			handleOnExceed(files,fileList) {
 				this.$message('只能上传一个图片', 'error')
@@ -784,11 +784,16 @@
 												status:1, // 0 上传失败 1上传中 //2已取消
 												size:this.videoSize,
 												id:this.id ? this.id : -1, // 视频id
-												detail:formData
+												detail:formData,
+												fileName: this.addEditInfo.video.name.slice(
+                                            0,
+                                            this.addEditInfo.video.name.length - 4
+                                        ),
+                                        progress: 0,
 											}
 										}
-										this.commitUploadTable(uploadTbaleData)
-										this.commitUploadBoxVisible(true)
+										this.commitAiUploadTable(uploadTbaleData);
+										this.commitAiUploadBoxVisible(true);
 									}
 									this.$router.push('/sm/file');
 								}
@@ -796,17 +801,28 @@
 								this.$axios.post(url, formData,{
 									headers: {
 										uploadId: uploadId
-									}
+									},
+									timeout: 600000,
+									onUploadProgress: (progressEvent) => {
+										// 这就是 真·上传进度
+										let percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+										let msg = {};
+										msg = {
+											fileName: this.addEditInfo.video.name.slice(
+												0,
+												this.addEditInfo.video.name.length - 4
+											),
+											progress: percent,
+										};
+										this.$comjs.updateAiUploadTable(formData, msg);
+									},
 								}).then(res => {
 									if(res.code == 200){
 										this.id ? this.$message('编辑成功', 'success') : this.$message('新增成功', 'success');
 										// 判断编辑是否有替换视频
-										if(this.addEditInfo.video){
-											this.commitUploadTable({
-												type:'splice',
-												index:uploadId,
-											})
-										}
+										// if(this.addEditInfo.video){
+										// 	this.commitAiUploadTable(uploadTbaleData)
+										// }
 										if (this.$route.path == "/sm/file") {
 											setTimeout(() => {
 												this.$bus.emit("getFileList");
@@ -819,7 +835,7 @@
 										this.editShow = false
 										// 判断编辑是否有替换视频
 										if(this.addEditInfo.video){
-											this.commitUploadDataState({
+											this.commitAiUploadDataState({
 												uploadId:uploadId,
 												status: 0
 											})

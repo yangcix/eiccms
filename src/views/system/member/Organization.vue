@@ -59,7 +59,15 @@
                             <ul class="operat-list">
                                 <li @click="editCurData(scope, true)" v-if="permission.update">编辑</li>
                                 <li @click="editCurData(scope, false)" v-if="permission.save">新增下级</li>
-                                <li @click="addSchoolForCity()" v-if="scope.row.orgLevel == 2">新增市属校</li>
+                                <li
+                                    @click="addSchoolForCity()"
+                                    v-if="scope.row.orgLevel == 2"
+                                    :style="{
+                                        color: isHaveCitySchool ? '#B3B6BA' : '#f56c6c',
+                                    }"
+                                >
+                                    新增市属校
+                                </li>
                                 <li
                                     @click="deleteData(scope.row)"
                                     v-if="permission.delete"
@@ -399,6 +407,7 @@ export default {
             preAreaList: [],
             isHaveChildren: false, //判断是否有下级，没有下级时可以随意编辑；有下级的话，类型和所在地区不可编辑
             isSchoolOrPart: true,
+            isHaveCitySchool: false,
         };
     },
     components: {},
@@ -422,8 +431,16 @@ export default {
         this.getList();
         this.getOrgImg();
         this.getSuperInfo();
+        this.getHaveCitySchool();
     },
     methods: {
+        getHaveCitySchool() {
+            this.$axios.get('/sys/org/info', {orgId: 2}).then((res) => {
+                if (res.data) {
+                    this.isHaveCitySchool = true;
+                }
+            });
+        },
         closeAddShow() {
             this.fileLists = [];
             this.addEditShow = false;
@@ -984,9 +1001,11 @@ export default {
             return [];
         },
         addSchoolForCity() {
+            if (this.isHaveCitySchool) return;
             this.$axios.get('/sys/org/saveCitySchools').then((res) => {
                 if (res.code == 200) {
                     this.$message(res.message, 'success');
+                    this.isHaveCitySchool = true;
                     this.getList();
                 } else {
                     this.$message(res.message, 'error');

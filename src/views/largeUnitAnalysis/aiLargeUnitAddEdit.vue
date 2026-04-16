@@ -13,7 +13,7 @@
                             <p class="err-notice"><em>*</em>剩余次数、优先使用的数据在选择教师后显示！</p>
                         </div>
                         <div class="item-wrap">
-                            <p>优先使用：</p>
+                            <p>优先使用<em>*</em>：</p>
                             <el-select :popper-append-to-body="false" v-model="addEditInfo.aiProjectId" class="width-2">
                                 <el-option
                                     v-for="item in useList"
@@ -286,7 +286,6 @@ export default {
             this.getUseList();
         }
         this.getSubjectList();
-        this.getUserAiBalance();
         if (this.$route.query.id) {
             this.Id = this.$route.query.id;
             this.getLargeUnitInfo();
@@ -300,12 +299,6 @@ export default {
         getSubjectList() {
             this.$axios.get('/aiGrinding/getSubject').then((res) => {
                 this.subjectList = res.data;
-            });
-        },
-        // 获取用户AI剩余次数
-        getUserAiBalance() {
-            this.$axios.get('/aiDistributionPersonal/getUserAiBalance').then((res) => {
-                this.aiNum = res.data.aiLargeUnitBalanceNumber;
             });
         },
         // 课堂管理列表数据

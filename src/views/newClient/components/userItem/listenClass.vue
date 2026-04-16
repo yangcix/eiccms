@@ -603,9 +603,26 @@
             <p style="font-weight: 600; margin-top: 5px; font-size: 14px; color: #435cf9; margin-bottom: 25px">
                 基础信息
             </p>
-            <div class="item-wrap" v-if="aiType == 2 && radio1 == 2 && feeModel == 1">
-                <p style="width: 120px">AI分析剩余次数<em style="margin-left: 5px; line-height: 14px">*</em></p>
-                {{ aiNum }}次
+            <div class="item-wrap" v-if="aiType == 2 && feeModel == 1">
+                <p style="width: 112px">AI分析剩余次数<em></em>：</p>
+                <p>{{ aiNum }}次</p>
+            </div>
+            <div class="item-wrap">
+                <p>优先使用<em>*</em>：</p>
+                <el-select
+                    :popper-append-to-body="false"
+                    v-model="addEditInfo.aiProjectId"
+                    class="width-3"
+                    size="small"
+                >
+                    <el-option
+                        v-for="item in useList"
+                        :key="item.allocationId"
+                        :label="item.projectName + '-' + item.residueNum + '次'"
+                        :value="item.allocationId"
+                    >
+                    </el-option>
+                </el-select>
             </div>
             <div class="item-wrap">
                 <div style="display: flex">
@@ -1476,9 +1493,6 @@ export default {
         this.getSchoolList(); //获取学校列表
         this.getgroupList(); //获取用户组列表
         this.getTemplateList();
-        if (this.aiType == 2 && this.aiStatus == 1 && this.radio1 == 2 && this.feeModel == 1) {
-            this.getAiNum();
-        }
     },
     methods: {
         ...mapActions({
@@ -1490,13 +1504,6 @@ export default {
             this.$axios.get('/aiGrinding/getCount').then((res) => {
                 if (res.code != 200) {
                     return;
-                }
-            });
-        },
-        getAiNum() {
-            this.$axios.get('/aiRecharge/count').then((res) => {
-                if (res.code == 200) {
-                    this.aiNum = res.data.aiClass;
                 }
             });
         },
@@ -1672,9 +1679,6 @@ export default {
             };
             this.addShow = false;
             this.type = 2;
-            if (this.aiType == 2 && this.aiStatus == 1 && val == 2) {
-                this.getAiNum();
-            }
             this.getClassTypeList(1);
         },
         clearTerminal() {
@@ -2124,7 +2128,6 @@ export default {
         editData(val) {
             if (this.aiType == 2 && val.evaluationType == 2) {
                 this.getCount();
-                this.getAiNum();
             }
             if (this.aiUploadTable.length > 0) {
                 let check = this.aiUploadTable.find((el) => {
@@ -2303,7 +2306,6 @@ export default {
                         recordingMethod: 0,
                     };
                     this.getClassTypeList(1);
-                    this.getAiNum();
                 }
             }
         },
@@ -2662,6 +2664,7 @@ export default {
                             formData.append('groupId', this.addEditInfo.groupId);
                             formData.append('templateList', this.addEditInfo.templateList);
                             formData.append('evaluationOrgId', this.addEditInfo.orgId);
+                            formData.append('aiProjectId', this.addEditInfo.aiProjectId);
                             if (this.addEditInfo.file && this.addEditInfo.file.name) {
                                 formData.append('file', this.addEditInfo.file ? this.addEditInfo.file : '');
                             } else {
@@ -3015,13 +3018,7 @@ export default {
         //验证
         verify() {
             Message.closeAll();
-            if (
-                this.aiType == 2 &&
-                this.feeModel == 1 &&
-                this.radio1 == 2 &&
-                this.aiNum == 0 &&
-                this.addEditInfo.id == ''
-            ) {
+            if (this.aiType == 2 && this.feeModel == 1 && this.radio1 == 2 && this.aiNum == 0) {
                 this.$message('AI分析剩余次数不足！', 'error');
                 return true;
             }
@@ -3192,6 +3189,21 @@ export default {
                     }
                 });
             });
+        },
+        getUseList() {
+            // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
+            this.$axios
+                .get('/aiAnalysisRecharge/quota', {productType: 1, currentUserId: this.addEditInfo.teacherId})
+                .then((res) => {
+                    if (res.code == 200) {
+                        this.useList = res.data.options;
+                        this.aiNum = res.data.totalResidue;
+                        // 有数据的话默认选中第一项
+                        if (this.useList.length != 0) {
+                            this.$set(this.addEditInfo, 'aiProjectId', this.useList[0].allocationId);
+                        }
+                    }
+                });
         },
     },
 };

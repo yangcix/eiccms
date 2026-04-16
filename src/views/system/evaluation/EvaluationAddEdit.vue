@@ -18,7 +18,7 @@
                         <p class="err-notice"><em>*</em>数据在选择教师后显示！</p>
                     </div>
                     <div class="item-wrap">
-                        <p>优先使用：</p>
+                        <p>优先使用<em>*</em>：</p>
                         <el-select :popper-append-to-body="false" v-model="addEditInfo.aiProjectId" class="width-2">
                             <el-option
                                 v-for="item in useList"
@@ -1605,6 +1605,7 @@ export default {
                             formData.append('groupId', this.addEditInfo.groupId);
                             formData.append('templateList', this.addEditInfo.templateList);
                             formData.append('evaluationOrgId', this.addEditInfo.orgId);
+                            formData.append('aiProjectId', this.addEditInfo.aiProjectId);
                             if (this.radio2 == 1) {
                                 formData.append(
                                     'type',

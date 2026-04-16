@@ -210,10 +210,27 @@
         </div>
         <el-divider></el-divider>
         <div class="addBox">
-            <!-- <p style="font-weight: 600; margin-top: 5px; font-size: 14px">基础信息</p> -->
             <div class="item-wrap" v-if="aiType == 2 && feeModel == 1">
-                <p style="width: 120px">AI分析剩余次数<em style="margin-left: 5px; line-height: 14px">*</em></p>
-                {{ aiNum }}次
+                <p style="width: 112px">AI分析剩余次数<em></em>：</p>
+                <p>{{ aiNum }}次</p>
+            </div>
+            <div class="item-wrap">
+                <p>优先使用<em>*</em>：</p>
+                <el-select
+                    :popper-append-to-body="false"
+                    v-model="addEditInfo.aiProjectId"
+                    class="width-2"
+                    size="small"
+                    style="width: 300px; margin-right: 2px"
+                >
+                    <el-option
+                        v-for="item in useList"
+                        :key="item.allocationId"
+                        :label="item.projectName + '-' + item.residueNum + '次'"
+                        :value="item.allocationId"
+                    >
+                    </el-option>
+                </el-select>
             </div>
             <div class="item-wrap" v-show="!addEditInfo.id">
                 <p>资源来源<em style="margin-left: 5px; line-height: 14px">*</em></p>
@@ -749,9 +766,6 @@ export default {
         this.getSubjectList();
         this.getSchoolList(); //获取学校列表
         this.getgroupList(); //获取用户组列表
-        if (this.aiType == 2 && this.aiStatus == 1 && this.feeModel == 1) {
-            this.getAiNum();
-        }
     },
     methods: {
         ...mapActions({
@@ -763,13 +777,6 @@ export default {
             this.$axios.get('/aiGrinding/getCount').then((res) => {
                 if (res.code != 200) {
                     return;
-                }
-            });
-        },
-        getAiNum() {
-            this.$axios.get('/aiRecharge/count').then((res) => {
-                if (res.code == 200) {
-                    this.aiNum = res.data.aiClass;
                 }
             });
         },
@@ -1123,7 +1130,6 @@ export default {
         editData(val) {
             if (this.aiType == 2) {
                 this.getCount();
-                this.getAiNum();
             }
             this.$axios.get('/index/personal/aiGrinding/info', {id: val.id}).then((res) => {
                 this.valData = res.data.labelList;
@@ -1200,7 +1206,6 @@ export default {
             } else {
                 if (this.aiType == 2) {
                     this.getCount();
-                    this.getAiNum();
                 }
                 this.objectName = '';
                 this.themeValue = '';
@@ -1605,6 +1610,7 @@ export default {
                         formData.append('subjectId', this.addEditInfo.subjectId);
                         formData.append('teacherId', this.addEditInfo.teacherId);
                         formData.append('planFile', this.teachingFileIds);
+                        formData.append('aiProjectId', this.addEditInfo.aiProjectId);
                         let url = '/index/personal/aiGrinding/save';
                         if (this.addEditInfo.id) {
                             // 编辑更新
@@ -1881,7 +1887,7 @@ export default {
         //验证
         verify() {
             Message.closeAll();
-            if (this.aiType == 2 && this.feeModel == 1 && this.aiNum == 0 && !this.addEditInfo.id) {
+            if (this.aiType == 2 && this.feeModel == 1 && this.aiNum == 0) {
                 this.$message('AI分析剩余次数不足！', 'error');
                 return true;
             }
@@ -2004,6 +2010,21 @@ export default {
                     }
                 });
             });
+        },
+        getUseList() {
+            // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
+            this.$axios
+                .get('/aiAnalysisRecharge/quota', {productType: 1, currentUserId: this.addEditInfo.teacherId})
+                .then((res) => {
+                    if (res.code == 200) {
+                        this.useList = res.data.options;
+                        this.aiNum = res.data.totalResidue;
+                        // 有数据的话默认选中第一项
+                        if (this.useList.length != 0) {
+                            this.$set(this.addEditInfo, 'aiProjectId', this.useList[0].allocationId);
+                        }
+                    }
+                });
         },
     },
 };

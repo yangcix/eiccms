@@ -15,7 +15,7 @@
                         <p class="err-notice"><em>*</em>数据在选择教师后显示！</p>
                     </div>
                     <div class="item-wrap">
-                        <p>优先使用：</p>
+                        <p>优先使用<em>*</em>：</p>
                         <el-select :popper-append-to-body="false" v-model="addEditInfo.aiProjectId" class="width-2">
                             <el-option
                                 v-for="item in useList"
@@ -434,7 +434,7 @@ export default {
         //验证
         verify() {
             Message.closeAll();
-            if (this.aiNum == 0 && this.$route.query.themeid == '') {
+            if (this.aiNum == 0) {
                 this.$message('AI分析剩余次数不足！', 'error');
                 return true;
             }

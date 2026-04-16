@@ -1229,8 +1229,10 @@ export default {
                     this.isSynced = true;
                     this.isShowSyncTeacherDialog = false;
                     this.teacherInfo = {};
-                    this.$message(res.message, 'success');
+                    this.$message('已开始同步教师，预计xx分钟同步完成！', 'success');
                     this.getTableData();
+                } else {
+                    this.$message(res.message, 'error');
                 }
             });
         },

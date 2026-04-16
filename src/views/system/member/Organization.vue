@@ -646,8 +646,10 @@ export default {
                 this.$axios.post('/sys/org/delete', data).then((res) => {
                     if (res.code == 200) {
                         this.deleteShow = false;
-                        this.$message(res.message, 'success');
+                        this.$message('删除成功！', 'success');
                         this.getList();
+                    } else {
+                        this.$message(res.message, 'error');
                     }
                 });
             }
@@ -692,8 +694,10 @@ export default {
                 this.$axios.post('/sys/org/save', data).then((res) => {
                     if (res.code == 200) {
                         this.isShowOrgDialog = false;
-                        this.$message(res.message, 'success');
+                        this.$message('新增成功！', 'success');
                         this.getList();
+                    } else {
+                        this.$message(res.message, 'error');
                     }
                 });
             }
@@ -722,8 +726,10 @@ export default {
                 if (res.code == 200) {
                     this.isShowOrgDialog = false;
                     this.updateConfirmShow = false;
-                    this.$message(res.message, 'success');
+                    this.$message('编辑成功！', 'success');
                     this.getList();
+                } else {
+                    this.$message(res.message, 'error');
                 }
             });
         },
@@ -799,8 +805,10 @@ export default {
                 if (res.code == 200) {
                     this.isShowSyncOrgDialog = false;
                     this.orgName = '';
-                    this.$message(res.message, 'success');
+                    this.$message('同步机构成功！', 'success');
                     this.getList();
+                } else {
+                    this.$message(res.message, 'error');
                 }
             });
         },

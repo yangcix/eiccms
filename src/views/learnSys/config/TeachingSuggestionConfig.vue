@@ -100,9 +100,8 @@
             >
                 <h2 style="width: fit-content; margin: 0 auto">
                     【
-                    <span>{{ teachingSuggestion.classificationName }} - </span>
-                    <span v-if="teachingSuggestion.gradeName !== '-'">{{ teachingSuggestion.gradeName }} - </span>
-                    <span>{{ teachingSuggestion.subjectName }}</span>
+                    <span>{{ teachingSuggestion.subjectName }} - </span>
+                    <span v-if="teachingSuggestion.gradeName !== '-'">{{ teachingSuggestion.gradeName }}</span>
                     <span v-if="teachingSuggestion.classTypeName !== '-'"
                         >- {{ teachingSuggestion.classTypeName }}</span
                     >

@@ -98,17 +98,22 @@
                             <el-option v-for="item in weekList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
-                        <el-time-picker
-                            is-range
-                            style="width: 280px"
-                            v-model="val.time"
-                            range-separator="至"
-                            start-placeholder="开始时间"
-                            end-placeholder="结束时间"
-                            value-format="HH:mm:ss"
-                            placeholder="选择时间范围"
+                        <el-date-picker
+                            v-model="val.startTime"
+                            type="datetime"
+                            style="width: 200px; margin-right: 15px"
+                            @change="calcEndTime(index)"
+                            value-format="yyyy-MM-dd HH:mm:ss"
+                            placeholder="开始时间"
                         >
-                        </el-time-picker>
+                        </el-date-picker>
+                        <el-input
+                            class="width-6"
+                            v-model="val.durationMinutes"
+                            clearable
+                            placeholder="请输入课堂时长"
+                            @change="calcEndTime(index)"
+                        ></el-input>&nbsp;分钟
                         <i class="el-icon-remove-outline sub" @click="addClassTime(0, index)"></i>
                     </div>
                     <p class="add-assistant"><i class="el-icon-circle-plus-outline" @click="addClassTime(1)"></i></p>
@@ -305,7 +310,9 @@ export default {
             classTimeList: [
                 {
                     week: 1,
-                    time: '',
+                    startTime: '',
+                    endTime: '',
+                    durationMinutes: '',
                 },
             ],
             param: '',
@@ -478,6 +485,9 @@ export default {
             this.addEditInfo.timeLists.forEach((el) => {
                 let obj = {};
                 obj.time = [el.startTime, el.endTime];
+                obj.startTime = el.startTime;
+                obj.endTime = el.endTime;
+                obj.durationMinutes = this.$comjs.createDuraTionMin(el.startTime, el.endTime);
                 obj.week = el.week;
                 obj.id = el.id;
                 arr.push(obj);
@@ -588,7 +598,7 @@ export default {
                 if (this.classTimeList.length == 5) {
                     return this.$message('课堂时间最多5个', 'error');
                 }
-                this.classTimeList.push({week: 1, time: ''});
+                this.classTimeList.push({week: 1, startTime: '', endTime: '', durationMinutes: ''});
             } else {
                 if (this.classTimeList.length == 1) {
                     return this.$message('课堂时间最少1个', 'error');
@@ -797,11 +807,17 @@ export default {
             let flags = false;
             let ischeck = false;
             this.classTimeList.forEach((el) => {
-                if (el.time && el.time.length == 2) {
-                    el.startTime = el.time[0];
-                    el.endTime = el.time[1];
+                if (el.startTime && el.endTime) {
                     if (el.startTime == el.endTime) {
                         ischeck = true;
+                    }
+                    if (this.$verify.numStr(el.durationMinutes)) {
+                        this.$message('课堂时长只能输入正整数', 'error');
+                        return true;
+                    }
+                    if (el.durationMinutes.length > 4) {
+                        this.$message('课堂时长最多只能9999分钟', 'error');
+                        return true;
                     }
                 } else {
                     flags = true;
@@ -941,6 +957,15 @@ export default {
                 return true;
             }
         },
+        // 计算课堂结束时间
+        calcEndTime(index) {
+            if (!this.classTimeList[index].startTime || !this.classTimeList[index].durationMinutes) return;
+            this.classTimeList[index]['endTime'] = this.$comjs.addMinutesByTimestamp(
+                this.classTimeList[index].startTime,
+                this.classTimeList[index].durationMinutes
+            );
+            console.log('获取到的结束时间---', this.classTimeList[index].endTime);
+        },
     },
 };
 </script>
@@ -976,6 +1001,8 @@ export default {
     display: flex;
     align-items: center;
     margin-top: 25px;
+	font-size: 14px;
+    color: #303133;
     em {
         color: #f64646;
     }

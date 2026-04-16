@@ -104,17 +104,16 @@
 
                     <div>
                         <div class="item-wrap">
-                            <p>结束时间</p>
+                            <p>课堂时长</p>
                             <p style="margin-right: 5px"><em></em>：</p>
-                            <el-date-picker
-                                v-model="addEditInfo.endTime"
-                                type="datetime"
-                                style="width: 280px"
-                                value-format="yyyy-MM-dd HH:mm:ss"
-                                placeholder="结束时间"
-                            >
-                            </el-date-picker>
-                            <p class="err-notice">注：大于开始时间，未填写则默认需手动结束</p>
+                            <el-input
+                                class="width-2"
+                                v-model="addEditInfo.durationMinutes"
+                                clearable
+                                placeholder="请输入课堂时长"
+                                @change="changeDurationMin"
+                            ></el-input>&nbsp;分钟
+                            <p class="err-notice"><em>*</em>未填写则默认需手动结束</p>
                         </div>
 
                         <div class="item-wrap">
@@ -447,6 +446,10 @@ export default {
                 } else {
                     this.fileList = [];
                 }
+                this.addEditInfo.durationMinutes = this.$comjs.createDuraTionMin(
+                    this.addEditInfo.startTime,
+                    this.addEditInfo.endTime
+                );
             });
         },
         //构造学校和教室
@@ -909,6 +912,31 @@ export default {
                 this.$message('简介最长50个字', 'error');
                 return true;
             }
+            if (this.addEditInfo.durationMinutes) {
+                if (this.$verify.numStr(this.addEditInfo.durationMinutes)) {
+                    this.$message('课堂时长只能输入正整数', 'error');
+                    return true;
+                }
+                if (this.addEditInfo.durationMinutes.length > 4) {
+                    this.$message('课堂时长最多只能9999分钟', 'error');
+                    return true;
+                }
+            }
+        },
+        // 更改课堂时长
+        changeDurationMin() {
+            this.calcEndTime();
+            if (this.addEditInfo.grindingClassroom) {
+                this.classroomChange(1);
+            }
+        },
+        // 计算课堂结束时间
+        calcEndTime() {
+            if (!this.addEditInfo.startTime || !this.addEditInfo.durationMinutes) return;
+            this.addEditInfo.endTime = this.$comjs.addMinutesByTimestamp(
+                this.addEditInfo.startTime,
+                this.addEditInfo.durationMinutes
+            );
         },
     },
 };
@@ -952,6 +980,8 @@ export default {
     display: flex;
     align-items: center;
     margin-top: 25px;
+    font-size: 14px;
+    color: #303133;
     em {
         color: #f64646;
     }

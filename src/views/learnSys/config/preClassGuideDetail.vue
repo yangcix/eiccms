@@ -31,6 +31,10 @@
                     <p class="value">{{ detailInfo.gradeName }}</p>
                 </li>
                 <li>
+                    <p class="title">学校：</p>
+                    <p class="value">{{ detailInfo.schoolName }}</p>
+                </li>
+                <li>
                     <p class="title">状态：</p>
                     <p class="value">{{ videoState }}</p>
                 </li>
@@ -47,6 +51,10 @@
                         </div>
                     </div>
                     <span v-else class="value">无</span>
+                </li>
+                <li>
+                    <p class="title">AI次数来源：</p>
+                    <p class="value">{{ detailInfo.aiProjectName }}</p>
                 </li>
                 <li>
                     <p class="title">创建者：</p>

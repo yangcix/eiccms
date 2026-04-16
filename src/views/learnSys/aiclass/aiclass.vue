@@ -190,10 +190,11 @@
                                     @click="openReport(scope.row)"
                                     >课堂复盘</el-button
                                 >
-                                <!-- 录制中、排队中、分析失败、录制完成 -->
+                                <!-- 基于不是待提交的状态下，录制中、排队中、分析失败、录制完成 -->
                                 <el-button
                                     v-if="
                                         permission.watchVideo &&
+                                        scope.row.type !== -1 &&
                                         (scope.row.type == 1 ||
                                             scope.row.aiStatus == -1 ||
                                             scope.row.aiStatus == 3 ||

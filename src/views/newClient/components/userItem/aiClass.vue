@@ -1857,7 +1857,7 @@ export default {
         },
         // 添加视频
         handleAddTotalData(row) {
-            let minutes = parseInt(row.time.split(':')[1], 10);
+            let minutes = parseInt(row.time?.split(':')[1], 10);
             console.log(minutes, 'time后台ai磨课');
             if (minutes > 60) {
                 this.$message('视频时长不能超过60分钟', 'error');

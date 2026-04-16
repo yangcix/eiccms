@@ -247,20 +247,13 @@ export default {
         $route(to, from) {
             if (from.path == '/sm/habitusdetail') {
                 this.getThemeList();
+            } else if (from.path == '/sm/habitusaddedit') {
+                this.getThemeList();
             } else if (from.path !== '/sm/habitus') {
                 this.searchThemeStatus = '';
                 this.searchKey = '';
-                if (from.path == '/sm/habitusaddedit') {
-                    if (from.query && from.query.themeid) {
-                        this.getThemeList();
-                    } else {
-                        this.pageNum = 1;
-                        this.getThemeList();
-                    }
-                } else {
-                    this.pageNum = 1;
-                    this.getThemeList();
-                }
+                this.pageNum = 1;
+                this.getThemeList();
             }
         },
     },

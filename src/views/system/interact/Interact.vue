@@ -218,20 +218,13 @@ export default {
         $route(to, from) {
             if (from.path == '/sm/interactivedetail') {
                 this.getThemeList();
+            } else if (from.path == '/sm/interactiveaddedit') {
+				this.getThemeList();
             } else if (from.path !== '/sm/interactive') {
                 this.searchKey = '';
                 this.searchThemeStatus = '';
-                if (from.path == '/sm/interactiveaddedit') {
-                    if (from.query && from.query.themeid) {
-                        this.getThemeList();
-                    } else {
-                        this.pageNum = 1;
-                        this.getThemeList();
-                    }
-                } else {
-                    this.pageNum = 1;
-                    this.getThemeList();
-                }
+                this.pageNum = 1;
+                this.getThemeList();
             }
         },
     },

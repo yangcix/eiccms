@@ -504,7 +504,7 @@
                         注：仅可选择时长不可超过60分钟的视频资源
                     </p>
                     <el-button v-if="permission.save" type="primary" class="edit-btn ml20" @click="save"
-                        >保存</el-button
+                        >暂存</el-button
                     >
                     <el-button type="primary" v-if="permission.submit" class="edit-btn" @click="save(1)"
                         >保存并送审</el-button

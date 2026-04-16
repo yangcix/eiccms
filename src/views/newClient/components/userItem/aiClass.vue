@@ -546,7 +546,7 @@
             </div>
             <div style="text-align: center; margin: 10px 0 20px 0">
                 <el-button size="mini" class="edit-btn" @click="httpRequest(true)">暂存</el-button>
-                <el-button size="mini" type="primary" class="edit-btn" @click="httpRequest(false)">确认</el-button>
+                <el-button size="mini" type="primary" class="edit-btn" @click="httpRequest(false)">提交</el-button>
             </div>
 
             <el-dialog

@@ -381,7 +381,7 @@
                     </div>
                     <el-button :loading="loadingBtn" class="edit-btn" @click="httpRequest(true)">暂存</el-button>
                     <el-button :loading="loadingBtn" type="primary" class="edit-btn" @click="httpRequest(false)"
-                        >确认</el-button
+                        >提交</el-button
                     >
                 </div>
             </div>

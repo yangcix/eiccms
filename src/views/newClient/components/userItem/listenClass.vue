@@ -1093,10 +1093,11 @@
                 注：仅可选择时长不可超过60分钟的视频资源
             </p>
             <div style="text-align: center; margin: 10px 0 20px 0">
-                <el-button size="mini" :loading="loadingBtn" class="edit-btn" @click="save">保存</el-button>
+                <el-button size="mini" :loading="loadingBtn" class="edit-btn" @click="save">暂存</el-button>
                 <el-button size="mini" :loading="loadingBtnOne" type="primary" class="edit-btn" @click="save('1')"
                     >保存并送审</el-button
                 >
+                <el-button size="mini" type="primary" class="edit-btn" @click="save(2)">一键发布</el-button>
             </div>
             <el-dialog
                 title="系统错误"

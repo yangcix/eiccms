@@ -230,7 +230,11 @@
                                 placeholder="请输入充值次数"
                             ></el-input>
                             <p class="dialog-unit">次</p>
-                            <i class="el-icon-circle-plus-outline el-icon" @click="addProduct"></i>
+                            <i
+                                class="el-icon-circle-plus-outline el-icon"
+                                @click="addProduct"
+                                v-show="productNum < productList.length - 1"
+                            ></i>
                         </div>
                         <div class="dialog-item" v-for="ite in productNum" :key="ite">
                             <p class="dialog-title"></p>
@@ -531,10 +535,6 @@ export default {
             });
         },
         addProduct() {
-            if (this.productNum >= this.productList.length - 1) {
-                this.$message('关联产品最多只有' + this.productList.length + '条', 'error');
-                return;
-            }
             this.productNum++;
         },
         decreaseProduct(index) {
@@ -552,12 +552,18 @@ export default {
                 this.$message('关联产品不能为空！', 'error');
                 return;
             }
-            if (this.productArray.length > this.numberArray.length) {
-                this.$message('关联产品次数不能为空！', 'error');
-                return;
+            for (let i = 0; i < this.productNum + 1; i++) {
+                if (!this.productArray[i]) {
+                    this.$message('关联产品不能为空！', 'error');
+                    return;
+                }
+                if (!this.numberArray[i]) {
+                    this.$message('关联产品次数不能为空！', 'error');
+                    return;
+                }
             }
-            if (this.productArray.length < this.numberArray.length) {
-                this.$message('关联产品不能为空！', 'error');
+            if (new Set(this.productArray).size !== this.productArray.length) {
+                this.$message('产品不能重复添加！', 'error');
                 return;
             }
             this.rechargeInfo['productList'] = this.productArray.map((id, index) => ({

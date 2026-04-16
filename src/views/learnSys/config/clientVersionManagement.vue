@@ -221,14 +221,6 @@ export default {
                 };
                 this.clientExeList = [];
                 this.clientExeList.push({name: val.packageName, url: val.packagePath});
-            } else {
-                this.addEditInfo = {
-                    versionNumber: '',
-                    updateExplain: '',
-                    packageName: '',
-                    id: '',
-                };
-                this.clientExeList = [];
             }
             this.addEditShow = true;
         },
@@ -244,13 +236,20 @@ export default {
             }
             this.$axios.post(url, this.addEditInfo).then((res) => {
                 if (res.code == 200) {
-                    this.addEditShow = false;
+                    this.handleAddEditShow();
                     this.$message(res.message, 'success');
                     this.getClientVersionList();
                 }
             });
         },
         handleAddEditShow() {
+            this.addEditInfo = {
+                versionNumber: '',
+                updateExplain: '',
+                packageName: '',
+                id: '',
+            };
+            this.clientExeList = [];
             this.addEditShow = false;
         },
         //删除

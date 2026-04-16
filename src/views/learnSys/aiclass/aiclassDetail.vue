@@ -48,8 +48,12 @@
                     </p>
                 </li>
                 <li>
-                    <p class="title">状态：</p>
+                    <p class="title">录制状态：</p>
                     <p class="value">{{ videoState }}</p>
+                </li>
+                <li>
+                    <p class="title">分析状态：</p>
+                    <p class="value">{{ aiState }}</p>
                 </li>
                 <li class="li eduLi">
                     <p class="title">教案：</p>
@@ -100,7 +104,7 @@
                 </div>
             </div>
             <div class="video-wrap" v-else>
-                <div v-if="detailInfo.type != 0">
+                <div v-if="detailInfo.type != 0 && detailInfo.type != -1">
                     <div class="content">
                         <img
                             :src="detailInfo.coverUrl ? detailInfo.coverUrl : defaultImg"
@@ -394,12 +398,32 @@ export default {
     computed: {
         videoState() {
             switch (this.detailInfo.type) {
+                case -1:
+                    return '待提交';
                 case 0:
                     return '未开始';
                 case 1:
-                    return '磨课中';
+                    return '录制中';
                 case 2:
-                    return `已结束`;
+                    return `录制完成`;
+                case 3:
+                    return `录制失败`;
+                default:
+                    return '-';
+            }
+        },
+        aiState() {
+            switch (this.detailInfo.aiStatus) {
+                case -1:
+                    return '排队中';
+                case 0:
+                    return '待分析';
+                case 1:
+                    return '分析中';
+                case 2:
+                    return `分析成功`;
+                case 3:
+                    return `分析失败`;
                 default:
                     return '-';
             }

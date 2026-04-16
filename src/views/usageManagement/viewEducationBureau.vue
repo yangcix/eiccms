@@ -451,7 +451,8 @@ export default {
         getTotal() {
             let params = {};
             params['keyWord'] = this.searchKey;
-            params['orgId'] = this.orgId || this.$route.query.orgId;
+            params['orgId'] = this.$route.query.orgId;
+            params['schoolId'] = this.orgId;
             params['projectId'] = this.$route.query.id;
             params['allocateType'] = 0;
             this.$axios.post('/aiAnalysisAllocation/allocation/topStat', params).then((res) => {

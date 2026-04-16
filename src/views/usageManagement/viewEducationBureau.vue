@@ -424,6 +424,7 @@ export default {
         };
     },
     activated() {
+        this.orgId = '';
         this.getList();
         this.getTotal();
         this.getOrgIdList();

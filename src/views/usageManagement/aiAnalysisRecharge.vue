@@ -424,7 +424,7 @@ export default {
             this.isShowProjectDlg = true;
             this.isEditProject = isEdit;
             if (isEdit) {
-                this.addEditInfo = row;
+                this.addEditInfo = JSON.parse(JSON.stringify(row));
                 if (row.orgType == '5') {
                     this.getTeacherList(row.orgTypeName);
                 } else {

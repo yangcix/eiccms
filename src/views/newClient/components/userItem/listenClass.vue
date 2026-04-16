@@ -1655,6 +1655,7 @@ export default {
             if (this.aiType == 2 && val == 2) {
                 this.getCount();
             }
+            this.getUseList();
             this.radio1 = val;
             this.radio2 = 2;
             this.themeValue = '';
@@ -2307,6 +2308,7 @@ export default {
                         classTypeId: '',
                         recordingMethod: 0,
                     };
+                    this.getUseList();
                     this.getClassTypeList(1);
                 }
             }

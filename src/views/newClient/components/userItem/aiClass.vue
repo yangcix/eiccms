@@ -753,7 +753,8 @@ export default {
                 {name: '自动录制', id: 0},
                 {name: '手动录制', id: 1},
             ],
-            isChangeVideo:false,
+            isChangeVideo: false,
+            useList: [],
         };
     },
     computed: {
@@ -1131,6 +1132,7 @@ export default {
             if (this.aiType == 2) {
                 this.getCount();
             }
+            this.getUseList();
             this.$axios.get('/index/personal/aiGrinding/info', {id: val.id}).then((res) => {
                 this.valData = res.data.labelList;
                 if (res.data.coverUrl) {
@@ -1233,6 +1235,7 @@ export default {
                     objectName: '',
                     recordingMethod: 0,
                 };
+                this.getUseList();
                 this.type = 2;
                 this.getClassTypeList(1);
             }

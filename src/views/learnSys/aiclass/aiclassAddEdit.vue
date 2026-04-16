@@ -209,7 +209,7 @@
                             clearable
                             placeholder="请输入课堂时长"
                             @change="changeDurationMin"
-                        ></el-input>
+                        ></el-input>&nbsp;分钟
                         <p class="err-notice"><em>*</em>课堂时长最多60分钟</p>
                     </div>
                     <div class="item-wrap">
@@ -1657,6 +1657,8 @@ export default {
     display: flex;
     align-items: center;
     margin-top: 25px;
+    font-size: 14px;
+    color: #303133;
 
     em {
         color: #f64646;

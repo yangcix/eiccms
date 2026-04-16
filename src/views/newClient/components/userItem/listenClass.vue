@@ -955,6 +955,7 @@
                         size="small"
                         @change="changeDurationMin"
                     ></el-input>
+                    &nbsp;分钟
                     <p class="err-notice"><em>*</em>课堂时长最多60分钟</p>
                 </div>
                 <div v-if="radio2 == 2 || radio2 == 4" class="item-wrap">
@@ -3281,6 +3282,8 @@ export default {
             display: flex;
             align-items: center;
             margin-top: 15px;
+            font-size: 14px;
+            color: #303133;
 
             em {
                 color: #f64646;

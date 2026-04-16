@@ -142,6 +142,7 @@
                             placeholder="请输入课堂时长"
                             @change="changeDurationMin"
                         ></el-input>
+                        &nbsp;分钟
                         <p class="err-notice">注：未填写则默认需手动结束</p>
                     </div>
                     <div class="item-wrap">
@@ -1099,7 +1100,7 @@ export default {
                     this.$message('课堂时长只能输入正整数', 'error');
                     return true;
                 }
-                if (this.addEditInfo.durationMinutes > 9999) {
+                if (this.addEditInfo.durationMinutes.length > 4) {
                     this.$message('课堂时长最多只能9999分钟', 'error');
                     return true;
                 }
@@ -1227,6 +1228,8 @@ export default {
     display: flex;
     align-items: center;
     margin-top: 25px;
+    font-size: 14px;
+    color: #303133;
     em {
         color: #f64646;
     }

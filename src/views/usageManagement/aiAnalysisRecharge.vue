@@ -489,7 +489,7 @@ export default {
                 this.$axios.post('/sm/interactive/getUserList', {nickName: name}).then((res) => {
                     this.orgIdList = res.data.map((user) => ({
                         value: user.userId,
-                        label: user.name,
+                        label: user.name + (user.schoolName ? '-' + user.schoolName : '') + '-' + user.code,
                     }));
                 });
             } else {

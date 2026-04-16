@@ -366,6 +366,8 @@ export default {
                     return time.getTime() <= new Date(new Date().setHours(0, 0, 0, 0));
                 },
             },
+            dlgTotal: 0,
+            total: 0,
         };
     },
     mounted() {
@@ -393,6 +395,7 @@ export default {
                     this.loading = false;
                     this.tableData = res.data.pageList;
                     this.pages = res.data.pages;
+                    this.total = res.data.total;
                 }
             });
         },
@@ -504,6 +507,10 @@ export default {
                 .then(() => {
                     this.$axios.get('/aiAnalysisProject/delete', {id: row.id}).then((res) => {
                         if (res.code == 200) {
+                            this.total = this.total - 1;
+                            if (this.pageNum * 10 - this.total === 10) {
+                                this.pageNum = this.pageNum - 1 || 1;
+                            }
                             this.getList();
                             this.prepareTotal();
                             this.$message('删除成功！', 'success');
@@ -600,6 +607,7 @@ export default {
                 if (res.code == 200) {
                     this.dlgTableData = res.data.pageList;
                     this.dlgPages = res.data.pages;
+                    this.dlgTotal = res.data.total;
                     this.isShowRechargeDetailDlg = true;
                 } else {
                     this.$message(res.message, 'error');
@@ -627,6 +635,10 @@ export default {
                             this.prepareTotal();
                             this.getRechargeList();
                             this.$message('撤销充值成功！', 'success');
+                            this.dlgTotal = this.dlgTotal - 1;
+                            if (this.dlgPageNum * 10 - this.dlgTotal === 10) {
+                                this.dlgPageNum = this.dlgPageNum - 1 || 1;
+                            }
                         } else {
                             this.$message(res.message, 'error');
                         }

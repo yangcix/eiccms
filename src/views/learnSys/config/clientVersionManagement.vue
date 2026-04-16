@@ -11,7 +11,7 @@
             </div>
             <div class="data-table table-border">
                 <el-table :data="tableData" v-loading="loading" style="width: 100%">
-                    <el-table-column align="center" label="序号" type="index"> </el-table-column>
+                    <el-table-column align="center" label="序号" prop="id"></el-table-column>
                     <el-table-column prop="versionNumber" align="center" label="版本号"> </el-table-column>
                     <el-table-column prop="enabledStatusText" align="center" label="状态"> </el-table-column>
                     <el-table-column align="center" width="100px" label="安装包">

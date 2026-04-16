@@ -131,7 +131,7 @@
                             <el-select
                                 v-model="addEditInfo.orgType"
                                 placeholder="请选择"
-                                class="width-8"
+                                style="width: 90px"
                                 @change="changeOrgType"
                                 :disabled="isEditProject"
                             >
@@ -146,7 +146,7 @@
                             <el-select
                                 v-model="addEditInfo.orgId"
                                 placeholder="请选择"
-                                class="width-6"
+                                style="width: 242px"
                                 :disabled="isEditProject"
                                 filterable
                                 remote

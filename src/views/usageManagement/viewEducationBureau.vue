@@ -593,7 +593,7 @@ export default {
                 if (this.verify()) {
                     return;
                 }
-                this.$axios.post('/aiAnalysisAllocation/allocation/doAllocate', this.quotaInfo).then((res) => {
+                this.$axios.post('/aiAnalysisAllocation/allocation/educationDoAllocate', this.quotaInfo).then((res) => {
                     if (res.code == 200) {
                         this.isShowQuotaAllocation = false;
                         this.getList();

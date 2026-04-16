@@ -31,24 +31,12 @@
                         v-show="curShowType == 1 || (curOrgType == 1 && curShowType == 3)"
                     ></el-cascader>
                     <span class="search-desc">录制状态：</span>
-                    <el-select
-                        v-model="searchTypeList"
-                        placeholder="录制状态"
-                        class="width-3"
-                        style="width: 110px"
-                        multiple
-                    >
+                    <el-select v-model="searchTypeList" placeholder="录制状态" class="width-3" style="width: 110px" clearable>
                         <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
                     <span class="search-desc">分析状态：</span>
-                    <el-select
-                        v-model="searchAiStatusList"
-                        placeholder="分析状态"
-                        class="width-3"
-                        style="width: 110px"
-                        multiple
-                    >
+                    <el-select v-model="searchAiStatusList" placeholder="分析状态" class="width-3" style="width: 110px" clearable>
                         <el-option
                             v-for="item in aiStatusList"
                             :key="item.value"
@@ -686,8 +674,8 @@ export default {
                       ],
             typeList: DICT.RECORD_STATUS,
             searchLiveStatus: '',
-            searchTypeList: [],
-            searchAiStatusList: [],
+            searchTypeList: '',
+            searchAiStatusList: '',
             aiStatusList: DICT.ANALYSIS_STATUS,
             deleteVal: {},
             themeTypeList: [],
@@ -779,8 +767,8 @@ export default {
                 if (!(from.path == '/sm/aiclassAddEdit' || from.path == '/aiGrinding/detail')) {
                     this.pageNum = 1;
                     this.searchKey = '';
-                    this.searchTypeList = [];
-                    this.searchAiStatusList = [];
+                    this.searchTypeList = '';
+                    this.searchAiStatusList = '';
                     this.searchLiveStatus = '';
                     this.searchResourcesStatus = '';
                     this.orgIdList = [];
@@ -798,8 +786,8 @@ export default {
                     }
                 }
                 this.searchKey = '';
-                this.searchTypeList = [];
-                this.searchAiStatusList = [];
+                this.searchTypeList = '';
+                this.searchAiStatusList = '';
                 this.searchLiveStatus = '';
                 this.searchResourcesStatus = '';
                 this.orgIdList = [];
@@ -813,8 +801,8 @@ export default {
         }
         this.getSubjectList();
         this.pageNum = 1;
-        this.searchTypeList = [];
-        this.searchAiStatusList = [];
+        this.searchTypeList = '';
+        this.searchAiStatusList = '';
         this.searchLiveStatus = '';
         this.searchResourcesStatus = '';
         this.orgIdList = [];
@@ -983,14 +971,13 @@ export default {
             });
         },
         handleGetData() {
-            console.log('重新获取');
             this.loading = true;
             this.$axios
                 .post('/aiGrinding/list', {
                     subjectId: this.searchLiveStatus,
                     resources: this.searchResourcesStatus,
-                    typeList: this.searchTypeList,
-                    aiStatusList: this.searchAiStatusList,
+                    typeList: this.searchTypeList !== '' ? [this.searchTypeList] : [],
+                    aiStatusList: this.searchAiStatusList !== '' ? [this.searchAiStatusList] : [],
                     orgIdList: this.orgIdList,
                     keyWord: this.searchKey,
                     pageNum: this.pageNum, // 页数
@@ -1347,8 +1334,8 @@ export default {
                 .post('/aiGrinding/list', {
                     resources: this.searchResourcesStatus,
                     subjectId: this.searchLiveStatus,
-                    typeList: this.searchTypeList,
-                    aiStatusList: this.searchAiStatusList,
+                    typeList: this.searchTypeList !== '' ? [this.searchTypeList] : [],
+                    aiStatusList: this.searchAiStatusList !== '' ? [this.searchAiStatusList] : [],
                     orgIdList: this.orgIdList,
                     keyWord: this.searchKey,
                     pageNum: this.pageNum, // 页数

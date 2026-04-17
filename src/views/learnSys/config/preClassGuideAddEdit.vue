@@ -439,35 +439,35 @@ export default {
                 return true;
             }
             if (!this.addEditInfo.name) {
-                this.$message('请输入课程名称', 'error');
+                this.$message('课程名称名称不能为空！', 'error');
                 return true;
             }
-            if (this.addEditInfo.name.length > 50) {
-                this.$message('课程名称长度限制50字符内！', 'error');
-                return true;
-            }
-            if (!this.addEditInfo.historyCourseId) {
-                this.$message('历史课程必填', 'error');
+            if (this.$verify.chLetterNum(this.addEditInfo.name, 20)) {
+                this.$message('由中文大小写字母数字组成，最长20位！', 'error');
                 return true;
             }
             if (!this.addEditInfo.classTypeId || !this.addEditInfo.type) {
-                this.$message('课堂类型必填', 'error');
-                return true;
-            }
-            if (!this.addEditInfo.subjectId) {
-                this.$message('学科必填', 'error');
-                return true;
-            }
-            if (!this.addEditInfo.teacherId) {
-                this.$message('请选择教师', 'error');
+                this.$message('请选择课堂类型！', 'error');
                 return true;
             }
             if (this.$verify.isEmpty(this.addEditInfo.schoolId)) {
-                this.$message('请选择学校', 'error');
+                this.$message('请选择学校！', 'error');
                 return true;
             }
             if (!this.addEditInfo.gradeId) {
-                this.$message('年级必填', 'error');
+                this.$message('请选择年级！', 'error');
+                return true;
+            }
+            if (!this.addEditInfo.subjectId) {
+                this.$message('请选择学科！', 'error');
+                return true;
+            }
+            if (!this.addEditInfo.teacherId) {
+                this.$message('请选择教师！', 'error');
+                return true;
+            }
+            if (!this.addEditInfo.historyCourseId) {
+                this.$message('请选择历史课程！', 'error');
                 return true;
             }
             if (this.teachingFileIds.length == 0) {

@@ -79,10 +79,10 @@
                             <div class="tableName" @click="detail(scope.row)">{{ scope.row.name }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="subjectName" align="center" label="学科"> </el-table-column>
-                    <el-table-column prop="classTypeName" align="center" label="课堂类型"></el-table-column>
-                    <el-table-column prop="gradeName" align="center" label="年级"></el-table-column>
-                    <el-table-column prop="teacherName" align="center" label="教师"> </el-table-column>
+                    <el-table-column prop="subjectName" align="center" label="学科" width="100"> </el-table-column>
+                    <el-table-column prop="classTypeName" align="center" label="课堂类型" width="100"></el-table-column>
+                    <el-table-column prop="gradeName" align="center" label="年级" width="100"></el-table-column>
+                    <el-table-column prop="teacherName" align="center" label="教师" width="100"> </el-table-column>
                     <!-- 全部数据或者市级/区县的下级数据 -->
                     <el-table-column
                         v-if="curShowType == 1 || ((curOrgLevel == 2 || curOrgLevel == 3) && curShowType == 3)"
@@ -91,7 +91,7 @@
                         label="学校"
                     >
                     </el-table-column>
-                    <el-table-column align="center" label="状态">
+                    <el-table-column align="center" label="状态" width="100">
                         <template slot-scope="scope">
                             <ul>
                                 <li v-if="scope.row.status === -1">待提交</li>

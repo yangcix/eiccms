@@ -1593,192 +1593,194 @@ export default {
                 if (this.addEditInfo.id) {
                     judgeData.id = this.addEditInfo.id;
                 }
-                this.$axios.post('/aiGrinding/check', judgeData).then((res) => {
-                    if (res.code == 200) {
-                        if (this.addEditInfo.file) {
-                            formData.append('file', this.addEditInfo.file);
+                if (this.addEditInfo.file) {
+                    formData.append('file', this.addEditInfo.file);
+                }
+                formData.append('name', this.addEditInfo.name);
+                formData.append('resources', this.addEditInfo.resources);
+                formData.append('classTypeId', this.addEditInfo.classTypeId);
+                formData.append('aiConfigId', this.aiType);
+                if (this.addEditInfo.resources == 1 || this.addEditInfo.resources == 3) {
+                    formData.append('startTime', this.addEditInfo.startTime);
+                    formData.append('endTime', this.addEditInfo.endTime);
+                    formData.append('grindingBuilding', this.addEditInfo.grindingBuilding);
+                    formData.append('grindingClassroom', this.addEditInfo.grindingClassroom);
+                    formData.append('terminalId', this.addEditInfo.terminalId);
+                    if (this.addEditInfo.resources == 3) {
+                        formData.append('recordingMethod', this.addEditInfo.recordingMethod);
+                    }
+                } else if (this.addEditInfo.resources == 2) {
+                    if (this.addEditInfo.teacherVideo) {
+                        formData.append('teacherVideo', this.addEditInfo.teacherVideo);
+                        if (this.aiType == 1 && this.addEditInfo.studentVideo) {
+                            formData.append('studentVideo', this.addEditInfo.studentVideo);
                         }
-                        formData.append('name', this.addEditInfo.name);
-                        formData.append('resources', this.addEditInfo.resources);
-                        formData.append('classTypeId', this.addEditInfo.classTypeId);
-                        formData.append('aiConfigId', this.aiType);
-                        if (this.addEditInfo.resources == 1 || this.addEditInfo.resources == 3) {
-                            formData.append('startTime', this.addEditInfo.startTime);
-                            formData.append('endTime', this.addEditInfo.endTime);
-                            formData.append('grindingBuilding', this.addEditInfo.grindingBuilding);
-                            formData.append('grindingClassroom', this.addEditInfo.grindingClassroom);
-                            formData.append('terminalId', this.addEditInfo.terminalId);
-                            if (this.addEditInfo.resources == 3) {
-                                formData.append('recordingMethod', this.addEditInfo.recordingMethod);
-                            }
-                        } else if (this.addEditInfo.resources == 2) {
-                            if (this.addEditInfo.teacherVideo) {
-                                formData.append('teacherVideo', this.addEditInfo.teacherVideo);
-                                if (this.aiType == 1 && this.addEditInfo.studentVideo) {
-                                    formData.append('studentVideo', this.addEditInfo.studentVideo);
-                                }
-                            }
-                        } else if (this.addEditInfo.resources == 4) {
-                            formData.append('recordId', this.addEditInfo.recordId);
+                    }
+                } else if (this.addEditInfo.resources == 4) {
+                    formData.append('recordId', this.addEditInfo.recordId);
+                }
+                formData.append('grindingGrade', this.addEditInfo.grindingGrade);
+                formData.append('grindingClass', this.addEditInfo.grindingClass);
+                formData.append('grindingSchool', this.addEditInfo.grindingSchool);
+                formData.append('subjectId', this.addEditInfo.subjectId);
+                formData.append('teacherId', this.addEditInfo.teacherId);
+                formData.append('planFile', this.teachingFileIds);
+                formData.append('aiProjectId', this.addEditInfo.aiProjectId);
+                let url = '/index/personal/aiGrinding/save';
+                if (this.addEditInfo.id) {
+                    // 编辑更新
+                    url = '/index/personal/aiGrinding/update';
+                    formData.append('id', this.addEditInfo.id);
+                    if (!this.addEditInfo.file && this.addEditInfo.coverUrl) {
+                        formData.append('coverUrl', this.addEditInfo.coverUrl);
+                    }
+                    // 编辑的时候且是本地视频：才需要判断视频是否有更换
+                    if (this.addEditInfo.resources == 2) {
+                        formData.append('teacherVideoNew', this.isChangeVideo ? 1 : 0);
+                    }
+                    // 如果是提交，录制状态为失败（type == 3），将type改为0传给后端，表示重新录制
+                    if (!isTranslationPending) {
+                        if (this.addEditInfo.type == 3) {
+                            formData.append('type', 0);
                         }
-                        formData.append('grindingGrade', this.addEditInfo.grindingGrade);
-                        formData.append('grindingClass', this.addEditInfo.grindingClass);
-                        formData.append('grindingSchool', this.addEditInfo.grindingSchool);
-                        formData.append('subjectId', this.addEditInfo.subjectId);
-                        formData.append('teacherId', this.addEditInfo.teacherId);
-                        formData.append('planFile', this.teachingFileIds);
-                        formData.append('aiProjectId', this.addEditInfo.aiProjectId);
-                        let url = '/index/personal/aiGrinding/save';
-                        if (this.addEditInfo.id) {
-                            // 编辑更新
-                            url = '/index/personal/aiGrinding/update';
-                            formData.append('id', this.addEditInfo.id);
-                            if (!this.addEditInfo.file && this.addEditInfo.coverUrl) {
-                                formData.append('coverUrl', this.addEditInfo.coverUrl);
-                            }
-                            // 编辑的时候且是本地视频：才需要判断视频是否有更换
+                    }
+                }
+                // 暂存传值：type == -1
+                if (isTranslationPending) {
+                    formData.append('type', -1);
+                }
+                let uploadId;
+                if (this.addEditInfo.resources == 2) {
+                    // 判断编辑是否有替换视频
+                    if (this.addEditInfo.teacherVideo) {
+                        // 上传列表s
+                        uploadId = this.aiUploadTable.length;
+                        let uploadTbaleData = {
+                            type: 'push',
+                            item: {
+                                uploadId: uploadId,
+                                name:
+                                    this.aiType == 1
+                                        ? this.addEditInfo.name + '教师画面'
+                                        : this.addEditInfo.name + '视频',
+                                status: 1, // 0 上传失败 1上传中 //2已取消
+                                size: this.videoSizet,
+                                type: 2, //1 评课 2 AI
+                                id: this.addEditInfo.id ? this.addEditInfo.id : -1, // 视频id
+                                detail: formData,
+                                fileName: this.addEditInfo.teacherVideo.name.slice(
+                                    0,
+                                    this.addEditInfo.teacherVideo.name.length - 4
+                                ),
+                                progress: 0,
+                            },
+                        };
+                        this.commitAiUploadTable(uploadTbaleData);
+                    }
+                    if (this.addEditInfo.studentVideo) {
+                        // 上传列表s
+                        let uploadIds = this.aiUploadTable.length;
+                        let uploadTbaleData = {
+                            type: 'push',
+                            item: {
+                                uploadId: uploadIds - 1,
+                                name: this.addEditInfo.name + '学生画面',
+                                status: 1, // 0 上传失败 1上传中 //2已取消
+                                size: this.videoSizes,
+                                type: 2, //1 评课 2 AI
+                                id: this.addEditInfo.id ? this.addEditInfo.id : -1, // 视频id
+                                detail: formData,
+                                fileName: this.addEditInfo.studentVideo.name.slice(
+                                    0,
+                                    this.addEditInfo.studentVideo.name.length - 4
+                                ),
+                                progress: 0,
+                            },
+                        };
+                        this.commitAiUploadTable(uploadTbaleData);
+                    }
+                    this.type = 1;
+                    this.getList();
+                    if (this.addEditInfo.teacherVideo && this.addEditInfo.teacherVideo !== null) {
+                        this.commitAiUploadBoxVisible(true);
+                    }
+                }
+                this.$axios
+                    .post(url, formData, {
+                        headers: {
+                            uploadId: uploadId,
+                        },
+                        timeout: 600000,
+                        onUploadProgress: (progressEvent) => {
                             if (this.addEditInfo.resources == 2) {
-                                formData.append('teacherVideoNew', this.isChangeVideo ? 1 : 0);
-                            }
-                        }
-                        // 暂存传值：type == -1
-                        if (isTranslationPending) {
-                            formData.append('type', -1);
-                        }
-                        let uploadId;
-                        if (this.addEditInfo.resources == 2) {
-                            // 判断编辑是否有替换视频
-                            if (this.addEditInfo.teacherVideo) {
-                                // 上传列表s
-                                uploadId = this.aiUploadTable.length;
-                                let uploadTbaleData = {
-                                    type: 'push',
-                                    item: {
-                                        uploadId: uploadId,
-                                        name:
-                                            this.aiType == 1
-                                                ? this.addEditInfo.name + '教师画面'
-                                                : this.addEditInfo.name + '视频',
-                                        status: 1, // 0 上传失败 1上传中 //2已取消
-                                        size: this.videoSizet,
-                                        type: 2, //1 评课 2 AI
-                                        id: this.addEditInfo.id ? this.addEditInfo.id : -1, // 视频id
-                                        detail: formData,
+                                // 这就是 真·上传进度
+                                let percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                                let msg = {};
+                                if (this.addEditInfo.teacherVideo) {
+                                    msg = {
                                         fileName: this.addEditInfo.teacherVideo.name.slice(
                                             0,
                                             this.addEditInfo.teacherVideo.name.length - 4
                                         ),
-                                        progress: 0,
-                                    },
-                                };
-                                this.commitAiUploadTable(uploadTbaleData);
-                            }
-                            if (this.addEditInfo.studentVideo) {
-                                // 上传列表s
-                                let uploadIds = this.aiUploadTable.length;
-                                let uploadTbaleData = {
-                                    type: 'push',
-                                    item: {
-                                        uploadId: uploadIds - 1,
-                                        name: this.addEditInfo.name + '学生画面',
-                                        status: 1, // 0 上传失败 1上传中 //2已取消
-                                        size: this.videoSizes,
-                                        type: 2, //1 评课 2 AI
-                                        id: this.addEditInfo.id ? this.addEditInfo.id : -1, // 视频id
-                                        detail: formData,
+                                        progress: percent,
+                                    };
+                                }
+                                if (this.addEditInfo.studentVideo) {
+                                    msg = {
                                         fileName: this.addEditInfo.studentVideo.name.slice(
                                             0,
                                             this.addEditInfo.studentVideo.name.length - 4
                                         ),
-                                        progress: 0,
-                                    },
-                                };
-                                this.commitAiUploadTable(uploadTbaleData);
+                                        progress: percent,
+                                    };
+                                }
+                                this.$comjs.updateAiUploadTable(formData, msg);
                             }
-                            this.type = 1;
-                            this.getList();
-                            if (this.addEditInfo.teacherVideo && this.addEditInfo.teacherVideo !== null) {
-                                this.commitAiUploadBoxVisible(true);
+                        },
+                    })
+                    .then(
+                        (res) => {
+                            if (res.code == 200) {
+                                if (formData.get('teacherVideo') && formData.get('resources') == 2) {
+                                    this.commitAiUploadTable({
+                                        type: 'splice',
+                                        detail: formData, // 视频id
+                                    });
+                                } else {
+                                    this.type = 1;
+                                }
+                                setTimeout(() => {
+                                    this.getList();
+                                    this.$message(res.data, 'success');
+                                }, 300);
+                            } else if (res.code == -3000) {
+                                this.upErrorMsg = res.message;
+                                this.upErrorShow = true;
+                            } else if (res.code == -10000) {
+                                if (this.addEditInfo.teacherVideo) {
+                                    this.commitAiUploadTable({
+                                        type: 'splice',
+                                        detail: formData, // 视频id
+                                    });
+                                }
+                                // this.editShow = false;
+                                // // 判断编辑是否有替换视频
+                                // if (this.addEditInfo.video) {
+                                //   this.commitAiUploadDataState({
+                                //     uploadId: uploadId,
+                                //     status: 0,
+                                //   });
+                                // }
+                            }
+                        },
+                        (err) => {
+                            if (err.message === '取消成功') {
+                                this.$message(err.message, 'success', 70, 3000);
+                            } else {
+                                this.$message(err.message, 'error', 70, 3000);
                             }
                         }
-                        this.$axios
-                            .post(url, formData, {
-                                headers: {
-                                    uploadId: uploadId,
-                                },
-                                timeout: 600000,
-                                onUploadProgress: (progressEvent) => {
-                                    if (this.addEditInfo.resources == 2) {
-                                        // 这就是 真·上传进度
-                                        let percent = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-                                        let msg = {};
-                                        if (this.addEditInfo.teacherVideo) {
-                                            msg = {
-                                                fileName: this.addEditInfo.teacherVideo.name.slice(
-                                                    0,
-                                                    this.addEditInfo.teacherVideo.name.length - 4
-                                                ),
-                                                progress: percent,
-                                            };
-                                        }
-                                        if (this.addEditInfo.studentVideo) {
-                                            msg = {
-                                                fileName: this.addEditInfo.studentVideo.name.slice(
-                                                    0,
-                                                    this.addEditInfo.studentVideo.name.length - 4
-                                                ),
-                                                progress: percent,
-                                            };
-                                        }
-                                        this.$comjs.updateAiUploadTable(formData, msg);
-                                    }
-                                },
-                            })
-                            .then(
-                                (res) => {
-                                    if (res.code == 200) {
-                                        if (formData.get('teacherVideo') && formData.get('resources') == 2) {
-                                            this.commitAiUploadTable({
-                                                type: 'splice',
-                                                detail: formData, // 视频id
-                                            });
-                                        } else {
-                                            this.type = 1;
-                                        }
-                                        setTimeout(() => {
-                                            this.getList();
-                                            this.$message(res.data, 'success');
-                                        }, 300);
-                                    } else if (res.code == -3000) {
-                                        this.upErrorMsg = res.message;
-                                        this.upErrorShow = true;
-                                    } else if (res.code == -10000) {
-                                        if (this.addEditInfo.teacherVideo) {
-                                            this.commitAiUploadTable({
-                                                type: 'splice',
-                                                detail: formData, // 视频id
-                                            });
-                                        }
-                                        // this.editShow = false;
-                                        // // 判断编辑是否有替换视频
-                                        // if (this.addEditInfo.video) {
-                                        //   this.commitAiUploadDataState({
-                                        //     uploadId: uploadId,
-                                        //     status: 0,
-                                        //   });
-                                        // }
-                                    }
-                                },
-                                (err) => {
-                                    if (err.message === '取消成功') {
-                                        this.$message(err.message, 'success', 70, 3000);
-                                    } else {
-                                        this.$message(err.message, 'error', 70, 3000);
-                                    }
-                                }
-                            );
-                    }
-                });
+                    );
             } else {
                 this.$message('磨课名称重复，该磨课正在上传', 'error');
             }

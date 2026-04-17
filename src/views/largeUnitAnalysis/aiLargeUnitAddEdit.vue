@@ -7,12 +7,12 @@
             <div class="item-scroll">
                 <div style="width: 100%; min-width: 1160px">
                     <div class="item-scroll-left">
-                        <div class="item-wrap" v-if="aiConfigType == 1">
+                        <div class="item-wrap" v-if="aiConfigType == 1 && !isEdit">
                             <p style="width: 150px">AI分析剩余次数<em></em>：</p>
                             <p>{{ aiNum }}次</p>
                             <p class="err-notice"><em>*</em>剩余次数、优先使用的数据在选择教师后显示！</p>
                         </div>
-                        <div class="item-wrap">
+                        <div class="item-wrap" v-if="aiConfigType == 1 && !isEdit">
                             <p>优先使用<em>*</em>：</p>
                             <el-select :popper-append-to-body="false" v-model="addEditInfo.aiProjectId" class="width-2">
                                 <el-option
@@ -273,6 +273,7 @@ export default {
             useList: [],
             teacherSelectLoading: false,
             teacherList: [],
+            isEdit: false,
         };
     },
     mounted() {
@@ -289,6 +290,7 @@ export default {
         if (this.$route.query.id) {
             this.Id = this.$route.query.id;
             this.getLargeUnitInfo();
+            this.isEdit = true;
         }
         this.$nextTick(() => {
             this.rowDrop();
@@ -512,6 +514,10 @@ export default {
         },
         //验证
         verify() {
+            if (this.aiNum == 0 && !this.isEdit) {
+                this.$message('大单元分析剩余次数不足！', 'error');
+                return true;
+            }
             if (!this.addEditInfo.name) {
                 this.$message('大单元分析名称不能为空！', 'error');
                 return true;
@@ -535,10 +541,6 @@ export default {
             }
             if (this.addEditInfo.largeUnitClassList.length < 2 || this.addEditInfo.largeUnitClassList.length > 21) {
                 this.$message('可分析课堂节数，仅可在2-20节课之间！', 'error');
-                return true;
-            }
-            if (this.aiNum == 0) {
-                this.$message('大单元分析剩余次数不足！', 'error');
                 return true;
             }
             if (!this.addEditInfo.teacherId) {

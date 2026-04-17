@@ -12,12 +12,18 @@
                     {{ $route.query.msg }}
                 </div>
                 <div class="box">
-                    <div class="item-wrap" v-if="aiType == 2 && feeModel == 1">
+                    <div
+                        class="item-wrap"
+                        v-if="aiType == 2 && feeModel == 1 && (!isEdit || (isEdit && isTranslationPending))"
+                    >
                         <p style="width: 112px">AI分析剩余次数<em></em>：</p>
                         <p>{{ aiNum }}次</p>
                         <p class="err-notice"><em>*</em>数据在选择教师后显示！</p>
                     </div>
-                    <div class="item-wrap">
+                    <div
+                        class="item-wrap"
+                        v-if="aiType == 2 && feeModel == 1 && (!isEdit || (isEdit && isTranslationPending))"
+                    >
                         <p>优先使用<em>*</em>：</p>
                         <el-select :popper-append-to-body="false" v-model="addEditInfo.aiProjectId" class="width-2">
                             <el-option
@@ -380,7 +386,14 @@
                             </el-upload>
                         </div>
                     </div>
-                    <el-button :loading="loadingBtn" class="edit-btn" @click="httpRequest(true)">暂存</el-button>
+                    <!-- 新增或者编辑的时候状态是待提交 -->
+                    <el-button
+                        :loading="loadingBtn"
+                        class="edit-btn"
+                        @click="httpRequest(true)"
+                        v-if="!isEdit || (isEdit && isTranslationPending)"
+                        >暂存</el-button
+                    >
                     <el-button :loading="loadingBtn" type="primary" class="edit-btn" @click="httpRequest(false)"
                         >提交</el-button
                     >
@@ -555,6 +568,8 @@ export default {
             ],
             isChangeVideo: false, // 是否替换视频
             useList: [],
+            isEdit: false,
+            isTranslationPending: false,
         };
     },
     components: {},
@@ -586,6 +601,7 @@ export default {
                 this.getTeacherList(this.$route.query.teacherName);
                 this.getUseList();
             }
+            this.isEdit = true;
         }
         if (this.$route.query.type == 3 && this.aiType == 2) {
             this.addEditInfo.resources = 3;
@@ -950,6 +966,9 @@ export default {
                             this.initVP();
                         }, 800);
                     }
+                }
+                if (this.addEditInfo.type == -1) {
+                    this.isTranslationPending = true;
                 }
             });
         },
@@ -1474,12 +1493,20 @@ export default {
         //验证
         verify() {
             Message.closeAll();
-            if (this.aiType == 2 && this.feeModel == 1 && this.aiNum == 0) {
-                this.$message('AI分析剩余次数不足！', 'error');
-                return true;
+            // 暂存编辑、新增需要判断剩余次数
+            if ((this.isEdit && this.isTranslationPending) || !this.isEdit) {
+                if (this.aiType == 2 && this.feeModel == 1) {
+                    if (this.aiNum == 0) {
+                        this.$message('AI分析剩余次数不足！', 'error');
+                        return true;
+                    }
+                    if (!this.addEditInfo.aiProjectId) {
+                        this.$message('请选择优先使用的项目！', 'error');
+                        return true;
+                    }
+                }
             }
             if (this.addEditInfo.resources == 2) {
-                console.log('this.addEditInfo.teacherVideo', this.addEditInfo.teacherVideo);
                 // 编辑且重新上传了视频
                 if (this.addEditInfo.id && this.isChangeVideo) {
                     if (this.$verify.isEmpty(this.addEditInfo.teacherVideo)) {
@@ -1579,18 +1606,10 @@ export default {
         },
         getUseList() {
             // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
-            this.$axios
-                .get('/aiAnalysisRecharge/quota', {productType: 1, currentUserId: this.addEditInfo.teacherId})
-                .then((res) => {
-                    if (res.code == 200) {
-                        this.useList = res.data.options;
-                        this.aiNum = res.data.totalResidue;
-                        // 有数据的话默认选中第一项
-                        if (this.useList.length != 0) {
-                            this.$set(this.addEditInfo, 'aiProjectId', this.useList[0].allocationId);
-                        }
-                    }
-                });
+            let params = {};
+            params['productType'] = 1;
+            params['currentUserId'] = this.addEditInfo.teacherId;
+            this.$comjs.getUseList(this, params);
         },
         changeTeacher(val) {
             if (val) {

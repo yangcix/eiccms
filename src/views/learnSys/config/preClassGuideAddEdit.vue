@@ -9,12 +9,12 @@
         <div class="content-wrap">
             <div class="item-scroll">
                 <div class="box">
-                    <div class="item-wrap">
+                    <div class="item-wrap" v-if="!isEdit || (isEdit && isTranslationPending)">
                         <p style="width: 112px">AI分析剩余次数<em></em>：</p>
                         <p>{{ aiNum }}次</p>
                         <p class="err-notice"><em>*</em>数据在选择教师后显示！</p>
                     </div>
-                    <div class="item-wrap">
+                    <div class="item-wrap" v-if="!isEdit || (isEdit && isTranslationPending)">
                         <p>优先使用<em>*</em>：</p>
                         <el-select :popper-append-to-body="false" v-model="addEditInfo.aiProjectId" class="width-2">
                             <el-option
@@ -168,9 +168,15 @@
                             <el-button size="small" type="primary">点击上传</el-button>
                         </el-upload>
                     </div>
-                    <el-button :loading="loadingBtn" class="edit-btn" @click="httpRequest(true)">暂存</el-button>
+                    <el-button
+                        :loading="loadingBtn"
+                        class="edit-btn"
+                        @click="httpRequest(true)"
+                        v-if="!isEdit || (isEdit && isTranslationPending)"
+                        >暂存</el-button
+                    >
                     <el-button :loading="loadingBtn" type="primary" class="edit-btn" @click="httpRequest(false)"
-                        >确认</el-button
+                        >提交</el-button
                     >
                 </div>
             </div>
@@ -191,7 +197,14 @@ export default {
             subjectList: [],
             teacherList: [],
             fileList: [],
-            addEditInfo: {},
+            userInfo: JSON.parse(localStorage.getItem('userInfo')),
+            addEditInfo: {
+                teacherId:
+                    JSON.parse(localStorage.getItem('userInfo')).userId == 1 ||
+                    JSON.parse(localStorage.getItem('userInfo')).userId == 2
+                        ? ''
+                        : JSON.parse(localStorage.getItem('userInfo')).userId,
+            },
             schoolList: [], // 可选择的学校
             loadingBtn: false,
             eduFileUrl: baseUrl + '/upload/uploadTeachingFile',
@@ -199,7 +212,7 @@ export default {
             teachingFileIds: [], // 一键发布时上传文件数组
             loading: false,
             useList: [],
-            historyCourseList: [{id: 1, name: '《语文八年级》'}],
+            historyCourseList: [],
             teacherSelectLoading: false,
             typeList: [
                 {id: 1, name: '磨课'},
@@ -207,33 +220,32 @@ export default {
             ],
             curParams: {},
             curUrl: '',
+            isTranslationPending: false,
+            isEdit: false,
         };
     },
     mounted() {
-        if (
-            !(
-                JSON.parse(localStorage.getItem('userInfo')).userId == 1 ||
-                JSON.parse(localStorage.getItem('userInfo')).userId == 2
-            )
-        ) {
-            this.getTeacherList(JSON.parse(localStorage.getItem('userInfo')).nickName);
-            this.getUseList();
-        }
+        // 编辑
         if (this.$route.query.themeid) {
             this.themeId = this.$route.query.themeid;
             this.getThemeInfo(); //编辑获取主体信息
-            // 编辑
-            if (this.$route.query.teacherName) {
-                this.getTeacherList(this.$route.query.teacherName);
+            this.isEdit = true;
+        } else {
+            // 新增
+            // 如果是教师个人，默认带出教师名称
+            if (!(this.userInfo.userId == 1 || this.userInfo.userId == 2)) {
+                this.getTeacherList(this.userInfo.nickName);
                 this.getUseList();
+                this.changeTeacher(this.userInfo.userId);
+            }
+            // 管理员需要在选择学校之后再去请求班级下拉
+            if (!(this.userInfo.nickName == 'super' || this.userInfo.nickName == 'admin')) {
+                this.getGradeList();
             }
         }
         this.getClassTypeList(); // 获取课型
         this.getSchoolList(); //获取学校列表
         this.getSubjectList();
-        if (!(this.userInfo.nickName == 'super' || this.userInfo.nickName == 'admin')) {
-            this.getGradeList();
-        }
     },
     methods: {
         getClassTypeList() {
@@ -366,6 +378,14 @@ export default {
                 }
                 this.addEditInfo = res.data;
                 this.getGradeList();
+                this.getTeacherList(this.$route.query.teacherName);
+                this.curParams['teacherIdList'] = [this.addEditInfo.teacherId];
+                this.changeType(this.addEditInfo.type);
+                this.getUseList();
+                // 暂存
+                if (this.addEditInfo.status == -1) {
+                    this.isTranslationPending = true;
+                }
             });
         },
         //返回
@@ -434,9 +454,16 @@ export default {
         //验证
         verify() {
             Message.closeAll();
-            if (this.aiNum == 0) {
-                this.$message('AI分析剩余次数不足！', 'error');
-                return true;
+            // 暂存编辑、新增需要判断剩余次数
+            if ((this.isEdit && this.isTranslationPending) || !this.isEdit) {
+                if (this.aiNum == 0) {
+                    this.$message('AI分析剩余次数不足！', 'error');
+                    return true;
+                }
+                if (!this.addEditInfo.aiProjectId) {
+                    this.$message('请选择优先使用的项目！', 'error');
+                    return true;
+                }
             }
             if (!this.addEditInfo.name) {
                 this.$message('课程名称名称不能为空！', 'error');
@@ -477,23 +504,18 @@ export default {
         },
         getUseList() {
             // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
-            this.$axios
-                .get('/aiAnalysisRecharge/quota', {productType: 4, currentUserId: this.addEditInfo.teacherId})
-                .then((res) => {
-                    if (res.code == 200) {
-                        this.useList = res.data.options;
-                        this.aiNum = res.data.totalResidue;
-                        // 有数据的话默认选中第一项
-                        if (this.useList.length != 0) {
-                            this.$set(this.addEditInfo, 'aiProjectId', this.useList[0].allocationId);
-                        }
-                    }
-                });
+            let params = {};
+            params['productType'] = 4;
+            params['currentUserId'] = this.addEditInfo.teacherId;
+             this.$comjs.getUseList(this, params);
         },
         getHistoryCourseList() {
+            this.curParams['pageNum'] = 1;
+            this.curParams['pageSize'] = -1;
+            this.curParams['aiStatusList'] = [2];
             this.$axios.post(this.curUrl, this.curParams).then((res) => {
                 if (res.code == 200) {
-                    this.historyCourseList = res.data.pageList.map((item) => ({
+                    this.historyCourseList = res.data.map((item) => ({
                         name: item.name,
                         id: item.id,
                     }));
@@ -509,8 +531,6 @@ export default {
         changeTeacher(val) {
             if (val) {
                 this.curParams['teacherIdList'] = [val];
-                this.curParams['pageNum'] = 1;
-                this.curParams['pageSize'] = 100;
                 if (this.curUrl) {
                     this.getHistoryCourseList();
                 }

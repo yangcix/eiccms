@@ -258,3 +258,28 @@ export function formatValue(value) {
     if (value) return value;
     else return '-';
 }
+
+export function getUseList(that, params) {
+    that.$axios.get('/aiAnalysisRecharge/quota', params).then((res) => {
+        if (res.code == 200) {
+            that.useList = res.data.options;
+            that.aiNum = res.data.totalResidue;
+            // 如果是暂存的情况下编辑
+            if (that.isEdit && that.isTranslationPending) {
+                // 原有的项目被使用了，就清空使用的项目id
+                if (that.useList.length == 0) {
+                    that.$set(that.addEditInfo, 'aiProjectId', '');
+                } else {
+                    const currentItem = that.useList.find((item) => item.allocationId === that.addEditInfo.aiProjectId);
+                    if (!currentItem || currentItem.residueNum == 0) {
+                        that.$set(that.addEditInfo, 'aiProjectId', '');
+                    }
+                }
+            }
+            // 不是编辑的情况下，有数据的话默认选中第一项
+            if (!that.isEdit && that.useList.length != 0) {
+                that.$set(that.addEditInfo, 'aiProjectId', that.useList[0].allocationId);
+            }
+        }
+    });
+}

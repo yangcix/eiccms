@@ -210,11 +210,11 @@
         </div>
         <el-divider></el-divider>
         <div class="addBox">
-            <div class="item-wrap" v-if="aiType == 2 && feeModel == 1">
+            <div class="item-wrap" v-if="aiType == 2 && feeModel == 1 && (!isEdit || (isEdit && isTranslationPending))">
                 <p style="width: 112px">AI分析剩余次数<em></em>：</p>
                 <p>{{ aiNum }}次</p>
             </div>
-            <div class="item-wrap">
+            <div class="item-wrap" v-if="aiType == 2 && feeModel == 1 && (!isEdit || (isEdit && isTranslationPending))">
                 <p>优先使用<em>*</em>：</p>
                 <el-select
                     :popper-append-to-body="false"
@@ -545,7 +545,13 @@
                 </div>
             </div>
             <div style="text-align: center; margin: 10px 0 20px 0">
-                <el-button size="mini" class="edit-btn" @click="httpRequest(true)">暂存</el-button>
+                <el-button
+                    size="mini"
+                    class="edit-btn"
+                    @click="httpRequest(true)"
+                    v-if="!isEdit || (isEdit && isTranslationPending)"
+                    >暂存</el-button
+                >
                 <el-button size="mini" type="primary" class="edit-btn" @click="httpRequest(false)">提交</el-button>
             </div>
 
@@ -755,6 +761,8 @@ export default {
             ],
             isChangeVideo: false,
             useList: [],
+            isEdit: false,
+            isTranslationPending: false,
         };
     },
     computed: {
@@ -1129,6 +1137,7 @@ export default {
             }
         },
         editData(val) {
+            this.isEdit = true;
             if (this.aiType == 2) {
                 this.getCount();
             }
@@ -1178,6 +1187,9 @@ export default {
                 }
                 this.getClassTypeList(2);
                 this.type = 2;
+                if (this.addEditInfo.type == -1) {
+                    this.isTranslationPending = true;
+                }
             });
         },
         //删除 0删除 1删除确定
@@ -1206,6 +1218,7 @@ export default {
                 this.type = 1;
                 this.getList();
             } else {
+                this.isEdit = false;
                 if (this.aiType == 2) {
                     this.getCount();
                 }
@@ -1890,9 +1903,17 @@ export default {
         //验证
         verify() {
             Message.closeAll();
-            if (this.aiType == 2 && this.feeModel == 1 && this.aiNum == 0) {
-                this.$message('AI分析剩余次数不足！', 'error');
-                return true;
+            if ((this.isEdit && this.isTranslationPending) || !this.isEdit) {
+                if (this.aiType == 2 && this.feeModel == 1) {
+                    if (this.aiNum == 0) {
+                        this.$message('AI分析剩余次数不足！', 'error');
+                        return true;
+                    }
+                    if (!this.addEditInfo.aiProjectId) {
+                        this.$message('请选择优先使用的项目！', 'error');
+                        return true;
+                    }
+                }
             }
             if (this.addEditInfo.resources == 2) {
                 if (this.addEditInfo.id && this.isChangeVideo) {
@@ -2016,18 +2037,10 @@ export default {
         },
         getUseList() {
             // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
-            this.$axios
-                .get('/aiAnalysisRecharge/quota', {productType: 1, currentUserId: this.addEditInfo.teacherId})
-                .then((res) => {
-                    if (res.code == 200) {
-                        this.useList = res.data.options;
-                        this.aiNum = res.data.totalResidue;
-                        // 有数据的话默认选中第一项
-                        if (this.useList.length != 0) {
-                            this.$set(this.addEditInfo, 'aiProjectId', this.useList[0].allocationId);
-                        }
-                    }
-                });
+            let params = {};
+            params['productType'] = 1;
+            params['currentUserId'] = this.addEditInfo.teacherId;
+            this.$comjs.getUseList(this, params);
         },
     },
 };

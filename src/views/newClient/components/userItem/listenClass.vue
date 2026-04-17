@@ -603,11 +603,17 @@
             <p style="font-weight: 600; margin-top: 5px; font-size: 14px; color: #435cf9; margin-bottom: 25px">
                 基础信息
             </p>
-            <div class="item-wrap" v-if="aiType == 2 && feeModel == 1">
+            <div
+                class="item-wrap"
+                v-if="aiType == 2 && radio1 == 2 && feeModel == 1 && (!isEdit || (isEdit && isTranslationPending))"
+            >
                 <p style="width: 112px">AI分析剩余次数<em></em>：</p>
                 <p>{{ aiNum }}次</p>
             </div>
-            <div class="item-wrap">
+            <div
+                class="item-wrap"
+                v-if="aiType == 2 && radio1 == 2 && feeModel == 1 && (!isEdit || (isEdit && isTranslationPending))"
+            >
                 <p>优先使用<em>*</em>：</p>
                 <el-select
                     :popper-append-to-body="false"
@@ -1093,7 +1099,14 @@
                 注：仅可选择时长不可超过60分钟的视频资源
             </p>
             <div style="text-align: center; margin: 10px 0 20px 0">
-                <el-button size="mini" :loading="loadingBtn" class="edit-btn" @click="save">暂存</el-button>
+                <el-button
+                    size="mini"
+                    :loading="loadingBtn"
+                    class="edit-btn"
+                    @click="save"
+                    v-if="permission.save && (!isEdit || (isEdit && isTranslationPending))"
+                    >暂存</el-button
+                >
                 <el-button size="mini" :loading="loadingBtnOne" type="primary" class="edit-btn" @click="save('1')"
                     >保存并送审</el-button
                 >
@@ -1482,6 +1495,8 @@ export default {
                 {name: '手动录制', id: 1},
             ],
             terminalName: '',
+            isEdit: false,
+            isTranslationPending: false,
         };
     },
     computed: {
@@ -2129,6 +2144,7 @@ export default {
             }
         },
         editData(val) {
+            this.isEdit = true;
             if (this.aiType == 2 && val.evaluationType == 2) {
                 this.getCount();
             }
@@ -2238,6 +2254,9 @@ export default {
                     this.themeTypeList = res.data.categoryList;
                 }
                 this.type = 2;
+                if (this.addEditInfo.status == 1) {
+                    this.isTranslationPending = true;
+                }
             });
         },
         //删除 0删除 1删除确定
@@ -2278,6 +2297,7 @@ export default {
                 this.type = 1;
                 this.getList();
             } else {
+                this.isEdit = false;
                 this.teacherVideo = [];
                 this.studentVideo = [];
                 if (this.aiStatus == 1) {
@@ -3022,9 +3042,18 @@ export default {
         //验证
         verify() {
             Message.closeAll();
-            if (this.aiType == 2 && this.feeModel == 1 && this.radio1 == 2 && this.aiNum == 0) {
-                this.$message('AI分析剩余次数不足！', 'error');
-                return true;
+            // 暂存编辑、新增需要判断剩余次数
+            if ((this.isEdit && this.isTranslationPending) || !this.isEdit) {
+                if (this.aiType == 2 && this.feeModel == 1 && this.radio1 == 2) {
+                    if (this.aiNum == 0) {
+                        this.$message('AI分析剩余次数不足！', 'error');
+                        return true;
+                    }
+                    if (!this.addEditInfo.aiProjectId) {
+                        this.$message('请选择优先使用的项目！', 'error');
+                        return true;
+                    }
+                }
             }
             if (!this.addEditInfo.name) {
                 this.$message('评课名称不能为空', 'error');
@@ -3196,18 +3225,10 @@ export default {
         },
         getUseList() {
             // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
-            this.$axios
-                .get('/aiAnalysisRecharge/quota', {productType: 1, currentUserId: this.addEditInfo.teacherId})
-                .then((res) => {
-                    if (res.code == 200) {
-                        this.useList = res.data.options;
-                        this.aiNum = res.data.totalResidue;
-                        // 有数据的话默认选中第一项
-                        if (this.useList.length != 0) {
-                            this.$set(this.addEditInfo, 'aiProjectId', this.useList[0].allocationId);
-                        }
-                    }
-                });
+            let params = {};
+            params['productType'] = 1;
+            params['currentUserId'] = this.addEditInfo.teacherId;
+            this.$comjs.getUseList(this, params);
         },
     },
 };

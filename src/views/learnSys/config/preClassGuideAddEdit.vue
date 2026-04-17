@@ -397,33 +397,16 @@ export default {
             if (this.verify()) {
                 return;
             }
-            let formData = new FormData();
-            let judgeData = {};
-            judgeData.name = this.addEditInfo.name;
-            if (this.addEditInfo.id) {
-                judgeData.id = this.addEditInfo.id;
-            }
-            // this.$axios.post('/aiPreClassGuidance/check', judgeData).then((res) => {
-            // if (res.code == 200) {
-            formData.append('aiProjectId', this.addEditInfo.aiProjectId);
-            formData.append('name', this.addEditInfo.name);
-            formData.append('historyCourseId', this.addEditInfo.historyCourseId);
-            formData.append('classTypeId', this.addEditInfo.classTypeId);
-            formData.append('subjectId', this.addEditInfo.subjectId);
-            formData.append('schoolId', this.addEditInfo.schoolId);
-            formData.append('gradeId', this.addEditInfo.gradeId);
-            formData.append('teacherId', this.addEditInfo.teacherId);
-            formData.append('type', this.addEditInfo.type);
-            formData.append('planId', this.teachingFileIds);
-            formData.append('createUserId', JSON.parse(localStorage.getItem('userInfo')).userId);
+            this.addEditInfo['planId'] = this.teachingFileIds;
+            this.addEditInfo['createUserId'] = this.userInfo.userId;
+            // 暂存传值：status == -1
+            this.addEditInfo['status'] = isTranslationPending ? -1 : 1;
             let url = '/aiPreClassGuidance/save';
             if (this.addEditInfo.id) {
                 // 编辑更新
                 url = '/aiPreClassGuidance/update';
             }
-            // 暂存传值：type == -1
-            formData.append('status', isTranslationPending ? -1 : 0);
-            this.$axios.post(url, formData).then(
+            this.$axios.post(url, this.addEditInfo).then(
                 (res) => {
                     if (res.code == 200) {
                         setTimeout(() => {

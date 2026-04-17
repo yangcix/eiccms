@@ -72,8 +72,14 @@
                             class="width-2"
                             style="margin-right: 10px"
                             filterable
+                            @focus="focusGrade()"
                         >
-                            <el-option v-for="item in gradeList" :key="item.id" :label="item.name" :value="item.id">
+                            <el-option
+                                v-for="item in gradeList"
+                                :key="item.gradeId"
+                                :label="item.name"
+                                :value="item.gradeId"
+                            >
                             </el-option>
                         </el-select>
                     </div>
@@ -225,7 +231,9 @@ export default {
         this.getClassTypeList(); // 获取课型
         this.getSchoolList(); //获取学校列表
         this.getSubjectList();
-        this.getGradeList();
+        if (!(this.userInfo.nickName == 'super' || this.userInfo.nickName == 'admin')) {
+            this.getGradeList();
+        }
     },
     methods: {
         getClassTypeList() {
@@ -234,12 +242,19 @@ export default {
             });
         },
         getSubjectList() {
-            this.$axios.get('/sm/label/listLabel', {parentId: 1}).then((res) => {
+            this.$axios.get('/aiGrinding/getSubject').then((res) => {
                 this.subjectList = res.data;
             });
         },
-        getGradeList(id) {
-            this.$axios.get('/sm/label/listLabel', {parentId: 13}).then((res) => {
+        getGradeList() {
+            let orgId = '';
+            // 管理员需要在选中学校之后将学校id作为参数
+            if (this.userInfo.nickName == 'super' || this.userInfo.nickName == 'admin') {
+                orgId = this.addEditInfo.schoolId;
+            } else {
+                orgId = this.userInfo.orgId;
+            }
+            this.$axios.get('/aiGrinding/getGrade', {orgId: orgId}).then((res) => {
                 this.gradeList = res.data;
             });
         },
@@ -350,7 +365,7 @@ export default {
                     this.teachingFileIds = [];
                 }
                 this.addEditInfo = res.data;
-                this.getGradeList(res.data.schoolId);
+                this.getGradeList();
             });
         },
         //返回
@@ -368,9 +383,11 @@ export default {
             });
         },
         //选择学校后 教学楼、教室修改
-        schoolChange(id) {
-            // this.addEditInfo.gradeId = '';
-            // this.getGradeList(id);
+        schoolChange() {
+            if (this.userInfo.nickName == 'super' || this.userInfo.nickName == 'admin') {
+                this.$set(this.addEditInfo, 'gradeId', '');
+                this.getGradeList();
+            }
         },
         /**
          * 覆盖默认上传，手动上传
@@ -518,6 +535,15 @@ export default {
             } else {
                 this.historyCourseList = [];
                 this.$set(this.addEditInfo, 'historyCourseId', '');
+            }
+        },
+        focusGrade() {
+            if (
+                (this.userInfo.nickName == 'super' || this.userInfo.nickName == 'admin') &&
+                !this.addEditInfo.schoolId
+            ) {
+                this.$message('请先选择学校！', 'error');
+                return;
             }
         },
     },

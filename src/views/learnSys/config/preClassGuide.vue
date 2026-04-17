@@ -62,8 +62,14 @@
                         v-model="searchGrade"
                         placeholder="请选择年级"
                         style="width: 130px"
+                        v-show="curShowType != 4"
                     >
-                        <el-option v-for="item in gradeOptions" :key="item.id" :label="item.name" :value="item.id">
+                        <el-option
+                            v-for="item in gradeOptions"
+                            :key="item.gradeId"
+                            :label="item.name"
+                            :value="item.name"
+                        >
                         </el-option>
                     </el-select>
                     <el-button type="primary" class="search-btn" @click="handleSearch">查询</el-button>
@@ -293,12 +299,8 @@ export default {
             window.open(route, '_blank');
         },
         getSubjectList() {
-            this.$axios.get('/sm/label/listLabel', {parentId: 1}).then((res) => {
+            this.$axios.get('/aiGrinding/getSubject').then((res) => {
                 this.subjectList = res.data;
-                this.subjectList.unshift({
-                    id: '',
-                    name: '全部',
-                });
             });
         },
         async getDepartmentList() {
@@ -328,13 +330,12 @@ export default {
             this.deleteShow = true;
         },
         handleGetData() {
-            console.log('重新获取');
             this.loading = true;
             this.$axios
                 .post('/aiPreClassGuidance/list', {
                     subjectId: this.searchSubject,
-                    resources: this.searchGrade,
-                    grindingType: this.searchThemeStatus,
+                    gradeName: this.searchGrade,
+                    status: this.searchThemeStatus,
                     orgIdList: this.orgIdList,
                     keyWord: this.searchKey,
                     pageNum: this.pageNum, // 页数
@@ -419,12 +420,13 @@ export default {
             this.handleGetData();
         },
         getGradeOptions() {
-            this.$axios.get('/sm/label/listLabel', {parentId: 13}).then((res) => {
+            let orgId = '';
+            let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            if (!(userInfo.nickName == 'super' || userInfo.nickName == 'admin')) {
+                orgId = userInfo.orgId;
+            }
+            this.$axios.get('/aiGrinding/getGrade', {orgId: orgId}).then((res) => {
                 this.gradeOptions = res.data;
-                this.gradeOptions.unshift({
-                    id: '',
-                    name: '全部',
-                });
             });
         },
     },

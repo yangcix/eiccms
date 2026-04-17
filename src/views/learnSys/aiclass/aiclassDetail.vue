@@ -20,6 +20,10 @@
                     <p class="value">{{ detailInfo.teacherName }}</p>
                 </li>
                 <li>
+                    <p class="title">AI次数来源：</p>
+                    <p class="value">{{ detailInfo.aiProjectName }}</p>
+                </li>
+                <li>
                     <p class="title">创建者：</p>
                     <p class="value">{{ detailInfo.createUserName }}</p>
                 </li>

@@ -231,10 +231,8 @@ export default {
                     this.searchGrade = '';
                     this.orgIdList = [];
                     this.searchSchoolList = [];
+                    this.handleGetData();
                 }
-                // 在当前节点下的操作，返回到节点主页时，过滤项和分页保持记忆
-                this.handleGetData();
-            } else if (from.path !== '/preClassGuide') {
                 if (from.path == '/sm/preClassGuideAddEdit') {
                     if (from.query && from.query.themeid) {
                         this.handleGetData();
@@ -243,6 +241,9 @@ export default {
                         this.handleGetData();
                     }
                 }
+
+                // 在当前节点下的操作，返回到节点主页时，过滤项和分页保持记忆
+            } else if (from.path !== '/preClassGuide') {
                 this.searchKey = '';
                 this.searchThemeStatus = '';
                 this.searchSubject = '';

@@ -24,7 +24,13 @@
                         </el-option>
                     </el-select>
                     <span class="search-desc">状态：</span>
-                    <el-select v-model="searchThemeStatus" placeholder="选择状态" class="width-3" style="width: 110px">
+                    <el-select
+                        v-model="searchThemeStatus"
+                        placeholder="选择状态"
+                        class="width-3"
+                        style="width: 110px"
+                        clearable
+                    >
                         <el-option
                             v-for="item in searchThemeList"
                             :key="item.value"
@@ -171,7 +177,7 @@ export default {
         return {
             aiNum: 0,
             searchThemeList: [
-                {value: '', label: '全部'},
+                {value: -1, label: '待提交'},
                 {value: 0, label: '未开始'},
                 {value: 1, label: '分析中'},
                 {value: 2, label: '分析完成'},

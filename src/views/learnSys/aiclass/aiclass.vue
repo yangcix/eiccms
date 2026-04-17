@@ -115,10 +115,11 @@
                         <template slot-scope="scope">
                             <ul>
                                 <li v-if="scope.row.type === -1">待提交</li>
-                                <li v-if="scope.row.type === 0">未开始</li>
-                                <li v-if="scope.row.type === 1">录制中</li>
-                                <li v-if="scope.row.type === 2">录制完成</li>
-                                <li v-if="scope.row.type === 3">录制失败</li>
+                                <li v-else-if="scope.row.type === 0">未开始</li>
+                                <li v-else-if="scope.row.type === 1">录制中</li>
+                                <li v-else-if="scope.row.type === 2">录制完成</li>
+                                <li v-else-if="scope.row.type === 3">录制失败</li>
+                                <li v-else>-</li>
                             </ul>
                         </template>
                     </el-table-column>
@@ -134,10 +135,10 @@
                                         <i class="el-icon-question"></i>
                                     </el-tooltip>
                                 </li>
-                                <li v-if="scope.row.aiStatus === 0">待分析</li>
-                                <li v-if="scope.row.aiStatus === 1">分析中</li>
-                                <li v-if="scope.row.aiStatus === 2">分析成功</li>
-                                <li v-if="scope.row.aiStatus === 3">
+                                <li v-else-if="scope.row.aiStatus === 0">待分析</li>
+                                <li v-else-if="scope.row.aiStatus === 1">分析中</li>
+                                <li v-else-if="scope.row.aiStatus === 2">分析成功</li>
+                                <li v-else-if="scope.row.aiStatus === 3">
                                     分析失败<el-tooltip
                                         :content="scope.row.msg"
                                         placement="top-start"
@@ -146,6 +147,7 @@
                                         <i class="el-icon-question"></i>
                                     </el-tooltip>
                                 </li>
+                                <li v-else>-</li>
                             </ul>
                         </template>
                     </el-table-column>

@@ -788,6 +788,7 @@ export default {
             curOrgLevel: 2,
             searchLiveStatus: '',
             subjectList: [],
+            reportAiList: [],
         };
     },
     computed: {

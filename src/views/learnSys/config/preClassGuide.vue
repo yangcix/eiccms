@@ -130,7 +130,7 @@
                             <div class="btnList">
                                 <!-- 分析中或者分析成功不可编辑 -->
                                 <el-button
-                                    v-if="permission.update && (scope.row.status != 1  && scope.row.status != 2)"
+                                    v-if="permission.update && scope.row.status != 1 && scope.row.status != 2"
                                     type="text"
                                     @click="add(0, scope.row)"
                                     >编辑</el-button
@@ -142,7 +142,7 @@
                                     >下载报告</el-button
                                 >
                                 <el-button
-                                    v-if="permission.update && (scope.row.status != 1  && scope.row.status != 2)"
+                                    v-if="permission.update && scope.row.status != 1 && scope.row.status != 2"
                                     type="text"
                                     style="color: #f56c6c"
                                     @click="deleteData(scope.row)"
@@ -369,18 +369,16 @@ export default {
             }
         },
         downloadPDFReport(row) {
-            this.$axios
-                .get('/sm/comment/exportPDFReport', {id: row.id, type: 3, form: 5}, 'blob')
-                .then((res) => {
-                    let url = window.URL.createObjectURL(new Blob([res]));
-                    let link = document.createElement('a');
-                    link.style.display = 'none';
-                    link.href = url;
-                    link.download = row.name + '_课前指导.pdf';
-                    document.body.appendChild(link);
-                    link.click();
-                    window.URL.revokeObjectURL(url);
-                });
+            this.$axios.get('/sm/comment/exportPDFReport', {id: row.id, type: 3, form: 5}, 'blob').then((res) => {
+                let url = window.URL.createObjectURL(new Blob([res]));
+                let link = document.createElement('a');
+                link.style.display = 'none';
+                link.href = url;
+                link.download = row.name + '_课前指导.pdf';
+                document.body.appendChild(link);
+                link.click();
+                window.URL.revokeObjectURL(url);
+            });
         },
         // 删除
         handleDelete() {

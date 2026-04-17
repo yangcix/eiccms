@@ -31,12 +31,24 @@
                         v-show="curShowType == 1 || (curOrgType == 1 && curShowType == 3)"
                     ></el-cascader>
                     <span class="search-desc">录制状态：</span>
-                    <el-select v-model="searchTypeList" placeholder="录制状态" class="width-3" style="width: 110px" clearable>
+                    <el-select
+                        v-model="searchTypeList"
+                        placeholder="录制状态"
+                        class="width-3"
+                        style="width: 110px"
+                        clearable
+                    >
                         <el-option v-for="item in typeList" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
                     <span class="search-desc">分析状态：</span>
-                    <el-select v-model="searchAiStatusList" placeholder="分析状态" class="width-3" style="width: 110px" clearable>
+                    <el-select
+                        v-model="searchAiStatusList"
+                        placeholder="分析状态"
+                        class="width-3"
+                        style="width: 110px"
+                        clearable
+                    >
                         <el-option
                             v-for="item in aiStatusList"
                             :key="item.value"

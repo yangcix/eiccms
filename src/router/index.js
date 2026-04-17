@@ -658,6 +658,7 @@ const routes = [{
                 // 课前指导
                 path: '/aiPreClassGuidance',
                 name: 'aiPreClassGuidance',
+                meta: { keepAlive: true },
                 component: () =>
                     import ( /* webpackChunkName: "smaiclass" */ '@/views/learnSys/config/preClassGuide.vue'),
             },

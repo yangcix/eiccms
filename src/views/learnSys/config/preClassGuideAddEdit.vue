@@ -246,6 +246,7 @@ export default {
         this.getClassTypeList(); // 获取课型
         this.getSchoolList(); //获取学校列表
         this.getSubjectList();
+        this.getCount();
     },
     methods: {
         getClassTypeList() {
@@ -548,6 +549,13 @@ export default {
                 this.$message('请先选择学校！', 'error');
                 return;
             }
+        },
+        getCount() {
+            this.$axios.get('/aiGrinding/getCount').then((res) => {
+                if (res.code != 200) {
+                    return;
+                }
+            });
         },
     },
 };

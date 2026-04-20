@@ -289,7 +289,7 @@
                             </el-table-column>
                             <el-table-column
                                 align="center"
-                                prop="time"
+                                prop="createDate"
                                 label="操作时间"
                                 width="160px"
                             ></el-table-column>

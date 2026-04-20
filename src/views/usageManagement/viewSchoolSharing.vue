@@ -935,7 +935,7 @@ export default {
             this.batchInfo = {};
             this.batchTableData = this.batchTableData.map((item) => ({
                 ...item,
-                allocateNum: 0,
+                allocateNum: 1,
             }));
         },
         batchData() {
@@ -946,7 +946,7 @@ export default {
             this.getProductList();
             this.batchTableData = this.batchTableData.map((item) => ({
                 ...item,
-                allocateNum: 0,
+                allocateNum: 1,
             }));
             this.batchShow = true;
         },

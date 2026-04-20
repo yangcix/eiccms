@@ -1624,7 +1624,10 @@ export default {
                             formData.append('groupId', this.addEditInfo.groupId);
                             formData.append('templateList', this.addEditInfo.templateList);
                             formData.append('evaluationOrgId', this.addEditInfo.orgId);
-                            formData.append('aiProjectId', this.addEditInfo.aiProjectId);
+                            formData.append(
+                                'aiProjectId',
+                                this.addEditInfo.aiProjectId ? this.addEditInfo.aiProjectId : null
+                            );
                             if (this.radio2 == 1) {
                                 formData.append(
                                     'type',

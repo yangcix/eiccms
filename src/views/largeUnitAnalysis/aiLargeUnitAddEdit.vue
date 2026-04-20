@@ -522,13 +522,8 @@ export default {
                 this.$message('大单元分析名称不能为空！', 'error');
                 return true;
             }
-            if (this.addEditInfo.name.length > 50) {
-                this.$message('大单元分析名称由中文大小写字母数字组成，最长50位！', 'error');
-                return true;
-            }
-            const regex = /^[\u4e00-\u9fa5a-zA-Z0-9]+$/;
-            if (!regex.test(this.addEditInfo.name)) {
-                this.$message('大单元分析名称由中文大小写字母数字组成，最长50位！', 'error');
+            if (this.$verify.chLetterNum(this.addEditInfo.name, 100)) {
+                this.$message('大单元分析名称由中文大小写字母数字组成，最长100位！', 'error');
                 return true;
             }
             if (!this.addEditInfo.subjectId) {

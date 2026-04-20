@@ -2000,8 +2000,8 @@ export default {
                 this.$message('评课名称不能为空', 'error');
                 return true;
             }
-            if (this.addEditInfo.name.length > 20) {
-                this.$message('评课名称长度限制20字符内', 'error');
+            if (this.$verify.chLetterNum(this.addEditInfo.name, 100)) {
+                this.$message('课程名称由中文大小写字母数字组成，最长100位！', 'error');
                 return true;
             }
             if (this.$verify.isEmpty(this.themeValue)) {

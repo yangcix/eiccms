@@ -466,11 +466,11 @@ export default {
                 }
             }
             if (!this.addEditInfo.name) {
-                this.$message('课程名称名称不能为空！', 'error');
+                this.$message('课程名称不能为空！', 'error');
                 return true;
             }
-            if (this.$verify.chLetterNum(this.addEditInfo.name, 20)) {
-                this.$message('由中文大小写字母数字组成，最长20位！', 'error');
+            if (this.$verify.chLetterNum(this.addEditInfo.name, 100)) {
+                this.$message('课程名称由中文大小写字母数字组成，最长100位！', 'error');
                 return true;
             }
             if (!this.addEditInfo.classTypeId || !this.addEditInfo.type) {

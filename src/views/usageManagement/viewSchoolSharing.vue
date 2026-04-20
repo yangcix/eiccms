@@ -545,7 +545,7 @@
                     <div class="quota-dialog-wrap">
                         <div class="dialog-item">
                             <p>教师</p>
-                            <p>{{ curRow.teacherName }}</p>
+                            <p>{{ curRow.teacherName }}-{{ curRow.code }}</p>
                         </div>
                         <div class="dialog-item tip-item">
                             <p></p>

@@ -559,6 +559,7 @@
                             filterable
                             class="width-5"
                             @visible-change="getDepartmentList"
+                            :show-all-levels="false"
                             multiple
                             v-show="curShowType == 1 || (curOrgType == 1 && curShowType == 3)"
                         ></el-cascader>
@@ -625,6 +626,27 @@
                                 :key="item.userId"
                                 :label="item.name + (item.schoolName ? '-' + item.schoolName : '') + '-' + item.code"
                                 :value="item.userId"
+                            >
+                            </el-option>
+                        </el-select>
+                    </div>
+                    <div class="dialog-item">
+                        <p>录制状态：</p>
+                        <el-select
+                            :popper-append-to-body="false"
+                            v-model="exportData.typeList"
+                            placeholder="请选择状态"
+                            class="width-5"
+                            filterable
+                            @change="changeExportFilter"
+                            multiple
+                            collapse-tags
+                        >
+                            <el-option
+                                v-for="item in typeList"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
                             >
                             </el-option>
                         </el-select>
@@ -889,10 +911,6 @@ export default {
             this.$axios.get('/aiGrinding/getSubject').then((res) => {
                 this.subjectList = res.data;
                 this.dialogSubjectList = res.data;
-                this.subjectList.unshift({
-                    id: '',
-                    name: '全部',
-                });
             });
         },
         async getDepartmentList() {
@@ -1467,8 +1485,6 @@ export default {
             this.getGradeOptions();
             this.isShowDataExport = true;
         },
-        // 导出
-        exportTable() {},
         //获取学校列表
         getSchoolOptions() {
             this.$axios.get('/sys/org/listSchool').then((res) => {
@@ -1492,15 +1508,15 @@ export default {
         },
         // 导出弹窗数据改变
         changeExportFilter() {
-            console.log(this.exportData);
+            let orgIdList = this.exportData.orgIdList
+                ? this.exportData.orgIdList.map((subArray) => parseInt(subArray.at(-1)))
+                : [];
             this.$axios
                 .post('/aiGrinding/list', {
                     startDate: this.exportData.time ? this.exportData.time[0] : '',
                     endDate: this.exportData.time ? this.exportData.time[1] : '',
                     gradeNameList: this.exportData.gradeNameList,
-                    orgIdList: this.exportData.orgIdList
-                        ? this.exportData.orgIdList.map((subArray) => parseInt(subArray.at(-1)))
-                        : [],
+                    orgIdList: orgIdList,
                     teacherIdList: this.exportData.teacherIdList,
                     subjectIdList: this.exportData.subjectIdList,
                     aiStatusList: this.exportData.aiStatusList,
@@ -1517,15 +1533,19 @@ export default {
             this.exportData = {};
         },
         handleExportData() {
-            this.exportData['startDate'] = this.exportData.time ? this.exportData.time[0] : '';
-            this.exportData['endDate'] = this.exportData.time ? this.exportData.time[1] : '';
-            this.exportData['orgIdList'] = this.exportData.orgIdList
-                ? this.exportData.orgIdList.map((subArray) => parseInt(subArray.at(-1)))
-                : [];
-
+            let params = JSON.parse(JSON.stringify(this.exportData));
+            params['startDate'] = params.time ? params.time[0] : '';
+            params['endDate'] = params.time ? params.time[1] : '';
+            params['orgIdList'] = params.orgIdList ? params.orgIdList.map((subArray) => parseInt(subArray.at(-1))) : [];
             const now = this.$moment();
+            params['subjectNameList'] = this.getLabelsByValues(
+                this.dialogSubjectList,
+                params.subjectIdList,
+                'id',
+                'name'
+            );
             let fileName = '磨课数据_' + now.format('YYYY-MM-DD HHmmss');
-            this.$comjs.exportTableData('/aiGrinding/exportGrinding', this.exportData, fileName);
+            this.$comjs.exportTableData('/aiGrinding/exportGrinding', params, fileName);
         },
         getTeacherList(name) {
             // 如果没有关键字或者清空文本框，就不请求数据且清掉下拉缓存数据。数据过多，请求全部的话，会因为渲染导致页面卡顿
@@ -1536,6 +1556,18 @@ export default {
             this.$axios.post('/sm/interactive/getUserList', {nickName: name}).then((res) => {
                 this.teacherList = res.data;
             });
+        },
+        /**
+         * 根据值的数组，匹配出对应的文本数组
+         * @param {Array} options - 选项列表 [{ value, label }, ...]
+         * @param {Array} selectedValues - 选中的值数组，例如 [1, 2]
+         * @returns {Array} 对应的 label 数组
+         */
+        getLabelsByValues(options, selectedValues, value, label) {
+            if (!Array.isArray(options) || !Array.isArray(selectedValues)) {
+                return [];
+            }
+            return options.filter((option) => selectedValues.includes(option[value])).map((option) => option[label]);
         },
     },
 };

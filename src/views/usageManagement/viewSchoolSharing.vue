@@ -960,7 +960,7 @@ export default {
             }
             let teacherList = [];
             for (let i = 0; i < this.batchTableData.length; i++) {
-                if (this.batchTableData[i].allocateNum == 0) {
+                if (!this.batchTableData[i].allocateNum) {
                     this.$message('分配次数不能为0！', 'error');
                     return;
                 }

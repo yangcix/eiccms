@@ -355,7 +355,7 @@
                             ></el-input-number>
                             <el-tooltip placement="top">
                                 <div slot="content">
-                                    正整数：将所选分析池增加对应的AI分析次数；<br />负整数：将所选分析池减少对应的AI分析次数；
+                                    正整数：将所选学校增加对应的AI分析次数；<br />负整数：将所选学校减少对应的AI分析次数；
                                 </div>
                                 <i class="iconfont icon-wenhao" style="margin-left: 10px; color: #000000"></i>
                             </el-tooltip>

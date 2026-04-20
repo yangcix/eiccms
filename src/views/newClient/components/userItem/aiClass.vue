@@ -1648,6 +1648,11 @@ export default {
                 // 暂存传值：type == -1
                 if (isTranslationPending) {
                     formData.append('type', -1);
+                } else {
+                    // 新增的时候，type默认为0
+                    if (!this.isEdit) {
+                        formData.append('type', 0);
+                    }
                 }
                 let uploadId;
                 if (this.addEditInfo.resources == 2) {

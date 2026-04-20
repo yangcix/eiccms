@@ -317,11 +317,11 @@ export default {
         //验证
         verify() {
             if (this.$verify.isEmpty(this.addEditInfo.name)) {
-                this.errorInfo = '设备名称不能为空';
+                this.errorInfo = '客户端名称不能为空';
                 return true;
             }
             if (this.$verify.chLetterNum(this.addEditInfo.name, 20)) {
-                this.errorInfo = '设备名称由中文大小写字母数字组成，最长20位！';
+                this.errorInfo = '客户端名称由中文大小写字母数字组成，最长20位！';
                 return true;
             }
             if (!this.addEditInfo.macAddress) {

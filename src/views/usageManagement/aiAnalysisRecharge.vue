@@ -10,6 +10,7 @@
                             class="width-2"
                             placeholder="请输入项目名称/合同编号"
                             clearable
+                            v-search="handleSearch"
                         ></el-input>
                         <el-button type="primary" class="search-btn" @click="pageChange(1)">查询</el-button>
                         <el-button
@@ -650,6 +651,9 @@ export default {
             this.dlgPageNum = val;
             this.getRechargeList();
         },
+        handleSearch() {
+            this.pageChange(1)
+        }
     },
 };
 </script>

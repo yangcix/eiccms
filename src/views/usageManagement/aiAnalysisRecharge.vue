@@ -229,6 +229,7 @@
                                 class="width-8"
                                 v-model.number="numberArray[0]"
                                 placeholder="请输入充值次数"
+                                :maxlength="5"
                             ></el-input>
                             <p class="dialog-unit">次</p>
                             <i
@@ -567,6 +568,10 @@ export default {
                 }
                 if (!this.numberArray[i]) {
                     this.$message('关联产品次数不能为空！', 'error');
+                    return;
+                }
+                if (this.$verify.num(this.numberArray[i])) {
+                    this.$message('关联产品次数只能为正整数！', 'error');
                     return;
                 }
             }

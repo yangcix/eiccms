@@ -794,8 +794,7 @@ export default {
         },
         // 查看明细取消
         infoCancel() {
-            this.infoSearchKey = '';
-            this.infoProductIdList = [];
+            this.detailInfo = {};
             this.infoPageNum = 1;
         },
         // 查看明细搜索

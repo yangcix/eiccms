@@ -680,7 +680,6 @@ const routes = [{
                 // 充值管理
                 path: '/aiAnalysisRecharge',
                 name: 'aiAnalysisRecharge',
-                meta: { keepAlive: true },
                 component: () =>
                     import ( /* webpackChunkName: "lessonPlanAnalysis" */ '@/views/usageManagement/aiAnalysisRecharge.vue'),
             },

@@ -1663,3 +1663,8 @@ export default {
     border-top: 1px solid #ddd;
 }
 </style>
+<style lang="scss">
+.el-tooltip__popper.is-dark {
+    max-width: 260px;
+}
+</style>

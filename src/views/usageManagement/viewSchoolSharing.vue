@@ -1295,3 +1295,8 @@ export default {
     left: 180px;
 }
 </style>
+<style lang="scss">
+.el-tooltip__popper.is-dark {
+    max-width: 260px;
+}
+</style>

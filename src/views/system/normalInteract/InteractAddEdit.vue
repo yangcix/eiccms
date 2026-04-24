@@ -113,7 +113,8 @@
                             clearable
                             placeholder="请输入课堂时长"
                             @change="calcEndTime(index)"
-                        ></el-input>&nbsp;分钟
+                        ></el-input
+                        >&nbsp;分钟
                         <i class="el-icon-remove-outline sub" @click="addClassTime(0, index)"></i>
                     </div>
                     <p class="add-assistant"><i class="el-icon-circle-plus-outline" @click="addClassTime(1)"></i></p>
@@ -1001,7 +1002,7 @@ export default {
     display: flex;
     align-items: center;
     margin-top: 25px;
-	font-size: 14px;
+    font-size: 14px;
     color: #303133;
     em {
         color: #f64646;

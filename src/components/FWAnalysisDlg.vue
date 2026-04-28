@@ -300,9 +300,9 @@ export default {
             }
         },
         changeChart(chartName) {
-            // this.chartName = chartName == 'left' ? '教师课堂投放信息' : '课堂信息中问答类';
-            // this.$comjs.staticSelectChange(this.selectValue, this);
-            // this.$emit('changeChart', this.chartName);
+            this.chartName = chartName == 'left' ? '教师课堂投放信息' : '课堂信息中问答类';
+            this.$comjs.staticSelectChange(this.selectValue, this);
+            this.$emit('changeChart', this.chartName);
         },
         updateView(options1, options2) {
             this.$refs.detailCount.updateView(options1, options2);

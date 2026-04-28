@@ -1130,7 +1130,7 @@ export default {
             this.$axios.get('/ai/bigdata/getClassroomQuestionAnalysis', params).then((res) => {
                 this.FWAnalysis_Data.series1.data = res.data.teacherReleaseDistribution;
                 this.FWAnalysis_Data.series2.data = res.data.questionAnswerDistribution;
-                let options = this.createDbPie(this.FWAnalysis_Data, true);
+                let options = this.createDbPie(this.FWAnalysis_Data);
                 this.dbPie1Chart.setOption(options, true);
             });
         },

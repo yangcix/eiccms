@@ -205,10 +205,16 @@ export default {
     methods: {
         getUserPower() {
             let userInfo = JSON.parse(localStorage.getItem('userInfo'));
-            console.log(JSON.parse(localStorage.getItem('userInfo')));
+            if (
+                JSON.parse(localStorage.getItem('userInfo')).userId == 1 ||
+                JSON.parse(localStorage.getItem('userInfo')).userId == 2
+            ) {
+                this.isShowEdu = true;
+            } else {
+                this.isShowEdu = false;
+            }
             // 1：省 2：市 3：区县 4：学校
             if (userInfo.sysOrganization.orgLevel == 4) {
-                this.isShowEdu = false;
                 this.isSchoolLevel = true;
                 this.orgId = userInfo.orgId;
                 // 角色权限（1全部数据，2全校数据，3下级数据, 4个人数据）
@@ -221,7 +227,6 @@ export default {
                 this.getList();
                 this.getTotal();
             } else {
-                this.isShowEdu = true;
                 this.isSchoolLevel = false;
                 this.isTeacherLevel = false;
                 this.orgType = this.isShowEdu ? '2,3' : '4';

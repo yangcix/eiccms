@@ -8,16 +8,6 @@
         </p>
         <el-main style="margin: 20px 0 0 0">
             <el-form :model="editInfo" ref="form" label-width="120px">
-                <el-form-item style="margin-bottom: 8px" label="分类：" required>
-                    <el-radio-group v-model="editInfo.classification">
-                        <el-radio
-                            v-for="classification in classificationList"
-                            :key="classification.value"
-                            :label="classification.value"
-                            >{{ classification.label }}
-                        </el-radio>
-                    </el-radio-group>
-                </el-form-item>
                 <el-form-item style="margin-bottom: 8px" label="学科：" required>
                     <el-radio-group v-model="editInfo.subjectId">
                         <el-radio
@@ -95,7 +85,7 @@ export default {
                 classTypeId: '',
                 promptWords: '',
                 defalutFlag: 0,
-                classification: 0,
+                classification: 1,
             },
             subjectList: [],
             studyGradeList: [],
@@ -103,10 +93,6 @@ export default {
             pageNum: 1,
             currentLength: 0,
             maxLength: 5000,
-            classificationList: [
-                {value: 0, label: '教学指导'},
-                {value: 1, label: '课前指导'},
-            ],
         };
     },
     components: {},
@@ -128,7 +114,6 @@ export default {
                 if (res.data) {
                     this.editInfo = res.data;
                     this.currentLength = this.countTextLength(this.editInfo.promptWords.length);
-                    console.log('this.editInfo：', this.editInfo);
                 }
             });
         },
@@ -148,9 +133,6 @@ export default {
             });
         },
         confirm() {
-            if (this.editInfo.classification === null) {
-                return this.$message('请先选择分类！', 'error');
-            }
             if (this.editInfo.subjectId == '' || this.editInfo.subjectId < 1) {
                 return this.$message('请先选择学科！', 'error');
             }
@@ -171,7 +153,7 @@ export default {
             let formData = new FormData();
             formData.append('id', this.editInfo.id);
             formData.append('subjectId', this.editInfo.subjectId);
-            formData.append('classification', this.editInfo.classification);
+            formData.append('classification', 1);
             if (this.editInfo.gradeId) {
                 formData.append('gradeId', this.editInfo.gradeId);
             }

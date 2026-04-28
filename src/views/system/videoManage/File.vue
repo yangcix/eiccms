@@ -609,7 +609,7 @@ export default {
         },
         // 查看剪辑进度
         handleExamine() {
-            this.$axios.get('auth/menu').then((res) => {
+            this.$axios.get('auth/menu?type=1').then((res) => {
                 let istrue = res.data.filter((el) => el.id == 4082);
                 console.log(istrue, 'fff');
                 if (istrue.length > 0) {

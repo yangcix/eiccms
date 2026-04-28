@@ -1540,8 +1540,8 @@ export default {
         },
         handleExportData() {
             let params = JSON.parse(JSON.stringify(this.exportData));
-            params['startDate'] = params.time ? params.time[0] : '';
-            params['endDate'] = params.time ? params.time[1] : '';
+            params['startTime'] = params.time ? params.time[0] : '';
+            params['endTime'] = params.time ? params.time[1] : '';
             params['orgIdList'] = params.orgIdList ? params.orgIdList.map((subArray) => parseInt(subArray.at(-1))) : [];
             const now = this.$moment();
             params['subjectNameList'] = this.getLabelsByValues(

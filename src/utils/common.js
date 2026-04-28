@@ -255,7 +255,7 @@ export function updateAiUploadTable(formData, msg) {
 }
 
 export function formatValue(value) {
-    if (value) return value;
+    if (value || value === 0 || value === '0') return value;
     else return '-';
 }
 

@@ -656,8 +656,8 @@ export default {
             this.getRechargeList();
         },
         handleSearch() {
-            this.pageChange(1)
-        }
+            this.pageChange(1);
+        },
     },
 };
 </script>

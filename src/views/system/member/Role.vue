@@ -27,7 +27,7 @@
                     <el-table-column prop="name" align="center" label="角色名称"> </el-table-column>
                     <el-table-column prop="description" align="center" label="描述"> </el-table-column>
                     <el-table-column prop="typeDescription" align="center" label="类型"> </el-table-column>
-                    <el-table-column align="center" width="160px" label="操作">
+                    <el-table-column align="center" width="170px" label="操作">
                         <template slot-scope="scope">
                             <ul class="operat-list" v-if="isAdmin == 'true'">
                                 <!-- <li @click="add(0, scope.row)" v-if="permission.update && scope.row.type != 0">编辑</li>
@@ -398,5 +398,10 @@ export default {
     height: 40px;
     line-height: 40px;
     text-align: justify;
+}
+.data-table {
+	.operat-list {
+		justify-content: center;
+	}
 }
 </style>

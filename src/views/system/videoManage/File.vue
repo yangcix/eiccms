@@ -89,9 +89,9 @@
                             {{ scope.row.source | source }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="createDate" align="center" min-width="116" label="添加时间">
+                    <el-table-column prop="createDate" align="center" width="150" label="添加时间">
                     </el-table-column>
-                    <el-table-column align="center" min-width="300px" label="操作">
+                    <el-table-column align="center" width="350px" label="操作">
                         <template slot-scope="scope">
                             <ul class="operat-list">
                                 <li

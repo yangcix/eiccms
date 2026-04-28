@@ -49,11 +49,17 @@
             </div>
             <div class="data-table table-border">
                 <el-table v-loading="loading" :data="tableData" style="width: 100%">
-                    <el-table-column prop="code" align="center" :show-overflow-tooltip="true" label="编号">
+                    <el-table-column prop="code" align="center" :show-overflow-tooltip="true" label="编号" width="100">
                     </el-table-column>
-                    <el-table-column prop="name" align="center" :show-overflow-tooltip="true" label="班级">
+                    <el-table-column prop="name" align="center" :show-overflow-tooltip="true" label="班级" width="100">
                     </el-table-column>
-                    <el-table-column prop="gradeName" align="center" :show-overflow-tooltip="true" label="年级">
+                    <el-table-column
+                        prop="gradeName"
+                        align="center"
+                        :show-overflow-tooltip="true"
+                        label="年级"
+                        width="100"
+                    >
                     </el-table-column>
                     <el-table-column prop="orgName" align="center" :show-overflow-tooltip="true" label="所属学校">
                     </el-table-column>
@@ -70,12 +76,12 @@
 							</ul>
 						</template> -->
                     </el-table-column>
-                    <el-table-column align="center" label="状态">
+                    <el-table-column align="center" label="状态" width="100">
                         <template slot-scope="scope">
                             {{ scope.row.status | useStatus }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="createDate" align="center" label="创建时间"> </el-table-column>
+                    <el-table-column prop="createDate" align="center" label="创建时间" width="160"> </el-table-column>
                     <el-table-column align="center" width="100px" label="操作">
                         <template slot-scope="scope">
                             <ul class="operat-list">

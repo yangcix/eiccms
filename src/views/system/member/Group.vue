@@ -28,7 +28,7 @@
                     <el-table-column prop="remark" align="center" label="备注"> </el-table-column>
                     <el-table-column prop="createDate" align="center" min-width="110" label="创建时间">
                     </el-table-column>
-                    <el-table-column align="center" width="160px" label="操作">
+                    <el-table-column align="center" width="170px" label="操作">
                         <template slot-scope="scope">
                             <ul
                                 class="operat-list"

@@ -1172,6 +1172,7 @@ export default {
             // 如果没有关键字或者清空文本框，就不请求数据且清掉下拉缓存数据。数据过多，请求全部的话，会因为渲染导致页面卡顿
             if (!name) {
                 this.teacherList = [];
+                this.$comjs.getUseList(this, null);
                 return;
             }
             this.teacherSelectLoading = true;

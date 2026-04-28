@@ -260,6 +260,12 @@ export function formatValue(value) {
 }
 
 export function getUseList(that, params) {
+    if (!params) {
+        that.useList = [];
+        that.aiNum = 0;
+        that.$set(that.addEditInfo, 'aiProjectId', '');
+        return;
+    }
     that.$axios.get('/aiAnalysisRecharge/quota', params).then((res) => {
         if (res.code == 200) {
             that.useList = res.data.options;

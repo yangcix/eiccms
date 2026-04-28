@@ -458,7 +458,13 @@
                     <el-button
                         v-if="reportData.bctiReport !== null && reportData.bctiReport !== ''"
                         type="text"
-                        @click="downloadPDFReport(2)"
+                        @click="openBigDataReportNew(2, reportData.commentId)"
+                        >查看</el-button
+                    >
+                    <el-button
+                        v-if="reportData.bctiReport !== null && reportData.bctiReport !== ''"
+                        type="text"
+                        @click="openBigDataReportNew(1, reportData.commentId)"
                         >下载</el-button
                     >
                     <span v-else style="width: 180px">无报告，请联系管理员</span>
@@ -1568,6 +1574,19 @@ export default {
                 return [];
             }
             return options.filter((option) => selectedValues.includes(option[value])).map((option) => option[label]);
+        },
+        async openBigDataReportNew(downloadReport, id) {
+            const res = await this.$axios.get('/aiGrinding/getDetail', {id: id});
+            if (res.code == 200) {
+                if (!res.data.analysisId) {
+                    return;
+                }
+                let route = '/getNuBiAnalysisBctiData?analysisId=' + res.data.analysisId + '&analysisType=2';
+                if (downloadReport === 1) {
+                    route += '&downloadReport=1';
+                }
+                window.open(route, '_blank');
+            }
         },
     },
 };

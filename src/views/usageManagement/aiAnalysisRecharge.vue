@@ -563,16 +563,16 @@ export default {
                 return;
             }
             for (let i = 0; i < this.productNum + 1; i++) {
+                if ((this.numberArray[i] && this.$verify.num(this.numberArray[i])) || this.numberArray[i] === 0) {
+                    this.$message('关联产品次数只能为正整数！', 'error');
+                    return;
+                }
                 if (!this.productArray[i]) {
                     this.$message('关联产品不能为空！', 'error');
                     return;
                 }
                 if (!this.numberArray[i]) {
                     this.$message('关联产品次数不能为空！', 'error');
-                    return;
-                }
-                if (this.$verify.num(this.numberArray[i])) {
-                    this.$message('关联产品次数只能为正整数！', 'error');
                     return;
                 }
             }

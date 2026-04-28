@@ -840,8 +840,11 @@ export default {
         },
         // 验证
         verify() {
-            if (this.quotaInfo.num == 0) {
+            if (this.quotaInfo.num === 0) {
                 this.$message('次数不能为0！', 'error');
+                return true;
+            } else if (!this.quotaInfo.num) {
+                this.$message('次数不能为空！', 'error');
                 return true;
             }
             if (!this.quotaInfo.productId) {
@@ -960,11 +963,13 @@ export default {
             }
             let teacherList = [];
             for (let i = 0; i < this.batchTableData.length; i++) {
-                if (!this.batchTableData[i].allocateNum) {
+                if (this.batchTableData[i].allocateNum === 0) {
                     this.$message('分配次数不能为0！', 'error');
                     return;
+                } else if (!this.batchTableData[i].allocateNum) {
+                    this.$message('分配次数不能为空！', 'error');
+                    return;
                 }
-                console.log(this.batchTableData[i].teacherId);
                 let item = {};
                 item['teacherId'] = this.batchTableData[i].teacherId;
                 item['allocateNum'] = this.batchTableData[i].allocateNum;

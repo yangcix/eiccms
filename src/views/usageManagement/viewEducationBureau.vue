@@ -624,8 +624,11 @@ export default {
                 this.$message('产品名称不能为空！', 'error');
                 return true;
             }
-            if (!this.quotaInfo.num) {
+            if (this.quotaInfo.num === 0) {
                 this.$message('次数不能为0！', 'error');
+                return true;
+            } else if (!this.quotaInfo.num) {
+                this.$message('次数不能为空！', 'error');
                 return true;
             }
             if (this.quotaInfo.remark) {

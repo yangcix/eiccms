@@ -1219,7 +1219,12 @@ export default {
                 } else {
                     // 新增的时候，type默认为0
                     if (!this.isEdit) {
-                        formData.append('type', 0);
+                        // 本地上传和历史录制资源点提交之后是录制完成，所以type传2
+                        if (this.addEditInfo.resources == 2 || this.addEditInfo.resources == 4) {
+                            formData.append('type', 2);
+                        } else {
+                            formData.append('type', 0);
+                        }
                     }
                 }
                 if (this.addEditInfo.id) {

@@ -10,7 +10,7 @@
                 </div>-->
         <img src="../../assets/imgs/logo-eicc.png" alt="Logo" style="margin-top: 80px">
         <h1 style="margin: 50px 0 0;">AI课堂报告</h1>
-        <p style="margin: 8px 0 80px;font-size: 22px;font-weight: 700;">（二）教 师 版</p>
+        <p style="margin: 8px 0 80px;font-size: 22px;font-weight: 700;">（教 师 版）</p>
         <h3 style="width: 100%;">《 {{ baseInfo?.analysisName }} 》</h3>
       </header>
       <main style="width: 50%;height: 40%; margin: 150px auto auto auto;font-size: 18px;line-height: 18px;">

@@ -336,7 +336,7 @@
 
       <div class="content-wrap" v-if="activeIndex == 4">
         <div class="dialog-item">
-          <span style="margin-right: 70px; width: 155px">艾课云直播：</span>
+          <span style="margin-right: 70px; width: 155px">智教慧学灵枢云直播：</span>
           <el-switch
             :active-value="1"
             :inactive-value="0"

@@ -68,7 +68,7 @@
 							<div class="dialog-item">
 								<p>设备名称</p>
 								<p><em>*</em>：</p>
-								<el-input class="width-3" v-model.trim="terminalName" placeholder="产品品牌+名称，比如艾课录播主机"></el-input>
+								<el-input class="width-3" v-model.trim="terminalName" placeholder="产品品牌+名称，比如智教慧学灵枢录播主机"></el-input>
 							</div>
 							
 							<div class="dialog-item">

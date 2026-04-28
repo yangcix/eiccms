@@ -349,7 +349,7 @@
                         <p>公网点播</p>
                         <p><em>*</em>：</p>
                         <el-switch :active-value="1" :inactive-value="0" v-model="publicVod"> </el-switch>
-                        <!-- <p class="err-notice">注：公网直播需保证艾课云账号中有足够的流量，否则可能影响直播</p> -->
+                        <!-- <p class="err-notice">注：公网直播需保证智教慧学灵枢云账号中有足够的流量，否则可能影响直播</p> -->
                     </div>
 
                     <div class="dialog-item" v-if="publicVod === 1">

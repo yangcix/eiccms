@@ -18,8 +18,8 @@
 		<div  class="content-wrap step1" v-show="stepIndex == 0">
 			<div class="content">
 				<img src="../../assets/imgs/init-smile.png" alt="">
-				<p class="name">艾课校园直播，感谢选择我们！</p>
-				<p>艾课，爱在每一课！</p>
+				<p class="name">智教慧学灵枢系统，感谢选择我们！</p>
+				<p>智教慧学灵枢，智教慧学每一课！</p>
 			</div>
 			<div class="step">
 				<p class="text">请进行初始化配置，为您私人订制！</p>
@@ -195,7 +195,7 @@
 				<p class="name">恭喜你，初始化完成！</p>
 			</div>
 			<div class="step success">
-				<el-button type="primary" @click="initSuccess">马上进入艾课校园直播</el-button>
+				<el-button type="primary" @click="initSuccess">马上进入智教慧学灵枢系统</el-button>
 			</div>
 		</div>
 	</div>

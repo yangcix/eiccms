@@ -264,8 +264,8 @@
 				mobilePlayUrl: '',
 
 				activeIndex: '0',
-				pcUrl:'', // 艾课云播放
-				Hur:'', // 艾课云h5播放
+				pcUrl:'', // 智教慧学灵枢云播放
+				Hur:'', // 智教慧学灵枢云h5播放
 				auditPublicShow:false,  // 公网点播权限
 				watchType:'', // 公网点播权限类型
 				watchPassword:'', // 公网点播密码

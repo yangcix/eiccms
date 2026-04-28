@@ -337,21 +337,7 @@ export default {
             }
         },
         downloadClient(row) {
-            // 使用 axios 的 params 选项传递查询参数，并设置响应类型为 blob 以处理文件下载
-            this.$axios.get('/sys/clientVersion/download', {id: row.id}, 'blob').then((res) => {
-                if (res.code == 200) {
-                    let url = window.URL.createObjectURL(new Blob([res]));
-                    let link = document.createElement('a');
-                    link.style.display = 'none';
-                    link.href = url;
-                    link.download = row.fileName;
-                    document.body.appendChild(link);
-                    link.click();
-                    window.URL.revokeObjectURL(url);
-                } else {
-                    this.$message(res.message, 'error');
-                }
-            });
+            window.open(`${baseUrl}/sys/clientVersion/download?id=${row.id}`, '_blank');
         },
         viewVersionDetail(row) {
             this.curRow = row;

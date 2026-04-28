@@ -12,8 +12,14 @@
                             v-search="search"
                             clearable
                         ></el-input>
-                        <span class="search-desc">教育局/学校：</span>
-                        <el-select v-model="orgType" placeholder="请选择" class="width-8" @change="changeOrgType">
+                        <span class="search-desc" v-if="isShowEdu">教育局/学校：</span>
+                        <el-select
+                            v-model="orgType"
+                            placeholder="请选择"
+                            class="width-8"
+                            @change="changeOrgType"
+                            v-if="isShowEdu"
+                        >
                             <el-option
                                 v-for="item in orgTypeList"
                                 :key="item.value"
@@ -22,7 +28,7 @@
                             >
                             </el-option>
                         </el-select>
-                        <el-select v-model="orgId" placeholder="请选择" class="width-6" filterable>
+                        <el-select v-model="orgId" placeholder="请选择" class="width-6" filterable v-if="isShowEdu">
                             <el-option
                                 v-for="item in orgIdList"
                                 :key="item.value"
@@ -173,9 +179,12 @@ export default {
                 {value: '4', label: '学校'},
             ],
             orgIdList: [],
-            orgType: '2,3',
+            orgType: '',
             orgId: '',
             frequency: [],
+            isShowEdu: false,
+            isSchoolLevel: false,
+            isTeacherLevel: false,
         };
     },
     watch: {
@@ -186,17 +195,41 @@ export default {
             } else if (to.path == '/aiAnalysisAllocation') {
                 this.searchKey = '';
                 this.pageNum = 1;
-                this.orgType = '2,3';
-                this.getFirstList();
+                this.getUserPower();
             }
         },
     },
     mounted() {
-        this.getFirstList();
+        this.getUserPower();
     },
     methods: {
+        getUserPower() {
+            let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            console.log(JSON.parse(localStorage.getItem('userInfo')));
+            // 1：省 2：市 3：区县 4：学校
+            if (userInfo.sysOrganization.orgLevel == 4) {
+                this.isShowEdu = false;
+                this.isSchoolLevel = true;
+                this.orgId = userInfo.orgId;
+                // 角色权限（1全部数据，2全校数据，3下级数据, 4个人数据）
+                // 区分是学校还是个人
+                if (userInfo.sysUserAuth[0].type == 4) {
+                    this.isTeacherLevel = true;
+                    this.orgId = userInfo.userId;
+                }
+
+                this.getList();
+                this.getTotal();
+            } else {
+                this.isShowEdu = true;
+                this.isSchoolLevel = false;
+                this.isTeacherLevel = false;
+                this.orgType = this.isShowEdu ? '2,3' : '4';
+                this.getFirstList();
+            }
+        },
         getFirstList() {
-            this.$axios.get('/sys/org/getOrgOrUserList', {level: '2,3'}).then((res) => {
+            this.$axios.get('/sys/org/getOrgOrUserList', {level: this.orgType}).then((res) => {
                 if (res.code == 200) {
                     this.orgIdList = res.data;
                     this.orgId = this.orgIdList[0].value;
@@ -262,7 +295,8 @@ export default {
                 if (res.code == 200) {
                     this.orgIdList = res.data;
                     this.orgId = this.orgIdList[0].value;
-                    return this.orgIdList[0].value;
+                    this.getList();
+                    this.getTotal();
                 } else {
                     this.$message(res.message, 'error');
                 }
@@ -270,13 +304,14 @@ export default {
         },
         // 查看
         viewDetail(row) {
+            let orgId = row.orgId ? row.orgId : row.eduOrgId;
             if (this.orgType == '4') {
                 this.$router.push({
                     path: '/viewSchoolSharing',
                     query: {
                         projectName: row.projectName,
                         id: row.id,
-                        orgId: row.orgId,
+                        orgId: orgId,
                     },
                 });
             } else {
@@ -285,7 +320,7 @@ export default {
                     query: {
                         projectName: row.projectName,
                         id: row.id,
-                        orgId: row.orgId,
+                        orgId: orgId,
                     },
                 });
             }

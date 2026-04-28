@@ -56,7 +56,7 @@
                     <el-table-column prop="orgName" align="center" label="所属学校"> </el-table-column>
                     <el-table-column align="center" :show-overflow-tooltip="true" label="负责人">
                         <template slot-scope="scope">
-                            {{ scope.row.principalNames.join(',') }}
+                            {{ scope.row.principalNames?.join(',') }}
                             <!-- <ul class="principal-list">
 								<li>{{ scope.row.principalNames.join(',') }}</li>
 							</ul> -->

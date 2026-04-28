@@ -298,7 +298,7 @@ export default {
                 this.loading = false; // 表格加载
                 this.tableData = res.data.pageList;
                 this.tableData.forEach((el) => {
-                    el.principalNames = el.principalNames.toString();
+                    el.principalNames = el.principalNames?.toString();
                 });
                 this.permission = this.creatPermit(res.data.permit);
                 this.pages = res.data.pages;

@@ -13,6 +13,7 @@
                                 class="width-2"
                                 placeholder="请输入姓名/编号关键字"
                                 clearable
+                                v-search="search"
                             ></el-input>
                             <span class="search-desc">状态：</span>
                             <el-select v-model="status" placeholder="请选择" class="width-8">

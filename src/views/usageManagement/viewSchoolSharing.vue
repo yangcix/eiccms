@@ -979,8 +979,6 @@ export default {
                 if (res.code == 200) {
                     this.$message('分配成功！', 'success');
                     this.batchCancel();
-                } else {
-                    this.$message(res.message, 'error');
                 }
             });
         },

@@ -463,8 +463,6 @@ export default {
                     this.getList();
                     this.prepareTotal();
                     this.$message((this.isEditProject ? '编辑' : '新增') + '成功！', 'success');
-                } else {
-                    this.$message(res.message, 'error');
                 }
             });
         },

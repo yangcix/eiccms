@@ -411,16 +411,16 @@
                     <div class="batch-dialog-wrap">
                         <div class="info-content-dlg">
                             <div class="info-item">
-                                AI课堂分析剩余：{{ $comjs.formatValue(frequency[0]?.remainNum) }}次
+                                AI课堂分析待分配：{{ $comjs.formatValue(frequency[0]?.remainNum) }}次
                             </div>
                             <div class="info-item">
-                                大单元及学情分析剩余：{{ $comjs.formatValue(frequency[2]?.remainNum) }}次
+                                大单元及学情分析待分配：{{ $comjs.formatValue(frequency[2]?.remainNum) }}次
                             </div>
                             <div class="info-item">
-                                赛课辅导剩余：{{ $comjs.formatValue(frequency[1]?.remainNum) }}次
+                                赛课辅导待分配：{{ $comjs.formatValue(frequency[1]?.remainNum) }}次
                             </div>
                             <div class="info-item">
-                                AI课前指导剩余：{{ $comjs.formatValue(frequency[3]?.remainNum) }}次
+                                AI课前指导待分配：{{ $comjs.formatValue(frequency[3]?.remainNum) }}次
                             </div>
                         </div>
                         <div class="dialog-item">
@@ -550,16 +550,16 @@
                         <div class="dialog-item tip-item">
                             <p></p>
                             <div class="info-item">
-                                AI课堂分析剩余：{{ $comjs.formatValue(frequency[0]?.remainNum) }}次，
+                                AI课堂分析待分配：{{ $comjs.formatValue(frequency[0]?.remainNum) }}次，
                             </div>
                             <div class="info-item">
-                                大单元及学情分析剩余：{{ $comjs.formatValue(frequency[2]?.remainNum) }}次，
+                                大单元及学情分析待分配：{{ $comjs.formatValue(frequency[2]?.remainNum) }}次，
                             </div>
                             <div class="info-item">
-                                赛课辅导剩余：{{ $comjs.formatValue(frequency[1]?.remainNum) }}次，
+                                赛课辅导待分配：{{ $comjs.formatValue(frequency[1]?.remainNum) }}次，
                             </div>
                             <div class="info-item">
-                                AI课前指导剩余：{{ $comjs.formatValue(frequency[3]?.remainNum) }}次
+                                AI课前指导待分配：{{ $comjs.formatValue(frequency[3]?.remainNum) }}次
                             </div>
                         </div>
                         <div class="dialog-item">

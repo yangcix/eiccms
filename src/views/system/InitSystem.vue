@@ -133,10 +133,30 @@
                 <el-input class="width-5" placeholder="请输入组织架构名称" v-model.trim="orgName"></el-input>
                 <el-input class="width-5" placeholder="请输入主办单位" v-model.trim="sponsor"></el-input>
                 <el-input class="width-5" placeholder="请输入运维单位" v-model.trim="company"></el-input>
-                <el-select class="width-5" v-model="curOrgType" v-if="orgType == 2 || orgType == 3 || orgType == 1">
-                    <el-option v-for="item in orgTypeList" :key="item.value" :label="item.label" :value="item.value">
-                    </el-option>
-                </el-select>
+                <div class="org-item">
+                    <el-select
+                        class="width-5 width-7"
+                        v-model="curOrgLevel"
+                        v-if="orgType == 2 || orgType == 3 || orgType == 1"
+                        @change="changeOrgLevel"
+                    >
+                        <el-option v-for="item in levelList" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <el-select
+                        class="width-5 width-6"
+                        v-model="curOrgType"
+                        v-if="orgType == 2 || orgType == 3 || orgType == 1"
+                    >
+                        <el-option
+                            v-for="item in orgTypeList"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        >
+                        </el-option>
+                    </el-select>
+                </div>
             </div>
             <div class="step">
                 <!-- <el-button type="primary" @click="orgPre">上一步</el-button> -->
@@ -266,11 +286,18 @@ export default {
             },
             orgTypeList: [],
             curOrgType: '',
+            levelList: [
+                {label: '省级', value: 1},
+                {label: '市级', value: 2},
+                {label: '区县级', value: 3},
+                {label: '学校', value: 4},
+            ],
+            curOrgLevel: '',
         };
     },
     components: {},
     mounted() {
-        this.inspectVersion();
+        // this.inspectVersion();
     },
     methods: {
         // 管理员登录 this.inspectVersion默认开启
@@ -366,15 +393,26 @@ export default {
         recordTypeSet() {
             if (this.recordType) {
                 this.curOrgType = '';
+                this.curOrgLevel = '';
                 if (this.orgType == 2) {
                     this.orgTypeList = [{value: 2, label: '学校'}];
+                    this.levelList = [{label: '学校', value: 4}];
                 } else if (this.orgType == 3) {
                     this.orgTypeList = [
                         {value: 0, label: '教育厅'},
                         {value: 1, label: '教育局'},
                     ];
+                    this.levelList = [
+                        {label: '省级', value: 1},
+                        {label: '市级', value: 2},
+                        {label: '区县级', value: 3},
+                    ];
                 } else if (this.orgType == 1) {
                     this.orgTypeList = [{value: 1, label: '教育局'}];
+                    this.levelList = [
+                        {label: '市级', value: 2},
+                        {label: '区县级', value: 3},
+                    ];
                 }
                 this.stepIndex = 6;
             } else {
@@ -488,6 +526,7 @@ export default {
                 .post('/sys/init/init', {
                     version: this.version,
                     orgType: this.curOrgType,
+                    orgLevel: this.curOrgLevel,
                     orgName: this.orgName,
                     name: this.name,
                     password: MD5(this.password),
@@ -502,6 +541,17 @@ export default {
         //初始化完成
         initSuccess() {
             this.$router.replace('/login');
+        },
+        changeOrgLevel(val) {
+            if(this.orgType == 3) {
+                this.curOrgType = '';
+            }
+            // 省级
+            if (val == 1) {
+                this.orgTypeList = [{value: 0, label: '教育厅'}];
+            } else if (val == 2 || val == 3) {
+                this.orgTypeList = [{value: 1, label: '教育局'}];
+            }
         },
     },
 };
@@ -556,6 +606,12 @@ export default {
         justify-content: center;
         .width-5 {
             margin: -40px 0 56px 0;
+        }
+        .org-item {
+            margin-top: -30px;
+            .width-6 {
+                width: 212px;
+            }
         }
         .item {
             width: 200px;

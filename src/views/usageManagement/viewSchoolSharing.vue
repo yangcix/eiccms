@@ -686,11 +686,7 @@ export default {
             batchInfo: {},
         };
     },
-    activated() {
-        this.keyWord = '';
-        this.pageNum = 1;
-        this.pages = 0;
-        this.status = '';
+    mounted() {
         this.getTotal();
         this.getSchoolType();
     },

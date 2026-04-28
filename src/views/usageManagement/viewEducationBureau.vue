@@ -423,8 +423,7 @@ export default {
             quotaInfo: {},
         };
     },
-    activated() {
-        this.orgId = '';
+    mounted() {
         this.getList();
         this.getTotal();
         this.getOrgIdList();

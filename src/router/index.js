@@ -695,7 +695,6 @@ const routes = [{
                 // 次数分配管理-教育局
                 path: '/viewEducationBureau',
                 name: 'viewEducationBureau',
-                meta: { keepAlive: true },
                 component: () =>
                     import ( /* webpackChunkName: "lessonPlanAnalysis" */ '@/views/usageManagement/viewEducationBureau.vue'),
             },
@@ -703,7 +702,6 @@ const routes = [{
                 // 次数分配管理-学校
                 path: '/viewSchoolSharing',
                 name: 'viewSchoolSharing',
-                meta: { keepAlive: true },
                 component: () =>
                     import ( /* webpackChunkName: "lessonPlanAnalysis" */ '@/views/usageManagement/viewSchoolSharing.vue'),
             },

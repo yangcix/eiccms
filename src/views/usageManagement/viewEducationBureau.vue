@@ -485,7 +485,7 @@ export default {
             document.getElementsByClassName('main-wrap')[0].scrollTo(0, 0);
         },
         getOrgIdList() {
-            this.$axios.get('/sys/org/getOrgOrUserList', {level: 4}).then((res) => {
+            this.$axios.get('/sys/org/getOrgOrUserList', {level: 4, orgId: this.$route.query.orgId}).then((res) => {
                 if (res.code == 200) {
                     this.orgIdList = res.data;
                 } else {

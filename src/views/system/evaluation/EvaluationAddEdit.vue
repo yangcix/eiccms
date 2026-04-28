@@ -887,8 +887,8 @@ export default {
         } else {
             if (JSON.parse(localStorage.getItem('userInfo')).roleType == 1) {
                 this.getTeacherList(JSON.parse(localStorage.getItem('userInfo')).nickName);
-                this.getUseList();
                 this.addEditInfo.teacherId = JSON.parse(localStorage.getItem('userInfo')).userId;
+                this.getUseList();
             } else {
                 this.addEditInfo.teacherId = '';
             }

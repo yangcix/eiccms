@@ -612,11 +612,11 @@ export default {
         if (this.$route.query.videoId) {
             this.addEditInfo.resources = 4;
             this.addEditInfo.recordId = this.$route.query.videoId;
+            this.addEditInfo.teacherId = this.$route.query.teacherId ? this.$route.query.teacherId : '';
             if (this.$route.query.teacherId) {
                 this.getTeacherList(this.$route.query.teacherName);
                 this.getUseList();
             }
-            this.addEditInfo.teacherId = this.$route.query.teacherId ? this.$route.query.teacherId : '';
             this.objectName = this.$route.query.name;
             // this.getVideoInfo();
         }

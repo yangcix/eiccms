@@ -206,34 +206,59 @@ export function closeWS() {
     ws && ws.close();
 }
 
-export function addMinutesByTimestamp(date, minutes) {
-    const dateObj = date instanceof Date ? date : new Date(date);
-    // 分钟转为毫秒：1分钟 = 60 * 1000 毫秒
-    const milliseconds = minutes * 60 * 1000;
-    return new Intl.DateTimeFormat('zh-CN', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: false,
-        })
-        .format(new Date(dateObj.getTime() + milliseconds))
-        .replace(/\//g, '-')
-        .replace(',', '');
+export function addMinutesByTimestamp(startTime, durationMinutes) {
+    // 判断是否包含日期信息
+    const hasDate = /[-\/]/.test(startTime) || startTime.includes(' ');
+    let startMoment;
+    if (hasDate) {
+        // 完整日期时间
+        startMoment = new Date(startTime);
+    } else {
+        // 纯时间，拼接今天的日期
+        const today = new Date().toDateString();
+        startMoment = new Date(`${today} ${startTime}`);
+    }
+    // 添加时长（分钟转毫秒）
+    const endMoment = new Date(startMoment.getTime() + durationMinutes * 60 * 1000);
+    // 如果输入是纯时间，输出也返回纯时间
+    if (!hasDate) {
+        return endMoment.toTimeString().slice(0, 8);
+    }
+    // 否则返回完整格式
+    const year = endMoment.getFullYear();
+    const month = String(endMoment.getMonth() + 1).padStart(2, '0');
+    const day = String(endMoment.getDate()).padStart(2, '0');
+    const hours = String(endMoment.getHours()).padStart(2, '0');
+    const minutes = String(endMoment.getMinutes()).padStart(2, '0');
+    const seconds = String(endMoment.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-export function createDuraTionMin(startDate, endDate) {
-    // 分钟转为毫秒：1分钟 = 60 * 1000 毫秒
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+export function createDuraTionMin(startTime, endTime) {
+    const supportedFormats = [
+        (time) => new Date(time), // 标准格式
+        (time) => new Date(`2000-01-01 ${time}`), // 只包含时间的格式
+    ];
 
-    // 计算毫秒差，然后转换为分钟
-    const diffMs = end - start;
-    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+    let start = null;
+    let end = null;
 
-    return diffMinutes;
+    // 尝试不同的格式
+    for (const format of supportedFormats) {
+        try {
+            start = format(startTime);
+            end = format(endTime);
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                break;
+            }
+        } catch (e) {
+            continue;
+        }
+    }
+    if (!start || !end || isNaN(start.getTime()) || isNaN(end.getTime())) {
+        throw new Error('无法解析时间格式');
+    }
+    return Math.floor((end - start) / (1000 * 60));
 }
 
 export function updateAiUploadTable(formData, msg) {

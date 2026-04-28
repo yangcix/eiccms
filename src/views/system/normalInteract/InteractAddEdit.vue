@@ -98,15 +98,13 @@
                             <el-option v-for="item in weekList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
-                        <el-date-picker
+                        <el-time-picker
                             v-model="val.startTime"
-                            type="datetime"
-                            style="width: 200px; margin-right: 15px"
-                            @change="calcEndTime(index)"
-                            value-format="yyyy-MM-dd HH:mm:ss"
                             placeholder="开始时间"
+                            value-format="HH:mm:ss"
+                            @change="calcEndTime(index)"
                         >
-                        </el-date-picker>
+                        </el-time-picker>
                         <el-input
                             class="width-6"
                             v-model="val.durationMinutes"

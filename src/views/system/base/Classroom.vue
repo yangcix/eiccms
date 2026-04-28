@@ -436,7 +436,7 @@ export default {
             this.isDrag = false;
             this.addRoomValue = name;
             this.$nextTick(() => {
-                this.currentInputEle = document.querySelector('.el-input__inner');
+                this.currentInputEle = document.querySelector('.inputNameEdit .el-input__inner');
                 this.currentInputEle.focus();
                 this.currentInputEle.onkeydown = (e) => {
                     // 回车提交表单

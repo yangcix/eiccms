@@ -68,10 +68,18 @@
                             <span class="moduleTitle" :class="sysModule == 2 ? 'mActive' : ''" @click="changeModule(2)"
                                 >微集控录播</span
                             >
-                            <span class="moduleTitle" :class="sysModule == 5 ? 'mActive' : ''" @click="changeModule(5)"
+                            <span
+                                v-if="isShowProjectManage"
+                                class="moduleTitle"
+                                :class="sysModule == 5 ? 'mActive' : ''"
+                                @click="changeModule(5)"
                                 >项目次数管理</span
                             >
-                            <span class="moduleTitle" :class="sysModule == 6 ? 'mActive' : ''" @click="changeModule(6)"
+                            <span
+                                v-if="isShowSetting"
+                                class="moduleTitle"
+                                :class="sysModule == 6 ? 'mActive' : ''"
+                                @click="changeModule(6)"
                                 >系统管理</span
                             >
                             <span
@@ -321,6 +329,8 @@ export default {
             expirationDate: null,
             teachingSuggestionEnabled: 0,
             isShowDataBoard: true,
+            isShowProjectManage: true,
+            isShowSetting: true,
         };
     },
     components: {
@@ -328,7 +338,9 @@ export default {
         aiUploadBox,
     },
     mounted() {
-        console.log(this.$route, 'rrr');
+        this.setNavShow();
+        this.setProjectShow();
+        this.setSettingShow();
         if (!localStorage.getItem('userInfo')) {
             this.$router.push('/login');
         }
@@ -356,6 +368,7 @@ export default {
             this.menuUrl = `/auth/menu?type=-6`;
             this.homeMenu.url = '/aiConfig';
             this.changeMenu();
+            return;
         } else if (
             this.$route.path.includes('/sys/terminal') ||
             this.$route.path.includes('/sm/clip') ||
@@ -421,7 +434,6 @@ export default {
             this.getTryoutConfig();
             this.getTryoutRemind();
         }
-        this.setNavShow();
     },
     watch: {
         $route(to, from) {
@@ -514,6 +526,16 @@ export default {
         setNavShow() {
             this.$axios.get('/auth/menu?type=-4').then((res) => {
                 this.isShowDataBoard = res.data.length != 0;
+            });
+        },
+        setProjectShow() {
+            this.$axios.get('/auth/menu?type=-5').then((res) => {
+                this.isShowProjectManage = res.data.length != 0;
+            });
+        },
+        setSettingShow() {
+            this.$axios.get('/auth/menu?type=-6').then((res) => {
+                this.isShowSetting = res.data.length != 0;
             });
         },
         goHelpHome() {

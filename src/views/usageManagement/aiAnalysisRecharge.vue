@@ -638,14 +638,14 @@ export default {
                 .then(() => {
                     this.$axios.get('/aiAnalysisRecharge/delete', {id: row.id}).then((res) => {
                         if (res.code == 200) {
-                            this.getList();
-                            this.prepareTotal();
-                            this.getRechargeList();
-                            this.$message('撤销充值成功！', 'success');
                             this.dlgTotal = this.dlgTotal - 1;
                             if (this.dlgPageNum * 10 - this.dlgTotal === 10) {
                                 this.dlgPageNum = this.dlgPageNum - 1 || 1;
                             }
+                            this.getList();
+                            this.prepareTotal();
+                            this.getRechargeList();
+                            this.$message('撤销充值成功！', 'success');
                         } else {
                             this.$message(res.message, 'error');
                         }

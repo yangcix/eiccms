@@ -55,53 +55,53 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th style="width: 60px">类</th>
-                            <th style="width: 8cqh">指标</th>
+                            <th style="width: 20px">类</th>
+                            <th style="width: 7.5cqh">指标</th>
                             <th style="width: 200px">要点及答案</th>
                             <th>大数据分析算法</th>
-                            <th style="width: 50px">得分</th>
+                            <th style="width: 35px">得分</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="font-size-14 td-text-center" rowspan="5">教师主导</td>
-                            <td class="font-size-14 td-text-center">1、目标定位（10分）</td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center" rowspan="5">教师主导</td>
+                            <td class="font-size-12 td-text-center">1、目标定位（10分）</td>
+                            <td class="font-size-12 td-text-center">
                                 从正确价值观、必备品格、关键能力三大方面，把握教学目标，既重视学科教学，也着眼于综合素质的培育与
                                 发展。
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 1、知识点覆盖率及教案设计素养导向情况<br />
                                 2、知识图谱辐射面<br />
                                 3、课堂信息量
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 {{ indicatorScore['教师主导::目标定位'] }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="font-size-14 td-text-center">2、课堂艺术 (10.0分)</td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">2、课堂艺术 (10.0分)</td>
+                            <td class="font-size-12 td-text-center">
                                 从教学语言、教学体态、教学情感等方面，体现教师职业特点，既热情大方又朴实得体，语言流畅，具有亲和
                                 力和感染力。
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 4、教师情感饱满度<br />
                                 5、教师积极话语频次<br />
                                 6、教师语言凝炼度<br />
                                 7、教师授课语速
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 {{ indicatorScore['教师主导::课堂艺术'] }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="font-size-14 td-text-center">3、课堂调控 (10.0分)</td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">3、课堂调控 (10.0分)</td>
+                            <td class="font-size-12 td-text-center">
                                 根据学生的学习反应、课堂活动等，及时调整教学节奏
                                 与教学活动，及时捕捉有价值的教学资源并加以有效利 用。
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 8、教师正面回应学生的比率（弗兰德斯分析TRR)<br />
                                 9、教师聚焦讲授与提问的比率（弗兰德斯分析CCR)<br />
                                 10、师生话题交流稳定状态比率（弗兰德斯分析SSR)<br />
@@ -111,108 +111,108 @@
                                 14、课堂控制<br />
                                 15、积极氛围
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 {{ indicatorScore['教师主导::课堂调控'] }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="font-size-14 td-text-center">4、思维激发 (14.0分)</td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">4、思维激发 (14.0分)</td>
+                            <td class="font-size-12 td-text-center">
                                 从学生视角指明学习目标，选择恰当时机与方式引导深
                                 入、猜想质疑、点拨纠偏、鼓励肯定；以指导者与合作
                                 者角色，密切关注每个学生的学习状况，激励学生采用 独立自主、合作探究等多种方式开展学习。
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 16、教师兼顾学生思维的均衡情况(知行教学风格)<br />
                                 17、课程结构设计的四维清晰度（若何/为何/如何/是何的 总量）<br />
                                 18、启发性（弗兰德斯分析I/D）<br />
                                 19、教师正面回应学生的总量<br />20、教师的课堂想象力激发度<br />
                                 21、教师追问型+思考再答型的提问与评价情况（IRE)<br />22、思维激发开放度
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 {{ indicatorScore['教师主导::思维激发'] }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="font-size-14 td-text-center">5、评价反馈 (10.0分)</td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">5、评价反馈 (10.0分)</td>
+                            <td class="font-size-12 td-text-center">
                                 教师具有同理心和包容心，对学生学习及时给予正面评
                                 价和反馈，且运用多种方式鼓励学生互学互评，激发学 生的学习动力。
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 23、教师接纳和鼓励学生的比率（弗兰德斯分析T1和 T2）<br />
                                 24、学生主动发言的次数（弗兰德斯分析S2）<br />
                                 25、教师积极情感占比<br />
                                 26、教师提问与评价的总量下限（IRE)
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 {{ indicatorScore['教师主导::评价反馈'] }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="font-size-14 td-text-center" rowspan="3">学生主体</td>
-                            <td class="font-size-14 td-text-center">6、整体发展 (14.0分)</td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center" rowspan="3">学生主体</td>
+                            <td class="font-size-12 td-text-center">6、整体发展 (14.0分)</td>
+                            <td class="font-size-12 td-text-center">
                                 课堂结构遵循学生身心发展规律，教学活动兼顾不同个
                                 性兴趣、爱好特长、思维习惯的学生，给予学生充分的
                                 学习和自我展示的时空，每个学生均可获得各自的进步 成长。
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 27、课程结构设计的四维均衡度（若何/为何/如何/是何的 均衡情况）<br />
                                 28、学生左右脑激发的平衡度<br />
                                 29、课堂语言的可理解度<br />
                                 30、学生发言和练习的时长
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 {{ indicatorScore['学生主体::整体发展'] }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="font-size-14 td-text-center">7、合作交流 (12.0分)</td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">7、合作交流 (12.0分)</td>
+                            <td class="font-size-12 td-text-center">
                                 师生之间相互信任、彼此尊重、平等民主。从促进理解
                                 的立场出发，师生、生生交流沟通深入，互动反馈及时 顺畅
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 31、教师激励学生主动参与互动的情况 32、教师批评学生或维护权威的情况（弗兰德斯分析T7)<br />
                                 33、教师激励学生互动的效率<br />
                                 34、师生的互动比<br />
                                 35、教师提问与评价的总量上限（IRE)<br />
                                 36、学生主动发言
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 {{ indicatorScore['学生主体::合作交流'] }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="font-size-14 td-text-center">8、学习体验 (10.0分)</td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">8、学习体验 (10.0分)</td>
+                            <td class="font-size-12 td-text-center">
                                 学生积极参与各个学习环节，专注地思考各种问题，全
                                 身心地投入到各项学习活动中，享受学习的快乐。
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 37、学生发言人次 38、学生充分表达量<br />
                                 39、学生积极情感占比<br />
                                 40、学生表达的稳定状态比例（弗兰德斯分析PSSR)
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 {{ indicatorScore['学生主体::学习体验'] }}
                             </td>
                         </tr>
                         <tr>
-                            <td class="font-size-14 td-text-center">教学达成</td>
-                            <td class="font-size-14 td-text-center">9、目标达成 (10.0分)</td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">教学达成</td>
+                            <td class="font-size-12 td-text-center">9、目标达成 (10.0分)</td>
+                            <td class="font-size-12 td-text-center">
                                 不同层次的学生都有收获，完成预期教学目标和取得较 好的教学效果。
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 41、学生响应知识点的情况<br />
                                 42、学生四种学习风格的激发情况<br />
                                 43、教师授课知-行风格的兼顾情况<br />
                                 44、教师推动有效学习程度<br />
                                 45、师生发言相关度情况（教学效果序列分析）
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 {{ indicatorScore['教学达成::目标达成'] }}
                             </td>
                         </tr>
@@ -221,29 +221,29 @@
             </section>
         </div>
         <div class="page-container" data-order="3">
-            <section class="table-section">
+            <!-- <section class="table-section">
                 <table class="data-table">
                     <tbody>
                         <tr>
-                            <td class="font-size-14 td-text-center">教学达成</td>
-                            <td class="font-size-14 td-text-center">9、目标达成 (10.0分)</td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">教学达成</td>
+                            <td class="font-size-12 td-text-center">9、目标达成 (10.0分)</td>
+                            <td class="font-size-12 td-text-center">
                                 不同层次的学生都有收获，完成预期教学目标和取得较 好的教学效果。
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 41、学生响应知识点的情况<br />
                                 42、学生四种学习风格的激发情况<br />
                                 43、教师授课知-行风格的兼顾情况<br />
                                 44、教师推动有效学习程度<br />
                                 45、师生发言相关度情况（教学效果序列分析）
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 {{ indicatorScore['教学达成::目标达成'] }}
                             </td>
                         </tr>
                     </tbody>
                 </table>
-            </section>
+            </section> -->
             <div class="table-title">
                 <p>2、学习素养分析</p>
             </div>
@@ -251,13 +251,13 @@
                 <table class="data-table">
                     <tbody>
                         <tr>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 学生课堂兴趣指数: {{ indicatorScore['学生课堂兴趣指数'].toFixed(2) }}(常模:63.5)
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 学生学科自信指数: {{ indicatorScore['学生学科自信指数'].toFixed(2) }}(常模:63.4)
                             </td>
-                            <td class="font-size-14 td-text-center">
+                            <td class="font-size-12 td-text-center">
                                 学科素养导向指数: {{ indicatorScore['学科素养导向指数'].toFixed(2) }}(常模:66.3)
                             </td>
                         </tr>
@@ -658,7 +658,7 @@ footer {
     font-size: 12px;
 }
 
-.font-size-14 {
+.font-size-12 {
     font-size: 14px;
 }
 .font-size-15 {

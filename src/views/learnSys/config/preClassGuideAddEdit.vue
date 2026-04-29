@@ -235,6 +235,7 @@ export default {
             // 如果是教师个人，默认带出教师名称
             if (!(this.userInfo.userId == 1 || this.userInfo.userId == 2)) {
                 this.getTeacherList(this.userInfo.nickName);
+                this.addEditInfo.teacherId = this.userInfo.userId;
                 this.changeTeacher(this.userInfo.userId);
             }
             // 管理员需要在选择学校之后再去请求班级下拉

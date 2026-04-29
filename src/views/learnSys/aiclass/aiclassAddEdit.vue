@@ -579,29 +579,28 @@ export default {
         }),
     },
     mounted() {
-        if (
-            !(
-                JSON.parse(localStorage.getItem('userInfo')).userId == 1 ||
-                JSON.parse(localStorage.getItem('userInfo')).userId == 2
-            )
-        ) {
-            this.getTeacherList(JSON.parse(localStorage.getItem('userInfo')).nickName);
-            this.getUseList();
-        }
         this.getClassTypeList(); // 获取课型
         this.getSchoolList(); //获取学校列表
         this.getgroupList(); //获取用户组列表
         this.getSubjectList();
-        // this.getGradeList();
+        // 编辑
         if (this.$route.query.themeid) {
             this.themeId = this.$route.query.themeid;
             this.getThemeInfo(); //编辑获取主体信息
-            // 编辑
-            if (this.$route.query.teacherName) {
-                this.getTeacherList(this.$route.query.teacherName);
+            this.isEdit = true;
+        } else {
+            // 新增
+            // 除super或admin之外，新增时教师文本框需要默认带出当前人名字
+            if (
+                !(
+                    JSON.parse(localStorage.getItem('userInfo')).userId == 1 ||
+                    JSON.parse(localStorage.getItem('userInfo')).userId == 2
+                )
+            ) {
+                this.getTeacherList(JSON.parse(localStorage.getItem('userInfo')).nickName);
+                this.addEditInfo.teacherId = JSON.parse(localStorage.getItem('userInfo')).userId;
                 this.getUseList();
             }
-            this.isEdit = true;
         }
         if (this.$route.query.type == 3 && this.aiType == 2) {
             this.addEditInfo.resources = 3;
@@ -970,6 +969,11 @@ export default {
                 }
                 if (this.addEditInfo.type == -1) {
                     this.isTranslationPending = true;
+                }
+                // 编辑
+                if (this.$route.query.teacherName) {
+                    this.getTeacherList(this.$route.query.teacherName);
+                    this.getUseList();
                 }
             });
         },

@@ -879,13 +879,16 @@ export default {
         if (this.$route.query.evaluationid) {
             this.evaluationid = this.$route.query.evaluationid;
             this.getCommentInfo(); //编辑获取主体信息
-            if (this.$route.query.teacherName) {
-                this.getTeacherList(this.$route.query.teacherName);
-                this.getUseList();
-            }
             this.isEdit = true;
         } else {
-            if (JSON.parse(localStorage.getItem('userInfo')).roleType == 1) {
+            // 新增
+            // 除super或admin之外，新增时教师文本框需要默认带出当前人名字
+            if (
+                !(
+                    JSON.parse(localStorage.getItem('userInfo')).userId == 1 ||
+                    JSON.parse(localStorage.getItem('userInfo')).userId == 2
+                )
+            ) {
                 this.getTeacherList(JSON.parse(localStorage.getItem('userInfo')).nickName);
                 this.addEditInfo.teacherId = JSON.parse(localStorage.getItem('userInfo')).userId;
                 this.getUseList();
@@ -1431,6 +1434,10 @@ export default {
                 }
                 if (this.addEditInfo.status == 1) {
                     this.isTranslationPending = true;
+                }
+                if (this.$route.query.teacherName) {
+                    this.getTeacherList(this.$route.query.teacherName);
+                    this.getUseList();
                 }
             });
         },

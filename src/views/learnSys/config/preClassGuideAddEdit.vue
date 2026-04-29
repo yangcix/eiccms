@@ -475,7 +475,7 @@ export default {
                 this.$message('课程名称由中文大小写字母数字组成，最长80位！', 'error');
                 return true;
             }
-            if (!this.addEditInfo.classTypeId || !this.addEditInfo.type) {
+            if (!this.addEditInfo.classTypeId) {
                 this.$message('请选择课堂类型！', 'error');
                 return true;
             }
@@ -495,7 +495,7 @@ export default {
                 this.$message('请选择教师！', 'error');
                 return true;
             }
-            if (!this.addEditInfo.historyCourseId) {
+            if (!this.addEditInfo.type || !this.addEditInfo.historyCourseId) {
                 this.$message('请选择历史课程！', 'error');
                 return true;
             }

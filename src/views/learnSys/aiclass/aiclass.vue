@@ -104,9 +104,9 @@
                             <div class="tableName" @click="detail(scope.row)">{{ scope.row.name }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="subjectName" align="center" label="学科"> </el-table-column>
-                    <el-table-column prop="teacherName" align="center" label="教师"> </el-table-column>
-                    <el-table-column prop="grindingGradeName" align="center" label="年级"></el-table-column>
+                    <el-table-column prop="subjectName" align="center" label="学科" width="100"> </el-table-column>
+                    <el-table-column prop="teacherName" align="center" label="教师" width="100"> </el-table-column>
+                    <el-table-column prop="grindingGradeName" align="center" label="年级" width="100"></el-table-column>
                     <!-- 全部数据或者市级/区县的下级数据 -->
                     <el-table-column
                         v-if="curShowType == 1 || ((curOrgLevel == 2 || curOrgLevel == 3) && curShowType == 3)"
@@ -123,7 +123,7 @@
                         label="区县"
                     >
                     </el-table-column>
-                    <el-table-column align="center" label="录制状态">
+                    <el-table-column align="center" label="录制状态" width="100">
                         <template slot-scope="scope">
                             <ul>
                                 <li v-if="scope.row.type === -1">待提交</li>
@@ -135,7 +135,7 @@
                             </ul>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="分析状态">
+                    <el-table-column align="center" label="分析状态" width="100">
                         <template slot-scope="scope">
                             <ul>
                                 <li v-if="scope.row.aiStatus === -1">
@@ -163,7 +163,7 @@
                             </ul>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="资源来源">
+                    <el-table-column align="center" label="资源来源" width="120">
                         <template slot-scope="scope">
                             <ul>
                                 <li v-if="scope.row.resources === 1">排课录制</li>
@@ -173,9 +173,9 @@
                             </ul>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="createDate" align="center" min-width="140" label="添加时间">
+                    <el-table-column prop="createDate" align="center" width="160" label="添加时间">
                     </el-table-column>
-                    <el-table-column align="center" min-width="180px" label="操作">
+                    <el-table-column align="center" min-width="140px" label="操作">
                         <template slot-scope="scope">
                             <div class="btnList">
                                 <!-- 待提交、未开始、录制失败、分析失败且资源来源不是排课录制 -->

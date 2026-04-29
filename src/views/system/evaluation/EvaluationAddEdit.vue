@@ -1373,9 +1373,9 @@ export default {
                 this.addEditInfo.evaluationOrgId = res.data.evaluationOrgId;
                 this.addEditInfo.orgId = res.data.evaluationOrgId;
                 if (res.data.resources == 1) {
-                    this.objectName = res.data?.smTheme?.name;
-                    this.addEditInfo.recordId = res.data?.smTheme?.id;
-                    this.addEditInfo.objectId = res.data?.smTheme?.id;
+                    this.objectName = res.data.objectName;
+                    this.addEditInfo.recordId = res.data.objectId;
+                    this.addEditInfo.objectId = res.data.objectId;
                 } else if (res.data.resources == 2 || res.data.resources == 4) {
                     if (res.data.resources == 2) {
                         this.addEditInfo.objectId = '';

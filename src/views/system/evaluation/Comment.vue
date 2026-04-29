@@ -799,18 +799,11 @@ export default {
     mounted() {
         if (this.$route.query.type) {
             this.searchThemeStatus = Number(this.$route.query.type);
-            // let query = JSON.parse(JSON.stringify(this.$route.query))
-            // query.type = ''
-            // this.$router.replace({
-            // 	query: query
-            // })
         }
         this.rebuildDisabled = false;
         this.handleGetData();
         this.$bus.off('getComment', this.handleGetData);
         this.$bus.on('getComment', this.handleGetData);
-        // this.$bus.emit('getComment');
-        // this.getModelConfig();
         this.getUserInfo();
         this.getSubjectList();
     },

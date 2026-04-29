@@ -132,13 +132,6 @@ axios.interceptors.response.use(
             };
         }
         if (response.data.code == '400') {
-            // const queryToken = session.get("clientToken");
-            // if (queryToken) {
-            //   console.log(queryToken);
-            //   console.log("queryToken-you");
-            // } else {
-            //   console.log("queryToken-meiyou");
-            // }
             session.remove('time');
             if (!storage.get('tokenFlag')) {
                 storage.set('tokenFlag', true);
@@ -166,23 +159,7 @@ axios.interceptors.response.use(
         } else if (response.data.code == '405') {
             window.localStorage.removeItem('userInfo');
             session.remove('time');
-            // Message.closeAll();
-            // 2 秒内不重复提示
-            // Message({
-            //   type: 'error',
-            //   message: response.data.message,
-            //   center: true,
-            //   offset: 70
-            // });
-            // window._code405 = true;
-            // setTimeout(() => {
-            //   window._code405 = false;
-            // }, 2000);
             Router.push('/login');
-            // setTimeout(() => {
-            //   location.reload();
-            //   // Router.go(0);
-            // }, 1000);
         } else if (response.data.code == '-10000') {
             Message.closeAll();
             if (response.config.url !== '/sm/recordOverview/list') {
@@ -193,14 +170,9 @@ axios.interceptors.response.use(
                     offset: 70,
                 });
             }
-            // window._code10000 = true;
-            // setTimeout(() => {
-            //     window._code10000 = false;
-            // }, 2000);
         } else if (response.data.code == '-20000') {
             Message({
                 type: 'error',
-                // message: '系统错误，请稍后重试',
                 message: response.data.message,
                 center: true,
                 offset: 70,

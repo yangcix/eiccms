@@ -523,8 +523,8 @@ export default {
                 this.$message('大单元分析名称不能为空！', 'error');
                 return true;
             }
-            if (this.$verify.chLetterNum(this.addEditInfo.name, 100)) {
-                this.$message('大单元分析名称由中文大小写字母数字组成，最长100位！', 'error');
+            if (this.$verify.chLetterNum(this.addEditInfo.name, 80)) {
+                this.$message('大单元分析名称由中文大小写字母数字组成，最长80位！', 'error');
                 return true;
             }
             if (!this.addEditInfo.subjectId) {

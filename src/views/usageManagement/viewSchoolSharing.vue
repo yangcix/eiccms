@@ -973,7 +973,7 @@ export default {
                 teacherList.push(item);
             }
             this.batchInfo['projectId'] = this.$route.query.id;
-            this.batchInfo['orgId'] = this.$route.query.orgId;
+            this.batchInfo['eduOrgId'] = this.$route.query.orgId;
             this.batchInfo['teacherList'] = teacherList;
             this.batchInfo['allocateType'] = 1;
             this.$axios.post('/aiAnalysisAllocation/allocation/batchAllocate', this.batchInfo).then((res) => {

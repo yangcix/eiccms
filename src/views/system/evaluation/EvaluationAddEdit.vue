@@ -143,7 +143,7 @@
                             <el-option
                                 v-for="item in judgedIdList"
                                 :key="item.userId"
-                                :label="item.name + '-' + item.code"
+                                :label="item.name + (item.schoolName ? '-' + item.schoolName : '') + '-' + item.code"
                                 :value="item.userId"
                             >
                             </el-option>

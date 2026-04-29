@@ -1611,8 +1611,8 @@ export default {
                     if (this.evaluationid) {
                         judgeData.id = this.addEditInfo.id;
                     }
-                    this.$axios.post('/sm/comment/check', judgeData).then((res) => {
-                        if (res.code == 200) {
+                    this.$axios.post('/sm/comment/check', judgeData).then((checkRes) => {
+                        if (checkRes.code == 200) {
                             formData.append('name', this.addEditInfo.name);
                             formData.append('aiConfigId', this.aiType);
                             console.log(

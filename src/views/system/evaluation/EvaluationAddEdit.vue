@@ -1136,11 +1136,6 @@ export default {
             if (file.size / max > 50) {
                 return true;
             } else {
-                // return this.$confirm(`确定移除该文件吗？`, '删除提示', {
-                //   confirmButtonText: '确定',
-                //   cancelButtonText: '取消',
-                //   type: 'warning'
-                // }).then(() => {
                 if (file.percentage && file.percentage !== 100) {
                     // 未上传成功取消请求
                     this.$refs.edufileupload.abort();
@@ -1166,11 +1161,7 @@ export default {
                             this.teachingFileIds.splice(index, 1);
                         }
                     });
-                    // // 不为编辑，// 删除调用删除接口
-                    // let id = file.response.data.id
-                    // this.deleteEduFile(id);
                 }
-                // }).catch(() => reject());
             }
         },
         // edu上传之前
@@ -1183,11 +1174,6 @@ export default {
                 isJpg = false;
             }
             if (!isJpg) {
-                // this.edufileList = [];
-                // setTimeout(() => {
-                //   this.edufileList = [];
-                //   console.log(this.edufileList)
-                // }, 2000);
                 this.$message('上传失败，文件格式错误', 'error');
                 return false;
             }
@@ -1204,7 +1190,6 @@ export default {
         },
         // 上传文件的成功回调
         handleEduSuccess(response, file, fileList) {
-            // console.log(response, file, fileList,this.teachingFileIds)
             if (response.code == 200) {
                 this.teachingFileIds.push(response.data.id);
             }
@@ -1244,34 +1229,18 @@ export default {
         getSchoolList() {
             this.$axios.get('/sys/org/listSchool').then((res) => {
                 this.schoolList = res.data;
-                // if (this.schoolList.length > 0) {
-                // 	this.addEditInfo.orgId = this.schoolList[0].id;
-                // this.getTeacherList();
-                // 	if (this.addEditInfo.orgId) {
-                // 		this.getTeachBuildList(this.addEditInfo.orgId);
-                // 	}
-                // }
             });
         },
         //根据学校id获取教学楼列表
         getTeachBuildList(orgId) {
             this.$axios.get('/sys/classroom/getTeachBuildList', {orgId: orgId}).then((res) => {
                 this.buildlList = res.data;
-                // if (this.buildlList.length > 0) {
-                // 	this.addEditInfo.buildingId = this.buildlList[0].id;
-                // 	if (this.addEditInfo.buildingId) {
-                // 		this.getClassroomList(this.addEditInfo.buildingId);
-                // 	}
-                // }
             });
         },
         //根据教学楼id获取教室列表
         getClassroomList(buildingId) {
             this.$axios.get('/sys/classroom/getClassroomList', {buildingId: buildingId}).then((res) => {
                 this.classroomList = res.data;
-                // if (this.classroomList.length > 0) {
-                // 	this.addEditInfo.classroomId = this.classroomList[0].id;
-                // }
             });
         },
         //选择学校后 教学楼、教室修改
@@ -1573,7 +1542,6 @@ export default {
             this.objectVideoName = '';
         },
         save(val) {
-            console.log('保存听评课活动...');
             if (!this.verify()) {
                 let arrs = [];
                 let arrays = [];
@@ -1615,14 +1583,8 @@ export default {
                         if (checkRes.code == 200) {
                             formData.append('name', this.addEditInfo.name);
                             formData.append('aiConfigId', this.aiType);
-                            console.log(
-                                '=============================aiStatus: ' + this.aiStatus + ', radio1: ' + this.radio1
-                            );
                             if (this.aiStatus == 1 && this.radio1 == 2) {
                                 formData.append('classTypeId', this.addEditInfo.classTypeId);
-                                console.log(
-                                    '=============================classTypeId: ' + this.addEditInfo.classTypeId
-                                );
                             }
                             formData.append('category', this.themeValue);
                             formData.append('labelList', idList);
@@ -1822,7 +1784,6 @@ export default {
                                     (res) => {
                                         if (res.code == 200) {
                                             setTimeout(() => {
-                                                console.log('this.addEditInfo', this.addEditInfo);
                                                 if (this.addEditInfo.teacherVideo && this.radio2 == 3) {
                                                     this.commitAiUploadTable({
                                                         type: 'splice',
@@ -1842,14 +1803,6 @@ export default {
                                             this.upErrorMsg = res.message;
                                             this.upErrorShow = true;
                                         } else if (res.code == -10000) {
-                                            // this.editShow = false;
-                                            // // 判断编辑是否有替换视频
-                                            // if (this.addEditInfo.video) {
-                                            //   this.commitAiUploadDataState({
-                                            //     uploadId: uploadId,
-                                            //     status: 0,
-                                            //   });
-                                            // }
                                             if (this.addEditInfo.teacherVideo) {
                                                 this.commitAiUploadTable({
                                                     type: 'splice',
@@ -1871,16 +1824,6 @@ export default {
                 } else {
                     this.$message('听评课名称重复，该评课正在上传', 'error');
                 }
-
-                // this.$axios.post(url, formData).then((res) => {
-                //   if (res.code == 200) {
-                //     // this.goBack();
-                //     this.$router.push("/sm/comment");
-                //     this.evaluationid
-                //       ? this.$message("修改评课成功", "success")
-                //       : this.$message("新增评课成功", "success");
-                //   }
-                // });
             }
         },
         // 选择视频资源

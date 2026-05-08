@@ -847,6 +847,7 @@ export default {
                                 ancestralStr: row?.ancestralStr ? row.ancestralStr.split('/') : '',
                                 principalIdList: row.principalIdList,
                             };
+                            this.levelList = this.allLevelList;
                         } else {
                             this.topLevelEdit = false;
                             this.addEditInfo = {

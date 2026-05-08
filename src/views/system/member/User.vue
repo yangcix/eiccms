@@ -1217,7 +1217,7 @@ export default {
                 return;
             }
             if (this.$verify.chLetterNum(this.teacherInfo.teacherName, 20)) {
-                this.$message('机构名称为必填，由中文或大小写字母或数字组成，最长20位！', 'error');
+                this.$message('教师姓名为必填，由中文或大小写字母或数字组成，最长20位！', 'error');
                 return;
             }
             let params = {};

@@ -400,8 +400,8 @@ export default {
     text-align: justify;
 }
 .data-table {
-	.operat-list {
-		justify-content: center;
-	}
+    .operat-list {
+        justify-content: center;
+    }
 }
 </style>

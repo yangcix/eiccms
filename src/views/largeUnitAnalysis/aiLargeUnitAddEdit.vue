@@ -827,8 +827,8 @@ export default {
 }
 
 .item-scroll-bottom {
-    width: 200px;
-    height: 46px;
+    width: 160px;
+    height: 40px;
     background-color: white;
     position: absolute;
     bottom: 11%;

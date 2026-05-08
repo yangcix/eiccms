@@ -44,9 +44,9 @@
                     </el-table-column>
                     <el-table-column label="负责人" :show-overflow-tooltip="true" align="center">
                         <template slot-scope="scope">
-                            <ul class="principal-list">
-                                <li v-for="(val, index) in scope.row.principalNames" :key="index">{{ val }}</li>
-                            </ul>
+                            <span>
+                                {{ scope.row.principalNames }}
+                            </span>
                         </template>
                     </el-table-column>
                     <el-table-column label="状态" align="center">

@@ -696,8 +696,6 @@ export default {
                         this.isShowOrgDialog = false;
                         this.$message('新增成功！', 'success');
                         this.getList();
-                    } else {
-                        this.$message(res.message, 'error');
                     }
                 });
             }
@@ -728,8 +726,6 @@ export default {
                     this.updateConfirmShow = false;
                     this.$message('编辑成功！', 'success');
                     this.getList();
-                } else {
-                    this.$message(res.message, 'error');
                 }
             });
         },

@@ -130,8 +130,6 @@ export default {
                                 this.uploadSuccessShow = true;
                             }
                             this.afterImportMethod();
-                        } else {
-                            this.$message(res.message, 'error');
                         }
                     },
                     (err) => {

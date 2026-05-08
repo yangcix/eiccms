@@ -235,6 +235,9 @@ export function addMinutesByTimestamp(startTime, durationMinutes) {
 }
 
 export function createDuraTionMin(startTime, endTime) {
+    if (!startTime || !endTime) {
+        return '';
+    }
     const supportedFormats = [
         (time) => new Date(time), // 标准格式
         (time) => new Date(`2000-01-01 ${time}`), // 只包含时间的格式

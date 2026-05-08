@@ -97,6 +97,7 @@
                             style="width: 280px"
                             value-format="yyyy-MM-dd HH:mm:ss"
                             placeholder="开始时间"
+                            @change="changeDurationMin"
                         >
                         </el-date-picker>
                         <p class="err-notice">注：开始时间需大于当前时间</p>
@@ -112,7 +113,8 @@
                                 clearable
                                 placeholder="请输入课堂时长"
                                 @change="changeDurationMin"
-                            ></el-input>&nbsp;分钟
+                            ></el-input
+                            >&nbsp;分钟
                             <p class="err-notice"><em>*</em>未填写则默认需手动结束</p>
                         </div>
 
@@ -446,9 +448,10 @@ export default {
                 } else {
                     this.fileList = [];
                 }
-                this.addEditInfo.durationMinutes = this.$comjs.createDuraTionMin(
-                    this.addEditInfo.startTime,
-                    this.addEditInfo.endTime
+                this.$set(
+                    this.addEditInfo,
+                    'durationMinutes',
+                    this.$comjs.createDuraTionMin(this.addEditInfo.startTime, this.addEditInfo.endTime)
                 );
             });
         },
@@ -926,13 +929,13 @@ export default {
         // 更改课堂时长
         changeDurationMin() {
             this.calcEndTime();
-            if (this.addEditInfo.grindingClassroom) {
-                this.classroomChange(1);
-            }
         },
         // 计算课堂结束时间
         calcEndTime() {
-            if (!this.addEditInfo.startTime || !this.addEditInfo.durationMinutes) return;
+            if (!this.addEditInfo.startTime || !this.addEditInfo.durationMinutes) {
+                this.addEditInfo.endTime = '';
+                return;
+            }
             this.addEditInfo.endTime = this.$comjs.addMinutesByTimestamp(
                 this.addEditInfo.startTime,
                 this.addEditInfo.durationMinutes

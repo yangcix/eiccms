@@ -941,9 +941,10 @@ export default {
                     this.teachingFileIds = [];
                 }
                 this.addEditInfo = res.data;
-                this.addEditInfo.durationMinutes = this.$comjs.createDuraTionMin(
-                    this.addEditInfo.startTime,
-                    this.addEditInfo.endTime
+                this.$set(
+                    this.addEditInfo,
+                    'durationMinutes',
+                    this.$comjs.createDuraTionMin(this.addEditInfo.startTime, this.addEditInfo.endTime)
                 );
                 this.getGradeList(res.data.grindingSchool);
                 this.getClassList();
@@ -1086,7 +1087,10 @@ export default {
         },
         // 计算课堂结束时间
         calcEndTime() {
-            if (!this.addEditInfo.startTime || !this.addEditInfo.durationMinutes) return;
+            if (!this.addEditInfo.startTime || !this.addEditInfo.durationMinutes) {
+                this.addEditInfo.endTime = '';
+                return;
+            }
             this.addEditInfo.endTime = this.$comjs.addMinutesByTimestamp(
                 this.addEditInfo.startTime,
                 this.addEditInfo.durationMinutes

@@ -1715,7 +1715,10 @@ export default {
         },
         // 计算课堂结束时间
         calcEndTime() {
-            if (!this.addEditInfo.liveStartTime || !this.addEditInfo.durationMinutes) return;
+            if (!this.addEditInfo.liveStartTime || !this.addEditInfo.durationMinutes) {
+                this.addEditInfo.liveEndTime = '';
+                return;
+            };
             this.addEditInfo.liveEndTime = this.$comjs.addMinutesByTimestamp(
                 this.addEditInfo.liveStartTime,
                 this.addEditInfo.durationMinutes
@@ -2197,17 +2200,19 @@ export default {
                     this.getTeachBuildList(res.data.evaluationOrgId);
                     this.getClassroomList(res.data.buildingId);
                     this.getTerminalIdList();
-                    this.addEditInfo.durationMinutes = this.$comjs.createDuraTionMin(
-                        this.addEditInfo.liveStartTime,
-                        this.addEditInfo.liveEndTime
+                    this.$set(
+                        this.addEditInfo,
+                        'durationMinutes',
+                        this.$comjs.createDuraTionMin(this.addEditInfo.liveStartTime, this.addEditInfo.liveEndTime)
                     );
                 } else if (res.data.resources == 4) {
                     this.addEditInfo.liveStartTime = res.data.smTheme.startTime;
                     this.addEditInfo.liveEndTime = res.data.smTheme.endTime;
                     this.objectVideoName = res.data.objectName;
-                    this.addEditInfo.durationMinutes = this.$comjs.createDuraTionMin(
-                        this.addEditInfo.liveStartTime,
-                        this.addEditInfo.liveEndTime
+                    this.$set(
+                        this.addEditInfo,
+                        'durationMinutes',
+                        this.$comjs.createDuraTionMin(this.addEditInfo.liveStartTime, this.addEditInfo.liveEndTime)
                     );
                 } else {
                     console.log('res.data.resources: ', res.data.resources);

@@ -820,6 +820,7 @@ export default {
             this.levelList = [];
             this.isHaveChildren = false;
             this.isSchoolOrPart = this.curRow.orgType == 2 || this.curRow.orgType == 3;
+            this.errorInfo = '';
             if (isEdit) {
                 this.$axios.get('/sys/org/getOrgSub', {orgId: row.id}).then((res) => {
                     if (res.code == 200) {

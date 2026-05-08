@@ -688,7 +688,10 @@ export default {
                     // 市属校
                     data.append('ancestralStr', this.preAreaList.join('/'));
                 } else {
-                    data.append('ancestralStr', this.preAreaList.concat(this.addEditInfo.ancestralStr).join('/'));
+                    data.append(
+                        'ancestralStr',
+                        this.addEditInfo.ancestralStr ? this.preAreaList?.concat(this.addEditInfo.ancestralStr).join('/') : ''
+                    );
                 }
                 data.append('orgLevel', this.addEditInfo.orgLevel ? this.addEditInfo.orgLevel : '');
                 this.$axios.post('/sys/org/save', data).then((res) => {
@@ -716,7 +719,10 @@ export default {
                     // 市属校
                     data.append('ancestralStr', this.preAreaList.join('/'));
                 } else {
-                    data.append('ancestralStr', this.preAreaList.concat(this.addEditInfo.ancestralStr).join('/'));
+                    data.append(
+                        'ancestralStr',
+                        this.addEditInfo.ancestralStr ? this.preAreaList?.concat(this.addEditInfo.ancestralStr).join('/') : ''
+                    );
                 }
                 data.append('orgLevel', this.addEditInfo.orgLevel ? this.addEditInfo.orgLevel : '');
             }

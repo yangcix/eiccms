@@ -173,19 +173,19 @@
                             </ul>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="createDate" align="center" width="160" label="添加时间">
-                    </el-table-column>
+                    <el-table-column prop="createDate" align="center" width="160" label="添加时间"> </el-table-column>
                     <el-table-column align="center" min-width="140px" label="操作">
                         <template slot-scope="scope">
                             <div class="btnList">
-                                <!-- 待提交、未开始、录制失败、分析失败且资源来源不是排课录制 -->
+                                <!-- 待提交、未开始、录制失败、分析失败且资源来源不是排课录制或智课终端 -->
                                 <el-button
                                     v-if="
                                         permission.update &&
                                         (scope.row.type == -1 ||
                                             scope.row.type == 0 ||
                                             scope.row.type == 3 ||
-                                            (scope.row.aiStatus == 3 && scope.row.resources !== 1))
+                                            (scope.row.aiStatus == 3 &&
+                                                (scope.row.resources !== 1 || scope.row.resources !== 3)))
                                     "
                                     type="text"
                                     @click="add(0, scope.row)"
@@ -218,21 +218,26 @@
                                     @click="watchVideo(scope.row)"
                                     >观看视频</el-button
                                 >
-                                <!-- 分析失败且排课录制 -->
+                                <!-- 分析失败且排课录制或者智课终端 -->
                                 <el-button
-                                    v-if="permission.report && scope.row.aiStatus == 3 && scope.row.resources == 1"
+                                    v-if="
+                                        permission.report &&
+                                        scope.row.aiStatus == 3 &&
+                                        (scope.row.resources == 1 || scope.row.resources == 3)
+                                    "
                                     type="text"
                                     @click="resetting(scope.row)"
                                     >重置分析</el-button
                                 >
-                                <!-- 待提交、未开始、录制失败、分析失败且资源来源不是排课录制 -->
+                                <!-- 待提交、未开始、录制失败、分析失败且资源来源不是排课录制或智课终端 -->
                                 <el-button
                                     v-if="
                                         permission.delete &&
                                         (scope.row.type == -1 ||
                                             scope.row.type == 0 ||
                                             scope.row.type == 3 ||
-                                            (scope.row.aiStatus == 3 && scope.row.resources !== 1))
+                                            (scope.row.aiStatus == 3 &&
+                                                (scope.row.resources !== 1 || scope.row.resources !== 3)))
                                     "
                                     type="text"
                                     style="color: #f56c6c"

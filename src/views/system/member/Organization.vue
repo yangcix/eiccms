@@ -688,10 +688,17 @@ export default {
                     // 市属校
                     data.append('ancestralStr', this.preAreaList.join('/'));
                 } else {
-                    data.append(
-                        'ancestralStr',
-                        this.addEditInfo.ancestralStr ? this.preAreaList?.concat(this.addEditInfo.ancestralStr).join('/') : ''
-                    );
+                    // 学校和部门不需要显示所在地区
+                    if (this.addEditInfo.orgType == 3 || this.addEditInfo.orgType == 2) {
+                        data.append('ancestralStr', '');
+                    } else {
+                        data.append(
+                            'ancestralStr',
+                            this.addEditInfo.ancestralStr
+                                ? this.preAreaList?.concat(this.addEditInfo.ancestralStr).join('/')
+                                : ''
+                        );
+                    }
                 }
                 data.append('orgLevel', this.addEditInfo.orgLevel ? this.addEditInfo.orgLevel : '');
                 this.$axios.post('/sys/org/save', data).then((res) => {
@@ -721,7 +728,9 @@ export default {
                 } else {
                     data.append(
                         'ancestralStr',
-                        this.addEditInfo.ancestralStr ? this.preAreaList?.concat(this.addEditInfo.ancestralStr).join('/') : ''
+                        this.addEditInfo.ancestralStr
+                            ? this.preAreaList?.concat(this.addEditInfo.ancestralStr).join('/')
+                            : ''
                     );
                 }
                 data.append('orgLevel', this.addEditInfo.orgLevel ? this.addEditInfo.orgLevel : '');

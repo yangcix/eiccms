@@ -1,15 +1,16 @@
 <template>
     <div class="import-btn">
+        <el-button class="width-1 import-btn1" icon="el-icon-upload2" v-if="isShowImportBtn" @click="judgePower()">导入</el-button>
         <el-upload
-            v-if="isShowImportBtn"
+            ref="upload"
             class="upload-demo upload-btn"
             :action="uploadUrl"
             accept=".xls,.xlsx"
             :before-upload="selectFile"
             :show-file-list="false"
             :http-request="httpRequest"
+            style="display: none"
         >
-            <el-button class="width-1" icon="el-icon-upload2" v-if="isShowImportBtn">导入</el-button>
         </el-upload>
 
         <el-button class="width-1 template-btn" icon="el-icon-download" v-if="isShowTemplateBtn"
@@ -108,6 +109,22 @@ export default {
                 background: 'rgba(0, 0, 0, 0.7)',
             });
         },
+        judgePower() {
+            let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            if (!(userInfo.orgId == 1 || userInfo.orgId == 2 || userInfo.sysOrganization.orgType == 2)) {
+                event.stopPropagation(); // 阻止事件冒泡
+                event.preventDefault(); // 阻止默认行为
+                this.$message('该功能仅限学校使用！', 'error');
+                return;
+            }
+            const uploadEl = this.$refs.upload.$el;
+            const input = uploadEl.querySelector('input[type="file"]');
+            if (input) {
+                input.click();
+            } else {
+                this.$refs.upload.$refs['upload-inner'].$refs.input.click();
+            }
+        },
         //覆盖默认上传，手动上传
         httpRequest(param) {
             let formData = new FormData();
@@ -148,6 +165,10 @@ export default {
 <style lang="scss" scoped>
 .import-btn {
     display: inline-block;
+
+    .import-btn1 {
+        margin: 0 10px;
+    }
 }
 .template-btn {
     a {

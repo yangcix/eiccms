@@ -215,7 +215,7 @@
                     <p><em>*</em>：</p>
                     <el-input class="width-4" :disabled="true" v-model="sectionName"></el-input>
                 </div>
-                <div class="dialog-item" v-if="curRow.id !== 2">
+                <div class="dialog-item">
                     <p>类型</p>
                     <p><em>*</em>：</p>
                     <el-select

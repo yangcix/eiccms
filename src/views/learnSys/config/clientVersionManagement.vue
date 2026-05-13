@@ -103,6 +103,7 @@
                             :on-remove="removeExeFile"
                             :with-credentials="true"
                             :on-exceed="handleOnExceed"
+                            :before-upload="eduBeforeupload"
                             :limit="1"
                             :file-list="clientExeList"
                         >
@@ -342,6 +343,19 @@ export default {
         viewVersionDetail(row) {
             this.curRow = row;
             this.detailShow = true;
+        },
+         // edu上传之前
+        eduBeforeupload(file) {
+            let isExe;
+            if (file.type == 'application/x-msdownload') {
+                isExe = true;
+            } else {
+                isExe = false;
+            }
+            if (!isExe) {
+                this.$message('上传失败，文件格式错误', 'error');
+                return false;
+            }
         },
     },
 };

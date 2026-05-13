@@ -169,9 +169,9 @@ export default {
             templateUrl: baseUrl + '/sys/classroom/exportSysClassroomManagement',
             templateParams: {},
             fileConfig: {
-                教室编号: 'code',
-                教室门号: 'classroomNumber',
-                楼层数: 'floorNumber',
+                教室名称: 'name',
+                教室门牌号: 'classroomNumber',
+                楼层: 'floorNumber',
                 教学楼名称: 'sysTeachingBuildingManagementName',
                 学校: 'orgName',
                 异常原因: 'msg',

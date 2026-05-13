@@ -153,7 +153,7 @@ export default {
             fileConfig: {
                 教学楼编号: 'code',
                 教学楼名称: 'name',
-                楼层数: 'floors',
+                楼层层数: 'floors',
                 单层教室数量: 'classrooms',
                 学校: 'orgName',
                 异常原因: 'msg',

@@ -437,9 +437,6 @@ export default {
     },
     watch: {
         $route(to, from) {
-            console.log(to.path, '2131');
-            console.log('to.path', to.path);
-            console.log('from.path', from.path);
             if (to.path.includes('/sys/home')) {
                 this.commitSysModule(1); //修改系统类型
             } else if (to.path.includes('/recordhome')) {

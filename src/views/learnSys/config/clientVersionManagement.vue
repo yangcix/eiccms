@@ -221,7 +221,7 @@ export default {
                     id: val.id,
                 };
                 this.clientExeList = [];
-                this.clientExeList.push({name: val.packageName, url: val.packagePath});
+                this.clientExeList.push({name: val.fileName, url: val.packagePath});
             }
             this.addEditShow = true;
         },

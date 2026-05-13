@@ -639,7 +639,7 @@ export default {
             // typeInteract === 1课堂模式
             this.param = param;
             if (this.verify()) {
-                return;
+                return false;
             }
             this.title = '创建主题';
             this.totalMessage = '确认创建该主题？';
@@ -805,10 +805,15 @@ export default {
             console.log(this.classTimeList, 'u2222');
             let flags = false;
             let ischeck = false;
-            this.classTimeList.forEach((el) => {
+            for (let i = 0; i < this.classTimeList.length; i++) {
+                let el = this.classTimeList[i];
                 if (el.startTime && el.endTime) {
                     if (el.startTime == el.endTime) {
                         ischeck = true;
+                    }
+                    if (!el.durationMinutes) {
+                        this.$message('课堂时长不能为空', 'error');
+                        return true;
                     }
                     if (this.$verify.numStr(el.durationMinutes)) {
                         this.$message('课堂时长只能输入正整数', 'error');
@@ -821,7 +826,7 @@ export default {
                 } else {
                     flags = true;
                 }
-            });
+            }
             if (ischeck) {
                 this.$message('课堂结束时间不能等于开始时间', 'error');
                 return true;

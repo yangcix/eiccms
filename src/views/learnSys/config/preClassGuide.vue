@@ -221,9 +221,17 @@ export default {
     created() {},
     watch: {
         $route(to, from) {
-            if (from.path == '/preClassGuide/detail' || to.path == '/preClassGuide') {
-                // 从概览跳转过来的话，分页和过滤项重置
-                if (!(from.path == '/sm/preClassGuideAddEdit' || from.path == '/preClassGuide/detail')) {
+            if (to.path == '/aiPreClassGuidance') {
+                // 在当前节点下的操作，返回到节点主页时，过滤项和分页保持记忆
+                if (from.path == '/sm/preClassGuideAddEdit' || from.path == '/aiPreClassGuidance/detail') {
+                    if (from.query && from.query.themeid) {
+                        this.handleGetData();
+                    } else {
+                        this.pageNum = 1;
+                        this.handleGetData();
+                    }
+                } else {
+                    // 从概览跳转过来的话，分页和过滤项重置
                     this.pageNum = 1;
                     this.searchKey = '';
                     this.searchThemeStatus = '';
@@ -233,23 +241,6 @@ export default {
                     this.searchSchoolList = [];
                     this.handleGetData();
                 }
-                if (from.path == '/sm/preClassGuideAddEdit') {
-                    if (from.query && from.query.themeid) {
-                        this.handleGetData();
-                    } else {
-                        this.pageNum = 1;
-                        this.handleGetData();
-                    }
-                }
-
-                // 在当前节点下的操作，返回到节点主页时，过滤项和分页保持记忆
-            } else if (from.path !== '/preClassGuide') {
-                this.searchKey = '';
-                this.searchThemeStatus = '';
-                this.searchSubject = '';
-                this.searchGrade = '';
-                this.orgIdList = [];
-                this.searchSchoolList = [];
             }
         },
     },

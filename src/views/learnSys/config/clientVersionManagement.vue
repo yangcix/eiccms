@@ -14,15 +14,15 @@
                     <el-table-column align="center" label="序号" prop="id"></el-table-column>
                     <el-table-column prop="versionNumber" align="center" label="版本号"> </el-table-column>
                     <el-table-column prop="enabledStatusText" align="center" label="状态"> </el-table-column>
-                    <el-table-column align="center" width="100px" label="安装包">
+                    <el-table-column align="center" label="安装包">
                         <template slot-scope="scope">
-                            <ul class="operat-list">
+                            <ul class="operat-list1">
                                 <li @click="downloadClient(scope.row)">下载</li>
                             </ul>
                         </template>
                     </el-table-column>
                     <el-table-column prop="createTime" align="center" label="创建时间"> </el-table-column>
-                    <el-table-column align="center" width="180px" label="操作">
+                    <el-table-column align="center" width="140px" label="操作">
                         <template slot-scope="scope">
                             <ul class="operat-list">
                                 <!-- 待开启状态的可开启、编辑、删除 -->
@@ -388,5 +388,12 @@ export default {
             margin: 30px 0;
         }
     }
+}
+.operat-list1 {
+    display: flex;
+    color: #409eff;
+    font-size: 14px;
+    cursor: pointer;
+    justify-content: center;
 }
 </style>

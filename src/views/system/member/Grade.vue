@@ -53,7 +53,7 @@
                     </el-table-column>
                     <el-table-column prop="name" align="center" label="年级"> </el-table-column>
                     <el-table-column prop="year" align="center" label="入学年份"> </el-table-column>
-                    <el-table-column prop="orgName" align="center" label="所属学校"> </el-table-column>
+                    <el-table-column prop="orgName" align="center" label="所属学校" min-width="140"> </el-table-column>
                     <el-table-column align="center" :show-overflow-tooltip="true" label="负责人">
                         <template slot-scope="scope">
                             {{ scope.row.principalNames?.join(',') }}

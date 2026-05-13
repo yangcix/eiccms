@@ -8,7 +8,7 @@
                 <div style="width: 100%; min-width: 1160px">
                     <div class="item-scroll-left">
                         <div class="item-wrap" v-if="aiConfigType == 1 && !isEdit">
-                            <p style="width: 135px">AI分析剩余次数<em></em>：</p>
+                            <p style="width: 118px">AI分析剩余次数<em></em>：</p>
                             <p style="width: 40px">{{ aiNum }}次</p>
                             <p class="err-notice"><em>*</em>剩余次数、优先使用的数据在选择教师后显示！</p>
                         </div>

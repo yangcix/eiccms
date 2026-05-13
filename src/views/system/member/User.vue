@@ -145,7 +145,7 @@
                                 {{ scope.row.status | useStatus }}
                             </template>
                         </el-table-column>
-                        <el-table-column prop="createDate" align="center" min-width="110" label="创建时间">
+                        <el-table-column prop="createDate" align="center" min-width="130" label="创建时间">
                         </el-table-column>
                         <el-table-column align="center" width="250px" label="操作">
                             <template slot-scope="scope">

@@ -51,9 +51,9 @@
                             </ul>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="startTime" align="center" min-width="110" label="开始时间">
+                    <el-table-column prop="startTime" align="center" min-width="150" label="开始时间">
                     </el-table-column>
-                    <el-table-column prop="endTime" align="center" min-width="110" label="结束时间"> </el-table-column>
+                    <el-table-column prop="endTime" align="center" min-width="150" label="结束时间"> </el-table-column>
                     <el-table-column prop="founder" align="center" label="创建者"> </el-table-column>
                     <el-table-column prop="teacherName" align="center" label="授课教师"> </el-table-column>
                     <el-table-column align="center" label="主题状态">
@@ -84,7 +84,7 @@
                             <p>{{ scope.row.liveMode === 1 ? '录播录制' : '远程教学' }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column align="center" label="最大在线人数">
+                    <el-table-column align="center" label="最大在线人数" width="110">
                         <template slot-scope="scope">
                             <p>{{ scope.row.maxOnline }}</p>
                         </template>

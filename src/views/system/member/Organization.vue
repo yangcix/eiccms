@@ -818,8 +818,6 @@ export default {
                     this.orgName = '';
                     this.$message('同步机构成功！', 'success');
                     this.getList();
-                } else {
-                    this.$message(res.message, 'error');
                 }
             });
         },

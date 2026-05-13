@@ -1,6 +1,6 @@
 <template>
     <div class="content-main-wrap second-parent-wrap">
-        <p class="content-title">AI配置管理</p>
+        <p class="content-title">AI连接配置</p>
         <div class="tab-menu" v-if="userId == 1">
             <el-menu class="el-menu-demo" mode="horizontal" :default-active="activeIndex" @select="tabChange">
                 <el-menu-item v-for="(val, index) in filteredTabMenu" :index="val.id" :key="index">

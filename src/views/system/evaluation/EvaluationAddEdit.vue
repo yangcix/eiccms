@@ -1351,6 +1351,7 @@ export default {
                     this.fileList = [];
                 }
                 this.addEditInfo.id = res.data.id;
+                this.addEditInfo.aiProjectId = res.data.aiProjectId;
                 this.addEditInfo.status = res.data.status;
                 this.addEditInfo.evaluationOrgId = res.data.evaluationOrgId;
                 this.addEditInfo.orgId = res.data.evaluationOrgId;

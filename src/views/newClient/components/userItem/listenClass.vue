@@ -1700,7 +1700,6 @@ export default {
             this.getClassTypeList(1);
         },
         clearTerminal() {
-            console.log('清除');
             this.addEditInfo.terminalIdList = '';
             if (this.addEditInfo.classroomId) {
                 this.classroomChange(1);
@@ -1715,10 +1714,20 @@ export default {
         },
         // 计算课堂结束时间
         calcEndTime() {
+            if (this.addEditInfo.durationMinutes) {
+                if (this.addEditInfo.durationMinutes == 0) {
+                    this.$message('课堂时长不能为0', 'error');
+                    return;
+                }
+                if (this.$verify.numStr(this.addEditInfo.durationMinutes)) {
+                    this.$message('课堂时长只能输入正整数', 'error');
+                    return;
+                }
+            }
             if (!this.addEditInfo.liveStartTime || !this.addEditInfo.durationMinutes) {
                 this.addEditInfo.liveEndTime = '';
                 return;
-            };
+            }
             this.addEditInfo.liveEndTime = this.$comjs.addMinutesByTimestamp(
                 this.addEditInfo.liveStartTime,
                 this.addEditInfo.durationMinutes
@@ -3157,6 +3166,10 @@ export default {
                     return true;
                 }
                 if (this.addEditInfo.durationMinutes) {
+                    if (this.addEditInfo.durationMinutes == 0) {
+                        this.$message('课堂时长不能为0', 'error');
+                        return;
+                    }
                     if (this.$verify.numStr(this.addEditInfo.durationMinutes)) {
                         this.$message('课堂时长只能输入正整数', 'error');
                         return true;

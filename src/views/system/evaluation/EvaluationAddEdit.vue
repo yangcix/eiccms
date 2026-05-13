@@ -1080,6 +1080,16 @@ export default {
         },
         // 计算课堂结束时间
         calcEndTime() {
+            if (this.addEditInfo.durationMinutes) {
+                if (this.addEditInfo.durationMinutes == 0) {
+                    this.$message('课堂时长不能为0', 'error');
+                    return;
+                }
+                if (this.$verify.numStr(this.addEditInfo.durationMinutes)) {
+                    this.$message('课堂时长只能输入正整数', 'error');
+                    return;
+                }
+            }
             if (!this.addEditInfo.liveStartTime || !this.addEditInfo.durationMinutes) {
                 this.addEditInfo.liveEndTime = '';
                 return;
@@ -2051,6 +2061,10 @@ export default {
                     return true;
                 }
                 if (this.addEditInfo.durationMinutes) {
+                    if (this.addEditInfo.durationMinutes == 0) {
+                        this.$message('课堂时长不能为0', 'error');
+                        return true;
+                    }
                     if (this.$verify.numStr(this.addEditInfo.durationMinutes)) {
                         this.$message('课堂时长只能输入正整数', 'error');
                         return true;

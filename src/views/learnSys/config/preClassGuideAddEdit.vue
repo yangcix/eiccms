@@ -382,7 +382,7 @@ export default {
                 this.getGradeList();
                 this.getTeacherList(this.$route.query.teacherName);
                 this.curParams['teacherIdList'] = [this.addEditInfo.teacherId];
-                this.changeType(this.addEditInfo.type);
+                this.changeType(this.addEditInfo.type, true);
                 this.getUseList();
                 // 暂存
                 if (this.addEditInfo.status == -1) {
@@ -524,7 +524,11 @@ export default {
                 }
             });
         },
-        changeType(val) {
+        changeType(val, isEditFirstEnter) {
+            // 切换类型的时候清空历史课程，编辑打开时会执行一次这个方法，但不可以清空数据
+            if (!isEditFirstEnter) {
+                this.$set(this.addEditInfo, 'historyCourseId', '');
+            }
             this.curUrl = val == 1 ? '/aiGrinding/list' : '/sm/comment/list';
             if (this.curParams['teacherIdList'].length != 0) {
                 this.getHistoryCourseList();

@@ -4,8 +4,8 @@
 		
 		<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
 			<el-menu-item index="0" class="menu-item">基础信息</el-menu-item>
-			<el-menu-item index="1" v-if="detailInfo.publicLive == 1">公网直播</el-menu-item>
-			<el-menu-item index="2" v-if="detailInfo.liveStatus == 2">直播数据</el-menu-item>
+			<el-menu-item index="1" v-if="detailInfo.publicLive == 1">公网录制</el-menu-item>
+			<el-menu-item index="2" v-if="detailInfo.liveStatus == 2">录制数据</el-menu-item>
 		</el-menu>
 		<div v-if="activeIndex == 0" style="height: 100%">
 			<div class="content-wrap scroll-wrap">
@@ -43,7 +43,7 @@
 						<p class="value">{{detailInfo.password}}</p>
 					</li>
 					<li class="li">
-						<p class="title">直播录制：</p>
+						<p class="title">课程录制：</p>
 						<p class="value">{{detailInfo.recode | recode}}</p>
 						<!-- <p class="value" v-for="val in detailInfo.terminalList" v-show="val.recode">{{val.terminalName}}</p> -->
 					</li>
@@ -52,19 +52,19 @@
 						<p class="value" v-for="(val, index) in detailInfo.terminalList" :key="index"><span v-if="val.recode === 1">{{val.terminalName}}</span></p>
 					</li> -->
 					<li class="li" v-if="!$route.query.val">
-						<p class="title">直播模式：</p>
+						<p class="title">课程录制模式：</p>
 						<p class="value">{{detailInfo.liveMode | liveMode}}</p>
 					</li>
 					<li class="li">
-						<p class="title">直播加密：</p>
+						<p class="title">课程录制加密：</p>
 						<p class="value">开启</p>
 					</li>
 					<li class="li" v-if="detailInfo.liveMode == 1 && detailInfo.terminalList.length > 0">
-						<p class="title">直播位置：</p>
+						<p class="title">课程录制位置：</p>
 						<p class="value">{{detailInfo.terminalList[0].schoolName}}—{{detailInfo.terminalList[0].buildName}}—{{detailInfo.terminalList[0].className}}</p>
 					</li>
 					<li class="li" v-if="detailInfo.liveMode == 1 && detailInfo.terminalList.length > 0">
-						<p class="title">直播设备：</p>
+						<p class="title">课程录制设备：</p>
 						<p class="value">{{detailInfo.terminalList[0].terminalName}}</p>
 					</li>
 					<li class="li">
@@ -150,8 +150,8 @@
 
 						</div>
 						<el-button v-else type="primary" @click="qrcodeShow = true">分享海报</el-button>
-						<el-button type="primary" class="last-btn" v-if="detailInfo.liveStatus == 0 && detailInfo.liveMode === 1 && !$route.query.val" @click="startLiveShow = true">开始直播</el-button>
-						<el-button type="primary" class="last-btn" v-if="detailInfo.liveStatus == 1 && detailInfo.liveMode === 1 && !$route.query.val" @click="endLiveShow = true">结束直播</el-button>
+						<el-button type="primary" class="last-btn" v-if="detailInfo.liveStatus == 0 && detailInfo.liveMode === 1 && !$route.query.val" @click="startLiveShow = true">开始录制</el-button>
+						<el-button type="primary" class="last-btn" v-if="detailInfo.liveStatus == 1 && detailInfo.liveMode === 1 && !$route.query.val" @click="endLiveShow = true">结束录制</el-button>
 						<!-- <el-button type="primary" class="last-btn" v-if="detailInfo.liveStatus == 0 && detailInfo.liveMode === 1 && !$route.query.val && permission.start" @click="startLiveShow = true">开始直播</el-button>
 						<el-button type="primary" class="last-btn" v-if="detailInfo.liveStatus == 1 && detailInfo.liveMode === 1 && !$route.query.val && permission.stop" @click="endLiveShow = true">结束直播</el-button> -->
 					</div>
@@ -222,8 +222,8 @@
 					</div>
 					<div class="btn-wrap">
 						<el-button type="primary" @click="cloudqrcodeShow = true">分享海报</el-button>
-						<el-button type="primary" class="last-btn" v-if="cloudInfo.liveStatus == 0 && cloudInfo.status == 1" @click="cloudStartLiveShow = true">继续公网直播</el-button>
-						<el-button type="primary" class="last-btn" v-if="cloudInfo.liveStatus == 1" @click="cloudEndLiveShow = true">结束公网直播</el-button>
+						<el-button type="primary" class="last-btn" v-if="cloudInfo.liveStatus == 0 && cloudInfo.status == 1" @click="cloudStartLiveShow = true">继续公网录制</el-button>
+						<el-button type="primary" class="last-btn" v-if="cloudInfo.liveStatus == 1" @click="cloudEndLiveShow = true">结束公网录制</el-button>
 						<!-- <el-button type="primary" class="last-btn" v-if="cloudInfo.liveStatus == 0 && cloudInfo.status == 1 && permission.start" @click="cloudStartLiveShow = true">继续公网直播</el-button>
 						<el-button type="primary" class="last-btn" v-if="cloudInfo.liveStatus == 1 && permission.stop" @click="cloudEndLiveShow = true">结束公网直播</el-button> -->
 					</div>
@@ -293,7 +293,7 @@
 					<p>观看权限</p>
 					<p><em>*</em>：</p>
 					<el-select v-model="cloudGroupId" placeholder="请选择用户组" class="width-2" style="margin-right: 2px">
-						<el-option label="匿名（用户可自由访问直播间）" value="0"></el-option>
+						<el-option label="匿名（用户可自由访问录制间）" value="0"></el-option>
 						<el-option label="密码观看" value="1"></el-option>
 					</el-select>
 				</div>
@@ -316,7 +316,7 @@
 			:visible.sync="startLiveShow"
 			width="420px">
 			<div class="dialog-wrap">
-				<p class="err-delete">确认提前开始直播？</p>
+				<p class="err-delete">确认提前开始录制？</p>
 				<div class="dialog-btn">
 					<el-button type="primary" @click="startEndLive(0)">确 定</el-button>
 					<el-button @click="startLiveShow = false">取 消</el-button>
@@ -330,7 +330,7 @@
 			:visible.sync="endLiveShow"
 			width="420px">
 			<div class="dialog-wrap">
-				<p class="err-delete">确认结束直播？</p>
+				<p class="err-delete">确认结束录制？</p>
 				<div class="dialog-btn">
 					<el-button type="primary" @click="startEndLive(1)">确 定</el-button>
 					<el-button @click="endLiveShow = false">取 消</el-button>
@@ -344,7 +344,7 @@
 			:visible.sync="cloudStartLiveShow"
 			width="420px">
 			<div class="dialog-wrap">
-				<p class="err-delete">确认继续公网直播？</p>
+				<p class="err-delete">确认继续公网录制？</p>
 				<div class="dialog-btn">
 					<el-button type="primary" @click="handleStartEndLive(0)">确 定</el-button>
 					<el-button @click="cloudStartLiveShow = false">取 消</el-button>
@@ -358,7 +358,7 @@
 			:visible.sync="cloudEndLiveShow"
 			width="420px">
 			<div class="dialog-wrap">
-				<p class="err-delete">确认结束公网直播？</p>
+				<p class="err-delete">确认结束公网录制？</p>
 				<div class="dialog-btn">
 					<el-button type="primary" @click="handleStartEndLive(1)">确 定</el-button>
 					<el-button @click="cloudEndLiveShow = false">取 消</el-button>
@@ -828,7 +828,7 @@
 				return arr[val];
 			},
 			liveMode(val){
-				let arr = ['录播直播', '远程教学'];
+				let arr = ['课程录制', '远程教学'];
 				return arr[val - 1];
 			}
 		}

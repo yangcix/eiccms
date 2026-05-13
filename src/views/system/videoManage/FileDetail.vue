@@ -1,6 +1,6 @@
 <template>
 	<div class="second-wrap">
-		<p class="content-title"><el-page-header @back="goBack" content="视频详情"></el-page-header></p>
+		<p class="content-title"><el-page-header @back="goBack" content="课程详情"></el-page-header></p>
 		<el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
 			<el-menu-item index="0" class="menu-item">基础信息</el-menu-item>
 			<el-menu-item index="1" v-if="detailInfo.publicVod == 1">公网点播</el-menu-item>
@@ -8,12 +8,12 @@
 		<div class="content-wrap scroll-wrap" v-if='activeIndex == 0'>
 				<ul class="detail-list">
 					<li>
-						<p class="title">视频名称：</p>
+						<p class="title">课程名称：</p>
 						<p class="value">{{detailInfo.name}}</p>
 						<p v-if="detailInfo.status == 3" style="cursor: pointer;font-size: 14px;color: #5B8CFF;" @click="openChangeName">修改</p>
 					</li>
 					<li>
-						<p class="title">视频分类：</p>
+						<p class="title">课程分类：</p>
 						<p v-if="detailInfo.labelNameList && detailInfo.labelNameList.length > 0" class="value">{{ detailInfo.categoryName }} -- {{labelString}}</p>
 						<p v-else class="value">{{ detailInfo.categoryName }}</p>
 						<!-- <p class="value" v-for="val in detailInfo.labelNameList">{{val}}</p> -->
@@ -32,7 +32,7 @@
 						<el-button v-if="!$route.query.val" type="primary" class="detail-btn" @click="auditDetailShow = true">修改</el-button>
 					</li>
 					<li>
-						<p class="title">视频状态：</p>
+						<p class="title">课程状态：</p>
 						<p class="value">{{videoState}}</p>
 					</li>
 					<li v-if="detailInfo.status === 3">
@@ -80,7 +80,7 @@
 		<div class="content-wrap scroll-wrap" v-if='activeIndex == 1'>
 			<ul class="detail-list">
 					<li>
-						<p class="title">视频名称：</p>
+						<p class="title">课程名称：</p>
 						<p class="value">{{publicDetail.name}}</p>
 					</li>
 					<li>
@@ -142,15 +142,15 @@
 			</div>
 		</el-dialog>
 		<el-dialog
-			title="修改视频名称"
+			title="修改课程名称"
 			:close-on-click-modal="false"
 			:visible.sync="changeNameShow"
 			width="420px">
 			<div class="dialog-wrap">
 				<div class="dialog-item">
-					<p>视频名称</p>
+					<p>课程名称</p>
 					<p><em>*</em>：</p>
-					<el-input class="width-2" placeholder="请输入视频名称" v-model="detailName"></el-input>
+					<el-input class="width-2" placeholder="请输入课程名称" v-model="detailName"></el-input>
 				</div>
 				<div class="dialog-btn">
 					<el-button type="primary" @click="setName">确 定</el-button>
@@ -300,11 +300,11 @@
 			},
 			setName(){
 				if (this.$verify.isEmpty(this.detailName)) {
-					this.$message('请输入视频名称', 'error');
+					this.$message('请输入课程名称', 'error');
 					return
 				}
 				if (this.detailName.length > 20) {
-					this.$message('视频名称不能超过20字', 'error');
+					this.$message('课程名称不能超过20字', 'error');
 					return
 				}
 				let data = new FormData()

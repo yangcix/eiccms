@@ -839,13 +839,15 @@ export default {
                 // 修改后代码
                 if (this.$route.query.id == 6) {
                     console.log('走第一个');
-                    const excludeIds = [10205, 8335, 9181, 13909, 13910, 13911, 13912];
+                    const excludeIds = [10205, 8335, 9181, 13909, 13910, 13911, 13912, 14020, 14040, 13917];
                     console.log('res.data.menuList 11111111111111111111111111   start: ', res.data.menuList);
                     arr = res.data.menuList.filter((el) => !excludeIds.includes(el.id));
                     console.log('res.data.menuList 11111111111111111111111111   end: ', res.data.menuList);
                 } else {
                     console.log('走第二个');
-                    const excludeIds = [10205, 8335, 9181, 13201, 13908, 13909, 13910, 13911, 13912];
+                    const excludeIds = [
+                        10205, 8335, 9181, 13201, 13908, 13909, 13910, 13911, 13912, 14020, 14040, 13917,
+                    ];
                     console.log('res.data.menuList 11111111111111111111111111   start: ', res.data.menuList);
                     arr = res.data.menuList.filter((el) => !excludeIds.includes(el.id));
                     console.log('res.data.menuList 11111111111111111111111111   end: ', res.data.menuList);

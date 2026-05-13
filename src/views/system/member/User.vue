@@ -493,6 +493,7 @@
                             placeholder="请输入教师姓名"
                         ></el-input>
                     </div>
+                    <p class="err-title" v-if="syncInfo">提示：{{ syncInfo }}</p>
                     <div class="dialog-btn">
                         <el-button
                             @click="
@@ -501,7 +502,7 @@
                             "
                             >取 消</el-button
                         >
-                        <el-button type="primary" @click="syncTeacher" :loading="!isSynced">确 定</el-button>
+                        <el-button type="primary" @click="syncTeacher" :loading="isSyncLoading">确 定</el-button>
                     </div>
                 </div>
             </el-dialog>
@@ -595,7 +596,8 @@ export default {
                 emitPath: false,
                 checkStrictly: true,
             },
-            isSynced: true,
+            isSyncLoading: false,
+            syncInfo: '',
         };
     },
     components: {},
@@ -1206,8 +1208,10 @@ export default {
             return false;
         },
         showSyncTeacherDialog() {
-            this.teacherInfo = {};
-            this.isSynced = true;
+            this.$set(this.teacherInfo, 'teacherName', localStorage.getItem('teacherName'));
+            this.$set(this.teacherInfo, 'orgId', localStorage.getItem('orgId'));
+            this.syncInfo = localStorage.getItem('syncInfo');
+            this.isSyncLoading = localStorage.getItem('syncLoading') == '1';
             this.isShowSyncTeacherDialog = true;
             this.getOrgOptions();
         },
@@ -1222,17 +1226,25 @@ export default {
             }
             let params = {};
             params['teacherName'] = this.teacherInfo.teacherName;
-            params['orgId'] = this.teacherInfo.orgId[0];
-            this.isSynced = false;
+            params['orgId'] = this.teacherInfo.orgId;
+            localStorage.setItem('syncLoading', 1);
+            localStorage.setItem('syncInfo', '已开始同步教师，预计8分钟同步完成！');
+            localStorage.setItem('teacherName', this.teacherInfo.teacherName);
+            localStorage.setItem('orgId', this.teacherInfo.orgId);
+            this.syncInfo = localStorage.getItem('syncInfo');
+            this.isSyncLoading = localStorage.getItem('syncLoading') == '1';
             this.$axios.post('/gansu/syncUsers', params).then((res) => {
+                localStorage.setItem('syncLoading', 0);
+                localStorage.setItem('syncInfo', '');
+                localStorage.setItem('teacherName', '');
+                localStorage.setItem('orgId', '');
+                this.$set(this.teacherInfo, 'teacherName', localStorage.getItem('teacherName'));
+                this.$set(this.teacherInfo, 'orgId', localStorage.getItem('orgId'));
+                this.syncInfo = localStorage.getItem('syncInfo');
+                this.isSyncLoading = localStorage.getItem('syncLoading') == '1';
                 if (res.code == 200) {
-                    this.isSynced = true;
                     this.isShowSyncTeacherDialog = false;
-                    this.teacherInfo = {};
-                    this.$message('已开始同步教师，预计xx分钟同步完成！', 'success');
                     this.getTableData();
-                } else {
-                    this.$message(res.message, 'error');
                 }
             });
         },

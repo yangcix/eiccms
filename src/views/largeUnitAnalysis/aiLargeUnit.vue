@@ -88,12 +88,6 @@
                                     v-if="scope.row.status === 2 && permission.download"
                                     >下载压缩包</el-button
                                 >
-                                <!--                <el-button
-                  style="color: #b3b6ba"
-                  type="text"
-                  v-if="scope.row.status === 0 /* && permission.downloadOrResetting */"
-                  >重置分析</el-button
-                >-->
                             </div>
                         </template>
                     </el-table-column>
@@ -138,6 +132,38 @@
                     <el-button type="primary" @click="resetAnalysis()" style="margin-right: 10px">确 定</el-button>
                 </div>
             </el-dialog>
+            <el-dialog
+                title="项目次数选择"
+                :close-on-click-modal="false"
+                :visible.sync="showChooseProjectTimes"
+                width="600px"
+                class="videoBox"
+            >
+                <div class="dialog-content">
+                    <div class="tips">原有项目次数已用完，请选择新的项目次数进行 AI分析！</div>
+                    <div class="dialog-item">
+                        <p style="width: 112px">AI分析剩余次数<em></em>：</p>
+                        <p>{{ aiNum }}次</p>
+                    </div>
+                    <div class="dialog-item">
+                        <p>优先使用<em>*</em>：</p>
+                        <el-select :popper-append-to-body="false" v-model="resettingVal.aiProjectId" class="width-2">
+                            <el-option
+                                v-for="item in useList"
+                                :key="item.allocationId"
+                                :label="item.projectName + '-' + item.residueNum + '次'"
+                                :value="item.allocationId"
+                            >
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="resetAnalysis">确 定</el-button>
+                    <el-button @click="handleCloseResetAnalysis">取 消</el-button>
+                </span>
+            </el-dialog>
         </div>
     </div>
 </template>
@@ -173,6 +199,8 @@ export default {
             total: '',
             subjectList: [],
             aiType: JSON.parse(localStorage.getItem('sysInfo')).aiConfigId, // ai配置id
+            useList: [],
+            showChooseProjectTimes: false,
         };
     },
     watch: {
@@ -268,8 +296,40 @@ export default {
         },
         //重置分析弹窗
         resetting(row) {
-            this.resettingVal = row;
-            this.resettingShow = true;
+            this.resettingVal = JSON.parse(JSON.stringify(row));
+            const powerResult = this.hasProjectTimes(row);
+            powerResult.then((res) => {
+                if (res) {
+                    this.resettingShow = true;
+                }
+            });
+        },
+        async hasProjectTimes(row) {
+            // 1AI课堂分析 2赛课辅导 3大单元及学情分析 4AI课前指导
+            let params = {};
+            params['productType'] = 3;
+            params['currentUserId'] = row.teacherId;
+            return await this.$axios.get('/aiAnalysisRecharge/quota', params).then((res) => {
+                if (res.code == 200) {
+                    this.useList = res.data.options;
+                    this.aiNum = res.data.totalResidue;
+                    // 全部次数都没有了，直接给提示
+                    if (this.aiNum == 0) {
+                        this.$message('当前无可用分析次数！', 'error');
+                        return false;
+                    } else {
+                        const currentItem = this.useList.find((item) => item.allocationId === row.aiProjectId);
+                        // 当前项目没有次数，但还有其他项目次数可选
+                        if (!currentItem || currentItem.residueNum == 0) {
+                            this.$set(this.resettingVal, 'aiProjectId', '');
+                            this.showChooseProjectTimes = true;
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                }
+            });
         },
         // 删除弹窗
         deleteData(row) {
@@ -338,13 +398,20 @@ export default {
         resetAnalysis() {
             let data = new FormData();
             data.append('id', this.resettingVal.id);
+            data.append('aiProjectId', this.resettingVal.aiProjectId);
             this.$axios.post('/aiLargeUnit/resetting', data).then((res) => {
                 if (res.code === 200) {
                     this.resettingShow = false;
+                    this.showChooseProjectTimes = false;
                     this.$message(res.data, 'success');
                     this.handleGetData();
                 }
             });
+        },
+        handleCloseResetAnalysis() {
+            this.showChooseProjectTimes = false;
+            this.aiNum = 0;
+            this.useList = [];
         },
     },
 };
@@ -388,7 +455,7 @@ export default {
     margin-left: 20px;
     margin-bottom: 20px;
     font-size: 14px;
-    color: black;
+    color: #303133;
 }
 
 .prompt {

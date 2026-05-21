@@ -1136,7 +1136,8 @@ export default {
                     query: {
                         themeid: val ? val.id : '',
                         teacherName: val ? val.teacherName : '',
-                        msg: val.msg ? val.msg : '',
+                        // 只有分析失败才需要在编辑页显示错误提示
+                        msg: val.aiStatus == 3 ? (val.msg ? val.msg : '') : '',
                     },
                 });
             } else {

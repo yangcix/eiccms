@@ -96,7 +96,7 @@
                                                 >点击添加</i
                                             >
                                             <el-input
-                                                :ref="'inputNameEdit_' + bindex + findex + cindex"
+                                                :ref="'inputNameEdit_' + bindex + '_' + findex + '_' + cindex"
                                                 class="inputName"
                                                 v-model.trim="addRoomValues"
                                                 placeholder="请输入教室名称"
@@ -291,7 +291,8 @@ export default {
                 this.currentInputEle = document.querySelector('.el-input__inner');
                 // this.$refs[`inputNameEdit_${bindex}${findex}${cindex}`][0].focus();
                 // this.currentInputEle.focus();
-                const refKey = 'inputNameEdit_' + bindex + findex + cindex;
+                // 如果楼层数和每层教室数过多，可能会有总和编号相同，导致定位到错误的文本框上。1 21 0和 1 2 10 获取到的都是inputNameEdit_1210。需要做区分
+                const refKey = 'inputNameEdit_' + bindex + '_' + findex + '_' + cindex;
                 if (this.$refs[refKey]) {
                     this.$refs[refKey][0].focus();
                 }

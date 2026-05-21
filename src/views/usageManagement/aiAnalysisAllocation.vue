@@ -40,7 +40,43 @@
                         <el-button type="primary" class="search-btn" @click="search">查询</el-button>
                     </div>
                 </div>
-                <div class="info-content">
+                <div class="info-content2" v-if="orgType == '4'">
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span
+                                >AI课堂分析 -
+                                <span style="color: #f59a23" class="bold-text"
+                                    >剩余：{{ $comjs.formatValue(frequency[0]?.remainNum) + '次' }}</span
+                                ></span
+                            >
+                        </div>
+                        <div class="info-item">
+                            <span
+                                >大单元分析 -
+                                <span style="color: #f59a23" class="bold-text"
+                                    >剩余：{{ $comjs.formatValue(frequency[2]?.remainNum) + '次' }}</span
+                                ></span
+                            >
+                        </div>
+                        <div class="info-item">
+                            <span
+                                >赛课辅导 -
+                                <span style="color: #f59a23" class="bold-text"
+                                    >剩余：{{ $comjs.formatValue(frequency[1]?.remainNum) + '次' }}</span
+                                ></span
+                            >
+                        </div>
+                        <div class="info-item">
+                            <span
+                                >AI课前指导 -
+                                <span style="color: #f59a23" class="bold-text"
+                                    >剩余：{{ $comjs.formatValue(frequency[3]?.remainNum) + '次' }}</span
+                                ></span
+                            >
+                        </div>
+                    </div>
+                </div>
+                <div class="info-content" v-else>
                     <div class="info-list">
                         <div class="info-item">
                             <span style="margin-left: 20px"
@@ -362,6 +398,36 @@ export default {
             }
 
             .info-item {
+                height: 38px;
+                line-height: 42px;
+            }
+        }
+    }
+    .info-content2 {
+        width: 100%;
+        min-width: 1260px;
+        overflow-x: auto;
+        height: 50px;
+        align-items: center;
+        margin-top: 15px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+
+        .info-list {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+            height: 100%;
+            text-align: left;
+
+            .bold-text {
+                font-weight: 700;
+            }
+
+            .info-item {
+                width: 25%;
                 height: 38px;
                 line-height: 42px;
             }

@@ -217,7 +217,7 @@
                     title="查看分配明细"
                     :close-on-click-modal="false"
                     :visible.sync="infoShow"
-                    width="1020px"
+                    width="1140px"
                     @close="infoCancel()"
                 >
                     <hr class="info-line" />
@@ -705,7 +705,7 @@ export default {
 .info-line {
     margin-top: 0px;
     margin-bottom: 20px;
-    width: 965px;
+    width: 1095px;
 }
 
 .line {
@@ -718,7 +718,7 @@ export default {
     padding: 0 24px;
     border: 1px solid #ebebeb;
     margin-top: 20px;
-    width: 916px;
+    width: 1036px;
 }
 
 .upload-wrap {

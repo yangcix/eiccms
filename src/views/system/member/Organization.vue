@@ -686,7 +686,7 @@ export default {
                 data.append('status', this.addEditInfo.status);
                 if (this.addEditInfo.id == 2 || this.curRow.orgLevel > 3 || this.curRow.orgType == 3) {
                     // 市属校
-                    data.append('ancestralStr', this.preAreaList.join('/'));
+                    data.append('ancestralStr', this.addEditInfo.ancestralStr ? this.preAreaList.join('/') : '');
                 } else {
                     // 学校和部门不需要显示所在地区
                     if (this.addEditInfo.orgType == 3 || this.addEditInfo.orgType == 2) {
@@ -721,10 +721,13 @@ export default {
             data.append('principalIdList', this.addEditInfo.principalIdList);
             if (!this.isSchoolOrPart) {
                 if (this.topLevelEdit) {
-                    data.append('ancestralStr', this.addEditInfo.ancestralStr.join('/'));
+                    data.append(
+                        'ancestralStr',
+                        this.addEditInfo.ancestralStr ? this.addEditInfo.ancestralStr.join('/') : ''
+                    );
                 } else if (this.addEditInfo.id == 2 || this.curRow.orgLevel > 3 || this.curRow.orgType == 3) {
                     // 市属校
-                    data.append('ancestralStr', this.preAreaList.join('/'));
+                    data.append('ancestralStr', this.addEditInfo.ancestralStr ? this.preAreaList.join('/') : '');
                 } else {
                     data.append(
                         'ancestralStr',

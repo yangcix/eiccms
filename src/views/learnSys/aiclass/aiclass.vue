@@ -1592,6 +1592,7 @@ export default {
                     teacherIdList: this.exportData.teacherIdList,
                     subjectIdList: this.exportData.subjectIdList,
                     aiStatusList: this.exportData.aiStatusList,
+                    typeList: this.exportData.aiStatusList,
                     pageSize: -1, // 请求显示条数
                 })
                 .then((res) => {

@@ -428,7 +428,7 @@ export default {
         },
         //系统名称设置
         orgNameSet() {
-            if (this.orgName && this.name && this.sponsor && this.company && this.curOrgType !== '') {
+            if (this.orgName && this.name && this.sponsor && this.company && this.curOrgType !== ''&& this.curOrgLevel !== '') {
                 if (this.name.length > 20) {
                     return this.$message('平台名称不能超过20字符', 'error');
                 }
@@ -457,6 +457,8 @@ export default {
                     this.$message('请输入运维单位', 'error');
                 } else if (this.curOrgType == '') {
                     this.$message('请选择机构类型', 'error');
+                } else if (this.curOrgLevel == '') {
+                    this.$message('请选择机构层级', 'error');
                 }
             }
         },
@@ -482,6 +484,7 @@ export default {
                 let data = {
                     version: this.version,
                     orgType: this.curOrgType,
+                    orgLevel: this.curOrgLevel,
                     orgName: this.orgName,
                     sponsor: this.sponsor,
                     company: this.company,

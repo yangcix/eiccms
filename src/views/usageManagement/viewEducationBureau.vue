@@ -262,6 +262,8 @@
                                     }}</span>
                                 </template>
                             </el-table-column>
+                            <el-table-column align="center" prop="operateTypeName" label="操作类型" width="120px">
+                            </el-table-column>
                             <el-table-column align="center" prop="remark" label="备注" width="238px">
                                 <template #default="scoped">
                                     <el-tooltip

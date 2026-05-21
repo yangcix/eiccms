@@ -573,7 +573,6 @@
                             @visible-change="getDepartmentList"
                             :show-all-levels="false"
                             multiple
-                            v-show="curShowType == 1 || (curOrgType == 1 && curShowType == 3)"
                         ></el-cascader>
                     </div>
                     <div class="dialog-item">

@@ -843,32 +843,38 @@ export default {
     },
     watch: {
         $route(to, from) {
-            if (from.path == '/sm/commentdetail' || from.path == '/sm/themedetail' || from.path == '/sm/filedetail') {
-                this.handleGetData();
-            } else if (from.path == '/sm/commentaddedit') {
-                if (from.query && from.query.evaluationid) {
+            if (to.path == '/sm/comment') {
+                if (
+                    from.path == '/sm/commentdetail' ||
+                    from.path == '/sm/themedetail' ||
+                    from.path == '/sm/filedetail'
+                ) {
                     this.handleGetData();
+                } else if (from.path == '/sm/commentaddedit') {
+                    if (from.query && from.query.evaluationid) {
+                        this.handleGetData();
+                    } else {
+                        this.pageNum = 1;
+                        this.handleGetData();
+                    }
+                } else if (from.path !== '/sm/comment') {
+                    this.keyword = '';
+                    this.searchResourcesStatus = '';
+                    this.searchLiveStatus = '';
+                    this.searchThemeStatus = '';
+                    this.searchSchoolList = [];
+                    this.orgIdList = [];
+                    if (from.path == '/traininghome') {
+                        this.pageNum = 1;
+                        this.searchThemeStatus = this.$route.query.type ? Number(this.$route.query.type) : '';
+                        this.handleGetData();
+                    } else {
+                        this.pageNum = 1;
+                        this.handleGetData();
+                    }
                 } else {
-                    this.pageNum = 1;
                     this.handleGetData();
                 }
-            } else if (from.path !== '/sm/comment') {
-                this.keyword = '';
-                this.searchResourcesStatus = '';
-                this.searchLiveStatus = '';
-                this.searchThemeStatus = '';
-                this.searchSchoolList = [];
-                this.orgIdList = [];
-                if (from.path == '/traininghome') {
-                    this.pageNum = 1;
-                    this.searchThemeStatus = this.$route.query.type ? Number(this.$route.query.type) : '';
-                    this.handleGetData();
-                } else {
-                    this.pageNum = 1;
-                    this.handleGetData();
-                }
-            } else {
-                this.handleGetData();
             }
         },
     },

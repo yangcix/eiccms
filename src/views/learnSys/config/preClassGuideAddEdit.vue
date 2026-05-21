@@ -110,6 +110,7 @@
                             :loading="teacherSelectLoading"
                             @clear="getTeacherList"
                             @change="changeTeacher"
+                            :disabled="curShowType == 4"
                         >
                             <el-option
                                 v-for="item in teacherList"
@@ -222,9 +223,11 @@ export default {
             curUrl: '',
             isTranslationPending: false,
             isEdit: false,
+            curShowType: null,
         };
     },
     mounted() {
+        this.getUserInfo();
         // 编辑
         if (this.$route.query.themeid) {
             this.themeId = this.$route.query.themeid;
@@ -249,6 +252,11 @@ export default {
         this.getCount();
     },
     methods: {
+        getUserInfo() {
+            let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            // 角色权限（1全部数据，2全校数据，3下级数据, 4个人数据）
+            this.curShowType = userInfo.sysUserAuth[0].type;
+        },
         getClassTypeList() {
             this.$axios.get('/sm/label/listLabel', {parentId: 33}).then((res) => {
                 this.classTypeList = res.data;

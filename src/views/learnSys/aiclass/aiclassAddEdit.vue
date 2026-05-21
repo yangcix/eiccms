@@ -247,6 +247,7 @@
                             :loading="teacherSelectLoading"
                             @clear="getTeacherList"
                             @change="changeTeacher"
+                            :disabled="curShowType == 4"
                         >
                             <el-option
                                 v-for="item in teacherList"
@@ -570,6 +571,7 @@ export default {
             useList: [],
             isEdit: false,
             isTranslationPending: false,
+            curShowType: null,
         };
     },
     components: {},
@@ -579,6 +581,7 @@ export default {
         }),
     },
     mounted() {
+        this.getUserInfo();
         this.getClassTypeList(); // 获取课型
         this.getSchoolList(); //获取学校列表
         this.getgroupList(); //获取用户组列表
@@ -621,6 +624,11 @@ export default {
         }
     },
     methods: {
+        getUserInfo() {
+            let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            // 角色权限（1全部数据，2全校数据，3下级数据, 4个人数据）
+            this.curShowType = userInfo.sysUserAuth[0].type;
+        },
         ...mapActions({
             commitAiUploadBoxVisible: 'commitAiUploadBoxVisible',
             commitAiUploadTable: 'commitAiUploadTable',

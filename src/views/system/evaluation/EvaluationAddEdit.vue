@@ -139,6 +139,7 @@
                             :loading="teacherSelectLoading"
                             @clear="getTeacherList"
                             @change="changeTeacher"
+                            :disabled="curShowType == 4"
                         >
                             <el-option
                                 v-for="item in judgedIdList"
@@ -848,6 +849,7 @@ export default {
             useList: [],
             isEdit: false,
             isTranslationPending: false,
+            curShowType: null,
         };
     },
     components: {},
@@ -862,6 +864,7 @@ export default {
         });
     },
     mounted() {
+        this.getUserInfo();
         this.radio1 = this.$route.query.type;
         // this.getCategoryList();
         if (this.aiStatus == 1) {
@@ -902,6 +905,11 @@ export default {
         }
     },
     methods: {
+        getUserInfo() {
+            let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            // 角色权限（1全部数据，2全校数据，3下级数据, 4个人数据）
+            this.curShowType = userInfo.sysUserAuth[0].type;
+        },
         ...mapActions({
             commitAiUploadBoxVisible: 'commitAiUploadBoxVisible',
             commitAiUploadTable: 'commitAiUploadTable',

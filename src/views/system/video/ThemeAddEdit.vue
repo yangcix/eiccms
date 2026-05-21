@@ -221,6 +221,7 @@
                             :remote-method="getTeacherList"
                             :loading="teacherSelectLoading"
                             @clear="getTeacherList"
+                            :disabled="curShowType == 4"
                         >
                             <el-option
                                 v-for="item in teacherList"
@@ -533,11 +534,12 @@ export default {
             edufileList: [], // 已上传文件
             teachingFileIds: [], // 一键发布时上传文件数组
             teacherSelectLoading: false,
+            curShowType: null,
         };
     },
     components: {},
     mounted() {
-        console.log(this.eduFileUrl);
+        this.getUserInfo();
         if (localStorage.getItem('uiType') == 2) {
             this.handleGetType(); // 获取类型主类
             // this.getTypeList();
@@ -553,6 +555,11 @@ export default {
         }
     },
     methods: {
+        getUserInfo() {
+            let userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            // 角色权限（1全部数据，2全校数据，3下级数据, 4个人数据）
+            this.curShowType = userInfo.sysUserAuth[0].type;
+        },
         handleOnExceed(files, fileList) {
             this.$message('只能上传一个图片', 'error');
         },

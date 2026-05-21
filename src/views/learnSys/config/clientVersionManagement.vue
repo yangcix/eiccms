@@ -65,6 +65,7 @@
                 :close-on-click-modal="false"
                 :visible.sync="addEditShow"
                 width="500px"
+                :before-close="handleAddEditShow"
             >
                 <div class="dialog-wrap">
                     <p class="err-title" v-if="errorInfo">提示：{{ errorInfo }}</p>

@@ -538,6 +538,7 @@
                 :visible.sync="isShowDataExport"
                 width="600px"
                 class="videoBox"
+                :before-close="handleCloseExportDialog"
             >
                 <div class="dialog-content">
                     <div class="dialog-item">

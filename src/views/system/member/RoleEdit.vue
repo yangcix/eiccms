@@ -652,6 +652,11 @@ export default {
                     if (el.children) {
                         el.children.forEach((ele) => {
                             ele.checked = true;
+                            if (ele.children) {
+                                ele.children.forEach((eles) => {
+                                    eles.checked = true;
+                                });
+                            }
                         });
                     }
                 });
@@ -661,6 +666,11 @@ export default {
                     if (el.children) {
                         el.children.forEach((ele) => {
                             ele.checked = false;
+                            if (ele.children) {
+                                ele.children.forEach((eles) => {
+                                    eles.checked = false;
+                                });
+                            }
                         });
                     }
                 });
@@ -673,6 +683,11 @@ export default {
                     if (el.children) {
                         el.children.forEach((ele) => {
                             ele.checked = true;
+                            if (ele.children) {
+                                ele.children.forEach((eles) => {
+                                    eles.checked = true;
+                                });
+                            }
                         });
                     }
                 });
@@ -682,6 +697,11 @@ export default {
                     if (el.children) {
                         el.children.forEach((ele) => {
                             ele.checked = false;
+                            if (ele.children) {
+                                ele.children.forEach((eles) => {
+                                    eles.checked = false;
+                                });
+                            }
                         });
                     }
                 });

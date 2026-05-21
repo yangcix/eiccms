@@ -206,20 +206,20 @@ export default {
     watch: {
         $route(to, from) {
             console.log('from', from);
-            if (from.path !== '/aiLargeUnit') {
-                this.searchKey = '';
-                this.subjectId = '';
-                this.status = '';
+            if (to.path == '/aiLargeUnit') {
                 if (from.path == '/sm/largeUnitAddEdit') {
                     if (from.query && from.query.id) {
-                        // this.handleGetData();
+                        this.handleGetData();
                     } else {
                         this.pageNum = 1;
-                        // this.handleGetData();
+                        this.handleGetData();
                     }
                 } else {
+                    this.searchKey = '';
+                    this.subjectId = '';
+                    this.status = '';
                     this.pageNum = 1;
-                    // this.handleGetData();
+                    this.handleGetData();
                 }
             }
         },

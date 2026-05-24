@@ -298,7 +298,7 @@ export default {
         this.$nextTick(() => {
             this.rowDrop();
         });
-        this.getCount();
+        // this.getCount();
     },
     methods: {
         getUserInfo() {
@@ -646,13 +646,13 @@ export default {
                 this.getUseList();
             }
         },
-        getCount() {
-            this.$axios.get('/aiGrinding/getCount').then((res) => {
-                if (res.code != 200) {
-                    return;
-                }
-            });
-        },
+        // getCount() {
+        //     this.$axios.get('/aiGrinding/getCount').then((res) => {
+        //         if (res.code != 200) {
+        //             return;
+        //         }
+        //     });
+        // },
     },
     watch: {
         pageNum: function (newVal) {

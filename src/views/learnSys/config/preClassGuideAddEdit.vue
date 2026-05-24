@@ -249,7 +249,7 @@ export default {
         this.getClassTypeList(); // 获取课型
         this.getSchoolList(); //获取学校列表
         this.getSubjectList();
-        this.getCount();
+        // this.getCount();
     },
     methods: {
         getUserInfo() {
@@ -563,13 +563,13 @@ export default {
                 return;
             }
         },
-        getCount() {
-            this.$axios.get('/aiGrinding/getCount').then((res) => {
-                if (res.code != 200) {
-                    return;
-                }
-            });
-        },
+        // getCount() {
+        //     this.$axios.get('/aiGrinding/getCount').then((res) => {
+        //         if (res.code != 200) {
+        //             return;
+        //         }
+        //     });
+        // },
     },
 };
 </script>

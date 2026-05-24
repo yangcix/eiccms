@@ -307,8 +307,6 @@
                             <el-table-column align="center" prop="operateType" label="关联事项"> </el-table-column>
                             <el-table-column align="center" prop="orgName" label="使用人" v-if="isCurSchoolType == 0">
                             </el-table-column>
-                            <el-table-column align="center" prop="operateTypeName" label="操作类型" width="120px">
-                            </el-table-column>
                             <el-table-column align="center" prop="remark" label="备注" width="238px">
                                 <template #default="scoped">
                                     <el-tooltip

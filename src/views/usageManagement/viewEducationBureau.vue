@@ -615,6 +615,7 @@ export default {
             this.quotaInfo['eduOrgId'] = this.$route.query.orgId;
             this.quotaInfo['orgId'] = this.curRow.id;
             this.quotaInfo['allocateType'] = 0;
+            this.$set(this.quotaInfo, 'num', 1);
             this.getProductList();
         },
         // 验证

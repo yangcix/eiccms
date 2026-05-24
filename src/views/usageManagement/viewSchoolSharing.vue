@@ -833,6 +833,7 @@ export default {
             this.quotaInfo['eduOrgId'] = this.$route.query.orgId;
             this.quotaInfo['orgId'] = this.curRow.teacherId;
             this.quotaInfo['allocateType'] = 1;
+            this.$set(this.quotaInfo, 'num', 1);
             this.getProductList();
         },
         // 验证

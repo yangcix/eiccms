@@ -584,7 +584,7 @@ export default {
         //获取组织架构图
         getOrgImg() {
             this.$axios.get('/index/systemInfo').then((res) => {
-                document.title = res.data.name ? res.data.name : '劢联科技';
+                document.title = res.data.name ? res.data.name : '劢联坤舆';
                 this.orgImg = res.data.orgImg;
             });
         },

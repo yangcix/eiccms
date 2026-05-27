@@ -38,7 +38,7 @@ import interactUploadBox from '@/components/interactUploadBox.vue'
           }else{
             localStorage.setItem('isNPU',false)
           }
-					document.title = res.data.name ? res.data.name : '劢联科技';
+					document.title = res.data.name ? res.data.name : '劢联坤舆';
         }
 				});
 			},

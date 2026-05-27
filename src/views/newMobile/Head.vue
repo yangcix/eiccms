@@ -44,7 +44,7 @@ el-icon-caret-bottom<template>
 			getLogo(){
 				this.$axios.get('/index/systemInfo').then(res => {
 					this.logoImg = res.data.mobileLogo;
-					document.title = res.data.name ? res.data.name : '劢联科技';
+					document.title = res.data.name ? res.data.name : '劢联坤舆';
 					storage.set('version', res.data.version);
 				});
 			},

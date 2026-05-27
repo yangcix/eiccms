@@ -137,7 +137,7 @@
                     </el-footer>
                     <el-footer v-else class="content-footer" height="30px" v-show="showMenu">
                         <div class="company">
-                            <p>Copyright © 2018 劢联科技 All Rights Reserved</p>
+                            <p>Copyright © 2018 劢联坤舆 All Rights Reserved</p>
                             <p>软件版本号：{{ verNum }}</p>
                         </div>
                     </el-footer>
@@ -709,7 +709,7 @@ export default {
             this.$axios.get('/index/systemInfo').then((res) => {
                 this.systemName = res.data.name;
                 this.verNum = res.data.verNum;
-                document.title = res.data.name ? res.data.name : '劢联科技';
+                document.title = res.data.name ? res.data.name : '劢联坤舆';
                 //version 1 标准版ops 2专业版x86
                 storage.set('version', res.data.version);
                 this.userInfo = res.data;

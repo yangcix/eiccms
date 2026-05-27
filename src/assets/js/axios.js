@@ -117,7 +117,7 @@ axios.interceptors.response.use(
                                 refreshing = false; // 刷新完毕
                                 axios.get('/index/systemInfo').then((ress) => {
                                     store.commit('setSysInfo', ress.data);
-                                    document.title = ress.data.name ? ress.data.name : '劢联科技';
+                                    document.title = ress.data.name ? ress.data.name : '劢联坤舆';
                                     session.set('userInfo', ress.data);
                                     localStorage.setItem('version', ress.data.version);
                                 });
@@ -148,7 +148,7 @@ axios.interceptors.response.use(
                         refreshing = false; // 刷新完毕
                         axios.get('/index/systemInfo').then((ress) => {
                             store.commit('setSysInfo', ress.data);
-                            document.title = ress.data.name ? ress.data.name : '劢联科技';
+                            document.title = ress.data.name ? ress.data.name : '劢联坤舆';
                             session.set('userInfo', ress.data);
                             localStorage.setItem('version', ress.data.version);
                         });

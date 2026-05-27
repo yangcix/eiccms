@@ -394,7 +394,7 @@ export default {
         // }
         this.logoImg = res.data.pcLogo;
         this.systemName = res.data.name;
-        document.title = res.data.name ? res.data.name : '劢联科技';
+        document.title = res.data.name ? res.data.name : '劢联坤舆';
         session.set('userInfo', res.data);
         localStorage.setItem('version', res.data.version);
         localStorage.setItem('uiType', res.data.uiType);

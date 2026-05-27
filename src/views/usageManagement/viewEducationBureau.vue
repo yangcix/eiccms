@@ -514,6 +514,7 @@ export default {
                     startDate: this.exportData.time ? this.exportData.time[0] + ' 00:00:00' : '',
                     endDate: this.exportData.time ? this.exportData.time[1] + ' 23:59:59' : '',
                     productIdList: this.exportData.productList,
+                    projectId: this.$route.query.id,
                     pageSize: -1, // 请求显示条数
                 })
                 .then((res) => {

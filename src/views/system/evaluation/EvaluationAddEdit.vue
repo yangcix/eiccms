@@ -1359,7 +1359,9 @@ export default {
                     this.fileList = [];
                 }
                 this.addEditInfo.id = res.data.id;
-                this.addEditInfo.aiProjectId = res.data.aiProjectId;
+                if (res.data.aiProjectId) {
+                    this.addEditInfo.aiProjectId = res.data.aiProjectId;
+                }
                 this.addEditInfo.status = res.data.status;
                 this.addEditInfo.evaluationOrgId = res.data.evaluationOrgId;
                 this.addEditInfo.orgId = res.data.evaluationOrgId;
@@ -1617,10 +1619,6 @@ export default {
                             formData.append('groupId', this.addEditInfo.groupId);
                             formData.append('templateList', this.addEditInfo.templateList);
                             formData.append('evaluationOrgId', this.addEditInfo.orgId);
-                            formData.append(
-                                'aiProjectId',
-                                this.addEditInfo.aiProjectId ? this.addEditInfo.aiProjectId : null
-                            );
                             if (this.radio2 == 1) {
                                 formData.append(
                                     'type',
@@ -1676,6 +1674,9 @@ export default {
                             }
                             if (this.radio1 == 2) {
                                 formData.append('evaluationType', 2);
+                                if (this.addEditInfo.aiProjectId) {
+                                    formData.append('aiProjectId', this.addEditInfo.aiProjectId);
+                                }
                             } else {
                                 formData.append('evaluationType', 1);
                             }

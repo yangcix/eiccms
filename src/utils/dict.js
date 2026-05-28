@@ -10,7 +10,6 @@ export const DICT = {
     // 分析状态
     ANALYSIS_STATUS: [
         { label: '排队中', value: -1 },
-        { label: '待分析', value: 0 },
         { label: '分析中', value: 1 },
         { label: '分析成功', value: 2 },
         { label: '分析失败', value: 3 },

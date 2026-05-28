@@ -420,8 +420,6 @@ export default {
             switch (this.detailInfo.aiStatus) {
                 case -1:
                     return '排队中';
-                case 0:
-                    return '待分析';
                 case 1:
                     return '分析中';
                 case 2:

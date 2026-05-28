@@ -147,7 +147,6 @@
                                         <i class="el-icon-question"></i>
                                     </el-tooltip>
                                 </li>
-                                <li v-else-if="scope.row.aiStatus === 0">待分析</li>
                                 <li v-else-if="scope.row.aiStatus === 1">分析中</li>
                                 <li v-else-if="scope.row.aiStatus === 2">分析成功</li>
                                 <li v-else-if="scope.row.aiStatus === 3">

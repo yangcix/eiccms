@@ -1,4 +1,4 @@
-# neweiccweb
+# newlsweb
 
 ## Project setup
 ```

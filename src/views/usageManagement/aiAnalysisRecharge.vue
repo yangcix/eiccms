@@ -449,8 +449,8 @@ export default {
                 return;
             }
             if (this.$verify.letterNum(this.addEditInfo.contractNo, 20)) {
-                this.errorInfo = '合同编号由英文大小写字母、数字组成，最长20位！';
-                return true;
+                this.$message('合同编号由英文大小写字母、数字组成，最长20位！', 'error');
+                return;
             }
             if (!this.addEditInfo.orgId || !this.addEditInfo.orgType) {
                 this.$message('请选择所属机构/教师！', 'error');

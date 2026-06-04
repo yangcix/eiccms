@@ -686,17 +686,17 @@ export default {
                 data.append('status', this.addEditInfo.status);
                 if (this.addEditInfo.id == 2 || this.curRow.orgLevel > 3 || this.curRow.orgType == 3) {
                     // 市属校
-                    data.append('ancestralStr', this.addEditInfo.ancestralStr ? this.preAreaList.join('/') : '');
+                    data.append('ancestralStr', this.addEditInfo.ancestralStr ? this.preAreaList.join('/') : null);
                 } else {
                     // 学校和部门不需要显示所在地区
                     if (this.addEditInfo.orgType == 3 || this.addEditInfo.orgType == 2) {
-                        data.append('ancestralStr', '');
+                        data.append('ancestralStr', null);
                     } else {
                         data.append(
                             'ancestralStr',
                             this.addEditInfo.ancestralStr
                                 ? this.preAreaList?.concat(this.addEditInfo.ancestralStr).join('/')
-                                : ''
+                                : null
                         );
                     }
                 }
@@ -723,17 +723,17 @@ export default {
                 if (this.topLevelEdit) {
                     data.append(
                         'ancestralStr',
-                        this.addEditInfo.ancestralStr ? this.addEditInfo.ancestralStr.join('/') : ''
+                        this.addEditInfo.ancestralStr ? this.addEditInfo.ancestralStr.join('/') : null
                     );
                 } else if (this.addEditInfo.id == 2 || this.curRow.orgLevel > 3 || this.curRow.orgType == 3) {
                     // 市属校
-                    data.append('ancestralStr', this.addEditInfo.ancestralStr ? this.preAreaList.join('/') : '');
+                    data.append('ancestralStr', this.addEditInfo.ancestralStr ? this.preAreaList.join('/') : null);
                 } else {
                     data.append(
                         'ancestralStr',
                         this.addEditInfo.ancestralStr
                             ? this.preAreaList?.concat(this.addEditInfo.ancestralStr).join('/')
-                            : ''
+                            : null
                     );
                 }
                 data.append('orgLevel', this.addEditInfo.orgLevel ? this.addEditInfo.orgLevel : '');
@@ -854,7 +854,7 @@ export default {
                                 id: row.id,
                                 orgType: row?.orgType,
                                 orgLevel: row?.orgLevel,
-                                ancestralStr: row?.ancestralStr ? row.ancestralStr.split('/') : '',
+                                ancestralStr: row?.ancestralStr ? row.ancestralStr.split('/') : null,
                                 principalIdList: row.principalIdList,
                             };
                             this.levelList = this.allLevelList;
@@ -867,7 +867,7 @@ export default {
                                 name: row.name,
                                 parentId: row.id,
                                 id: row.id,
-                                ancestralStr: row.ancestralStr ? row.ancestralStr.split('/').at(-1) : '',
+                                ancestralStr: row.ancestralStr ? row.ancestralStr.split('/').at(-1) : null,
                                 principalIdList: row.principalIdList,
                             };
                             this.sectionName = this.getOriginInfo(row.parentId).name;

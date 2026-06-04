@@ -539,7 +539,7 @@
                     title="额度分配"
                     :close-on-click-modal="false"
                     :visible.sync="isShowQuotaAllocation"
-                    width="850px"
+                    width="900px"
                     @close="quotaAllocation(2)"
                 >
                     <hr class="line" />
@@ -1114,7 +1114,7 @@ export default {
 .line {
     margin-top: -30px;
     margin-bottom: 20px;
-    width: 545px;
+    width: 845px;
 }
 
 .table-list {

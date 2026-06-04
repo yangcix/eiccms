@@ -700,9 +700,35 @@ export default {
                 })
                 .then((res) => {
                     if (res.code == 200) {
-                        this.isCurSchoolType = res.data;
-                        if (res.data == 1) {
-                            this.getList();
+                        let userId = JSON.parse(localStorage.getItem('userInfo')).userId;
+                        // 管理员不参与判断
+                        if (userId == 1 || userId == 2) {
+                            if (res.data == 1) {
+                                this.getList();
+                            }
+                            this.isCurSchoolType = res.data;
+                        } else {
+                            // 公用需要判断是否是学校负责人，如果是则显示公用；不是则显示个人
+                            if (res.data == 0) {
+                                this.$axios
+                                    .get('/sys/org/info', {
+                                        orgId: this.$route.query.orgId,
+                                    })
+                                    .then((res) => {
+                                        if (res.code == 200) {
+                                            // 当前登录人是学校负责人
+                                            if (res.data.principalIdList && res.data.principalIdList.includes(userId)) {
+                                                this.isCurSchoolType == 0;
+                                            } else {
+                                                this.isCurSchoolType == 1;
+                                                this.getList();
+                                            }
+                                        }
+                                    });
+                            } else {
+                                this.isCurSchoolType = 1;
+                                this.getList();
+                            }
                         }
                     }
                 });

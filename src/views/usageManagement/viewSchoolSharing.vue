@@ -304,7 +304,7 @@
                             style="width: 100%"
                         >
                             <el-table-column align="center" prop="productName" label="产品名称"></el-table-column>
-                            <el-table-column align="center" prop="operateType" label="关联事项"> </el-table-column>
+                            <el-table-column align="center" prop="operateName" label="关联事项"> </el-table-column>
                             <el-table-column align="center" prop="orgName" label="使用人" v-if="isCurSchoolType == 0">
                             </el-table-column>
                             <el-table-column align="center" prop="remark" label="备注" width="238px">

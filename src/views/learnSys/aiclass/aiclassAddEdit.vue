@@ -1538,7 +1538,7 @@ export default {
             }
             if (this.addEditInfo.resources == 2) {
                 // 编辑且重新上传了视频
-                if (this.addEditInfo.id && this.isChangeVideo) {
+                if ((this.addEditInfo.id && this.isChangeVideo) || !this.addEditInfo.id) {
                     if (this.$verify.isEmpty(this.addEditInfo.teacherVideo)) {
                         this.$message(this.aiType == 1 ? '请上传教师画面视频' : '请上传视频', 'error');
                         return true;

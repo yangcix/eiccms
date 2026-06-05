@@ -806,6 +806,8 @@ export default {
                 teacherVideo: '',
                 studentVideo: '',
                 recordingMethod: 0,
+                smStartTime: '', // 站内资源-选择资源的时候需要将时间传给后端
+                smEndTime: '', // 站内资源-选择资源的时候需要将时间传给后端
             },
             permission: [],
             aiNum: 0,
@@ -1109,6 +1111,8 @@ export default {
         },
         changeType() {
             this.addEditInfo.objectId = '';
+            this.addEditInfo.smStartTime = '';
+            this.addEditInfo.smEndTime = '';
             this.objectName = '';
         },
         getGradeLists() {
@@ -1555,11 +1559,15 @@ export default {
         handleAddDataList(data, type) {
             this.addEditInfo.type = type;
             this.addEditInfo.objectId = data.id;
+            this.addEditInfo.smStartTime = data.startTime;
+            this.addEditInfo.smEndTime = data.endTime;
             this.objectName = data.name;
             this.chooseCpm = false;
         },
         handleCloseTag() {
             this.addEditInfo.objectId = '';
+            this.addEditInfo.smStartTime = '';
+            this.addEditInfo.smEndTime = '';
             this.objectName = '';
         },
         handleCloseVideo() {
@@ -1629,6 +1637,12 @@ export default {
                                         : 0
                                 );
                                 formData.append('objectId', this.addEditInfo.objectId);
+                                if (this.addEditInfo.smStartTime) {
+                                    formData.append('startTime', this.addEditInfo.smStartTime);
+                                }
+                                if (this.addEditInfo.smEndTime) {
+                                    formData.append('endTime', this.addEditInfo.smEndTime);
+                                }
                                 formData.append('resources', 1);
                             } else if (this.radio2 == 2) {
                                 formData.append('type', 0);

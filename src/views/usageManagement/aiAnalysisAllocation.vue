@@ -12,13 +12,13 @@
                             v-search="search"
                             clearable
                         ></el-input>
-                        <span class="search-desc" v-if="isShowEdu">教育局/学校：</span>
+                        <span class="search-desc" v-if="isAdmin">教育局/学校：</span>
                         <el-select
                             v-model="orgType"
                             placeholder="请选择"
                             class="width-8"
                             @change="changeOrgType"
-                            v-if="isShowEdu"
+                            v-if="isAdmin"
                         >
                             <el-option
                                 v-for="item in orgTypeList"
@@ -28,7 +28,7 @@
                             >
                             </el-option>
                         </el-select>
-                        <el-select v-model="orgId" placeholder="请选择" class="width-6" filterable v-if="isShowEdu">
+                        <el-select v-model="orgId" placeholder="请选择" class="width-6" filterable v-if="isAdmin">
                             <el-option
                                 v-for="item in orgIdList"
                                 :key="item.value"
@@ -218,9 +218,7 @@ export default {
             orgType: '',
             orgId: '',
             frequency: [],
-            isShowEdu: false,
-            isSchoolLevel: false,
-            isTeacherLevel: false,
+            isAdmin: false,
         };
     },
     watch: {
@@ -245,28 +243,25 @@ export default {
                 JSON.parse(localStorage.getItem('userInfo')).userId == 1 ||
                 JSON.parse(localStorage.getItem('userInfo')).userId == 2
             ) {
-                this.isShowEdu = true;
+                this.isAdmin = true;
+                this.orgType = '2,3';
+                this.getFirstList();
             } else {
-                this.isShowEdu = false;
-            }
-            // 1：省 2：市 3：区县 4：学校
-            if (userInfo.sysOrganization.orgLevel == 4) {
-                this.isSchoolLevel = true;
-                this.orgId = userInfo.orgId;
-                // 角色权限（1全部数据，2全校数据，3下级数据, 4个人数据）
-                // 区分是学校还是个人
-                if (userInfo.sysUserAuth[0].type == 4) {
-                    this.isTeacherLevel = true;
-                    this.orgId = userInfo.userId;
+                this.isAdmin = false;
+                // 1：省 2：市 3：区县 4：学校
+                if (userInfo.sysOrganization.orgLevel == 4) {
+                    this.orgId = userInfo.orgId;
+                    // 角色权限（1全部数据，2全校数据，3下级数据, 4个人数据）
+                    // 区分是学校还是个人
+                    if (userInfo.sysUserAuth[0].type == 4) {
+                        this.orgId = userInfo.userId;
+                    }
+                    this.orgType = '4';
+                } else {
+                    this.orgType = '2,3';
                 }
-
                 this.getList();
                 this.getTotal();
-            } else {
-                this.isSchoolLevel = false;
-                this.isTeacherLevel = false;
-                this.orgType = this.isShowEdu ? '2,3' : '4';
-                this.getFirstList();
             }
         },
         getFirstList() {

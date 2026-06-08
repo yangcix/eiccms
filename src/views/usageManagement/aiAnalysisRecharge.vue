@@ -1,5 +1,5 @@
 <template>
-    <div class="content-main-wrap" style="min-width: 1260px; overflow-x: auto; overflow-y: auto">
+    <div class="content-main-wrap ai-analysis-recharge" style="min-width: 1260px; overflow-x: auto; overflow-y: auto">
         <p class="content-title">充值管理</p>
         <div class="content-overflow">
             <div class="main-wrap" style="min-width: 1260px; overflow-x: auto">
@@ -282,6 +282,7 @@
                                 :cell-style="{padding: '6px 0'}"
                                 :data="dlgTableData"
                                 style="width: 100%"
+                                :row-class-name="tableRowClassName"
                             >
                                 <el-table-column
                                     prop="relationProduct"
@@ -658,11 +659,18 @@ export default {
         handleSearch() {
             this.pageChange(1);
         },
+        tableRowClassName({row, rowIndex}) {
+            // 根据条件返回对应的类名
+            if (row.status === 2) {
+                return 'disabled-row';
+            }
+            return '';
+        },
     },
 };
 </script>
-<style lang="scss" scoped>
-.content-main-wrap {
+<style lang="scss">
+.ai-analysis-recharge {
     .content-overflow {
         .info-content {
             width: 100%;
@@ -732,6 +740,20 @@ export default {
     }
     .dialog-btn {
         justify-content: center;
+    }
+    .el-table .disabled-row {
+        background-color: #f5f7fa;
+        color: #c0c4cc;
+        cursor: not-allowed;
+    }
+
+    /* 如果需要禁用行内所有元素的交互 */
+    .el-table .disabled-row td {
+        background-color: #f5f7fa !important;
+    }
+
+    .el-table .disabled-row:hover > td {
+        background-color: #f5f7fa !important;
     }
 }
 </style>

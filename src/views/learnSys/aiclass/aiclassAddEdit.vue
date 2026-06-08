@@ -1261,9 +1261,9 @@ export default {
                     if (this.addEditInfo.resources == 2) {
                         formData.append('teacherVideoNew', this.isChangeVideo ? 1 : 0);
                     }
-                    // 如果是提交，录制状态为失败（type == 3），将type改为0传给后端，表示重新录制
+                    // 如果是提交，录制状态为失败（type == 3），分析状态为失败，将type改为0传给后端，表示重新录制
                     if (!isTranslationPending) {
-                        if (this.addEditInfo.type == 3) {
+                        if (this.addEditInfo.type == 3 || this.$route.query.aiStatus == 3) {
                             formData.append('type', 0);
                         }
                     }

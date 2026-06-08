@@ -1137,6 +1137,7 @@ export default {
                         teacherName: val ? val.teacherName : '',
                         // 只有分析失败才需要在编辑页显示错误提示
                         msg: val.aiStatus == 3 ? (val.msg ? val.msg : '') : '',
+                        aiStatus: val.aiStatus,
                     },
                 });
             } else {

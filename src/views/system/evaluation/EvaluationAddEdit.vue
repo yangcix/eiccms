@@ -1653,7 +1653,7 @@ export default {
                                 formData.append('orgId', this.addEditInfo.orgId);
                                 formData.append('buildingId', this.addEditInfo.buildingId);
                                 formData.append('classroomId', this.addEditInfo.classroomId);
-                                formData.append('terminalIdList', this.addEditInfo.terminalIdList);
+                                formData.append('terminalIdList', [this.addEditInfo.terminalIdList]);
                             } else if (this.radio2 == 4) {
                                 formData.append('type', 1);
                                 formData.append('resources', 4);

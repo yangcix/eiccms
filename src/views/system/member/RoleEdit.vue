@@ -61,7 +61,7 @@
                                     </template>
                                 </el-table-column>
                             </el-table>
-                            <el-checkbox
+                            <!-- <el-checkbox
                                 v-model="authListChecked1"
                                 @change="setAuthList1"
                                 style="font-size: 16px; font-weight: 600"
@@ -142,12 +142,12 @@
                                         </div>
                                     </template>
                                 </el-table-column>
-                            </el-table>
+                            </el-table> -->
                             <el-checkbox
                                 v-model="authListChecked6"
                                 @change="setAuthList6"
                                 style="margin-top: 10px; font-size: 16px; font-weight: 600"
-                                >项目次数管理</el-checkbox
+                                >项目管理</el-checkbox
                             >
                             <el-table :data="authList6" border style="min-width: 1320px; margin-top: 10px">
                                 <el-table-column prop="name" align="left" width="120" label="一级菜单">

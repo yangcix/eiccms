@@ -62,18 +62,18 @@
                             <span class="moduleTitle" @click="changeModule(3)" :class="sysModule == 3 ? 'mActive' : ''"
                                 >智能研修</span
                             >
-                            <span class="moduleTitle" :class="sysModule == 1 ? 'mActive' : ''" @click="changeModule(1)"
+                            <!-- <span class="moduleTitle" :class="sysModule == 1 ? 'mActive' : ''" @click="changeModule(1)"
                                 >智慧教育</span
                             >
                             <span class="moduleTitle" :class="sysModule == 2 ? 'mActive' : ''" @click="changeModule(2)"
                                 >微集控录播</span
-                            >
+                            > -->
                             <span
                                 v-if="isShowProjectManage"
                                 class="moduleTitle"
                                 :class="sysModule == 5 ? 'mActive' : ''"
                                 @click="changeModule(5)"
-                                >项目次数管理</span
+                                >项目管理</span
                             >
                             <span
                                 v-if="isShowSetting"
@@ -565,7 +565,7 @@ export default {
                 this.homeMenu = {url: '/traininghome', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-2`;
             } else if (this.sysModule == 5) {
-                // 项目次数管理：-5
+                // 项目管理：-5
                 this.homeMenu = {url: '/aiAnalysisRecharge', name: '概览'};
                 this.menuUrl = `/auth/menu?type=-5`;
             } else if (this.sysModule == 6) {
@@ -868,7 +868,7 @@ export default {
             }
 
             let routeUrl = this.$router.resolve({
-                path: `/home?time=${this.$route.query.time ? this.$route.query.time : storage.get('time')}`,
+                path: `/training?time=${this.$route.query.time ? this.$route.query.time : storage.get('time')}`,
             });
             window.open(routeUrl.href, '_blank');
         },

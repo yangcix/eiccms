@@ -93,28 +93,29 @@ import videoClass from './components/userItem/videoClass.vue'
 								src: icon3,
 								src1: icon4
 							})
-						}else if(el == 'AI磨课' && this.aiStatus == 1){
+						}else if(el == 'AI磨课'){
 							arr.push({
 								id: 3,
 								name: 'AI磨课',
 								src: icon5,
 								src1: icon6
 							})
-						}else if(el == '直播资源'){
-							arr.push({
-								id: 4,
-								name: '直播资源',
-								src: icon7,
-								src1: icon8
-							})
-						}else if(el == '视频资源'){
-							arr.push({
-								id: 5,
-								name: '视频资源',
-								src: icon9,
-								src1: icon10
-							})
 						}
+						// else if(el == '直播资源'){
+						// 	arr.push({
+						// 		id: 4,
+						// 		name: '直播资源',
+						// 		src: icon7,
+						// 		src1: icon8
+						// 	})
+						// }else if(el == '视频资源'){
+						// 	arr.push({
+						// 		id: 5,
+						// 		name: '视频资源',
+						// 		src: icon9,
+						// 		src1: icon10
+						// 	})
+						// }
 					})
 					console.log(arr,'rrr')
 					this.list = arr

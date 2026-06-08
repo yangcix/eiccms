@@ -66,10 +66,9 @@
 				<p>暂无内容，您可以观看其他节目！</p>
 			</div>
 		</div>
-		<div class="content-box">
+		<!-- <div class="content-box">
 				<div class="left">
 					<p class="home-title">
-					<!-- <i class="iconfont iconnav-vedio"></i> -->
 					<span>专家讲座</span>
 					<router-link v-if="isLectureList > 0" to="/training?type=2&id=1" class="more mores"
 						>查看全部
@@ -83,7 +82,6 @@
 						<div class="item" v-for="(val, index) in lectureList" :key="index" @click="goDetails(val)">
 						<div class="img-wrap">
 							<img :src="val.imgUrl ? val.imgUrl : defaultImg" alt="" :onerror="defaultImg">
-							<!-- <img :src="val.imgUrl" alt="" :onerror="defaultImg"> -->
 							<ul class="tag-list">
 								<li v-for="item in val.labels" :key="item.id">{{item}}</li>
 							</ul>
@@ -117,7 +115,6 @@
 				</div>
 				<div class="right">
 					<p class="home-title">
-					<!-- <i class="iconfont iconnav-vedio"></i> -->
 					<span>专业培训</span>
 					<router-link v-if="isLectureLists > 0" to="/training?type=2&id=2" class="more mores"
 						>查看全部
@@ -131,7 +128,6 @@
 						<div class="item" v-for="(val, index) in lectureLists" :key="index" @click="goDetails(val)">
 						<div class="img-wrap">
 							<img :src="val.imgUrl ? val.imgUrl : defaultImg" alt="" :onerror="defaultImg">
-							<!-- <img :src="val.imgUrl" alt="" :onerror="defaultImg"> -->
 							<ul class="tag-list">
 								<li v-for="item in val.labels" :key="item.id">{{item}}</li>
 							</ul>
@@ -163,7 +159,7 @@
 						<p>暂无内容，您可以观看其他节目！</p>
 					</div>
 				</div>
-			</div>
+			</div> -->
 	</div>
 </template>
 
@@ -213,7 +209,7 @@
 				defaultImg: 'this.src="' + require('@/assets/imgs/live.png') + '"' // 默认图片
 			}
 		},
-		components: {VideoList, Swiper,teachClass, listenClass},
+		components: {Swiper,teachClass, listenClass},
 		mounted() {
 			// setTimeout(() => {
 			// 	if (this.categoryListData.length > 0) {

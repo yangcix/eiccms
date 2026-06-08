@@ -230,19 +230,21 @@ export default {
   name: 'headFoot',
   data() {
     return {
-      navList: [{
-        name: '首页',
-        route: '/home'
-      }, {
-        name: '课程录制',
-        route: '/live',
-        url: 'hplay'
-      },
-        {
-          name: '课程上传',
-          route: '/video',
-          url: 'vplay'
-        },
+      navList: [
+      //   {
+      //   name: '首页',
+      //   route: '/home'
+      // }, 
+      // {
+      //   name: '课程录制',
+      //   route: '/live',
+      //   url: 'hplay'
+      // },
+      //   {
+      //     name: '课程上传',
+      //     route: '/video',
+      //     url: 'vplay'
+      //   },
         /*{
           name: '互动课堂',
           route: '/interaction',
@@ -259,7 +261,7 @@ export default {
         // 	url: 'https://imusic.ixzds.com/myjypt/myjypt/pages/login/login.html?&TOP_ORGCODE=scsmysjyj'
         // }
       ],
-      currentActive: '/home',
+      currentActive: '/training',
       searchKey: '',
       userInfo: '',
       logOutShow: false,
@@ -327,14 +329,14 @@ export default {
       this.pwdShow = true;
     },
     goHome() {
-      this.$router.replace('/home')
+      this.$router.replace('/training')
     },
     showMsg() {
       this.userInfo = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')) : null
       this.loginShow = true;
     },
     toLogin() {
-      this.$router.push("/home");
+      this.$router.push("/training");
     },
     ...mapMutations(['setSearchKey', 'setloginRefalsh']),
     //获取基本信息

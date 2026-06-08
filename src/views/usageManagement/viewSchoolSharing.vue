@@ -796,9 +796,12 @@ export default {
             params['startTime'] = this.detailInfo.time ? this.detailInfo.time[0] : '';
             params['endTime'] = this.detailInfo.time ? this.detailInfo.time[1] : '';
             params['projectId'] = this.$route.query.id;
-
             if (row) {
-                params['teacherIdList'] = [row.teacherId];
+                this.curRow = JSON.parse(JSON.stringify(row));
+            }
+
+            if (this.isCurSchoolType == 1) {
+                params['teacherIdList'] = [this.curRow.teacherId];
                 params['orgId'] = '';
                 params['flag'] = 0;
             } else {

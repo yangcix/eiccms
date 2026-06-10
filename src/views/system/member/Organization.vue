@@ -648,8 +648,6 @@ export default {
                         this.deleteShow = false;
                         this.$message('删除成功！', 'success');
                         this.getList();
-                    } else {
-                        this.$message(res.message, 'error');
                     }
                 });
             }
@@ -1027,8 +1025,6 @@ export default {
                     this.$message(res.message, 'success');
                     this.isHaveCitySchool = true;
                     this.getList();
-                } else {
-                    this.$message(res.message, 'error');
                 }
             });
         },

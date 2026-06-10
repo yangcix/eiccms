@@ -219,6 +219,7 @@ export default {
             orgId: '',
             frequency: [],
             isAdmin: false,
+            teacherUserId: '',
         };
     },
     watch: {
@@ -254,7 +255,7 @@ export default {
                     // 角色权限（1全部数据，2全校数据，3下级数据, 4个人数据）
                     // 区分是学校还是个人
                     if (userInfo.sysUserAuth[0].type == 4) {
-                        this.orgId = userInfo.userId;
+                        this.teacherUserId = userInfo.userId;
                     }
                     this.orgType = '4';
                 } else {
@@ -282,6 +283,10 @@ export default {
             params['keyWord'] = this.searchKey;
             params['pageNum'] = this.pageNum;
             params['orgId'] = this.orgId;
+            // 如果权限是下级则需要传入orgId和当前登陆用户Id teacherUserId
+            if (this.teacherUserId) {
+                params['teacherUserId'] = this.teacherUserId;
+            }
             params['pageSize'] = 10;
             this.loading = true;
             this.$axios.post('/aiAnalysisProject/allocateList', params).then((res) => {

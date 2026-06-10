@@ -921,7 +921,7 @@ router.beforeEach((to, from, next) => {
                 router.addRoute({
                     //前台客户端
                     path: '/',
-                    redirect: '/home',
+                    redirect: '/training',
                     name: 'headFoot',
                     component: () =>
                         import ( /* webpackChunkName: "headFoot" */ '@/views/client/HeadFoot.vue'),

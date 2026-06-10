@@ -63,6 +63,7 @@
                         placeholder="选择学科"
                         style="width: 130px"
                         v-show="curShowType != 4"
+                        clearable
                     >
                         <el-option v-for="item in subjectList" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>

@@ -57,11 +57,11 @@
               :class="{'nav-active': val.route == currentActive  }"
               @click="navTo(val, index)">{{ val.name }}
           </li>
-          <li class="search">
+          <!-- <li class="search">
             <input type="text" autocomplete="new-password" placeholder="请输入搜索内容" v-model="searchKey"
                    @keyup.enter="search">
             <p class="search-btn"><i class="iconfont icon-search" @click="search"></i></p>
-          </li>
+          </li> -->
         </ul>
       </nav>
     </header>
@@ -754,7 +754,7 @@ nav {
 
     li {
       // margin-left: 80px;
-      flex: 1;
+      // flex: 1;
       text-align: center;
       font-size: 16px;
       -webkit-touch-callout: none;
@@ -764,6 +764,7 @@ nav {
       -khtml-user-select: none; /*早期浏览器*/
       user-select: none;
       transition: all .2s;
+      margin-left: 60px;
     }
 
     li:hover {

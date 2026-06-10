@@ -70,7 +70,7 @@
                     <p class="title">授课教师：</p>
                     <p class="value">{{ detailInfo.teacherName }}</p>
                 </li>
-                <li>
+                <li v-if="detailInfo.evaluationType == 2">
                     <p class="title">AI次数来源：</p>
                     <p class="value">{{ detailInfo.aiProjectName }}</p>
                 </li>

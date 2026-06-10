@@ -112,7 +112,7 @@
                 >
                     <div class="dialog-wrap">
                         <div class="dialog-item">
-                            <p class="dialog-title"><em>*</em>项目名称</p>
+                            <p class="dialog-title"><em>*</em>项目名称：</p>
                             <el-input
                                 class="width-5"
                                 v-model="addEditInfo.projectName"
@@ -120,7 +120,7 @@
                             ></el-input>
                         </div>
                         <div class="dialog-item">
-                            <p class="dialog-title"><em>*</em>合同编号</p>
+                            <p class="dialog-title"><em>*</em>合同编号：</p>
                             <el-input
                                 class="width-5"
                                 v-model="addEditInfo.contractNo"
@@ -128,7 +128,7 @@
                             ></el-input>
                         </div>
                         <div class="dialog-item">
-                            <p class="dialog-title"><em>*</em>所属机构/教师</p>
+                            <p class="dialog-title"><em>*</em>所属机构/教师：</p>
                             <el-select
                                 v-model="addEditInfo.orgType"
                                 placeholder="请选择"
@@ -179,19 +179,19 @@
                 >
                     <div class="dialog-wrap">
                         <div class="dialog-item">
-                            <p class="dialog-title"><em>*</em>项目名称</p>
+                            <p class="dialog-title"><em>*</em>项目名称：</p>
                             <p>{{ rechargeInfo.projectName }}</p>
                         </div>
                         <div class="dialog-item">
-                            <p class="dialog-title"><em>*</em>合同编号</p>
+                            <p class="dialog-title"><em>*</em>合同编号：</p>
                             <p>{{ rechargeInfo.contractNo }}</p>
                         </div>
                         <div class="dialog-item">
-                            <p class="dialog-title"><em>*</em>所属机构/教师</p>
+                            <p class="dialog-title"><em>*</em>所属机构/教师：</p>
                             <p>{{ rechargeInfo.orgTypeName }}</p>
                         </div>
                         <div class="dialog-item">
-                            <p class="dialog-title"><em>*</em>类型</p>
+                            <p class="dialog-title"><em>*</em>类型：</p>
                             <el-select v-model="rechargeInfo.rechargeType" placeholder="请选择" class="width-5">
                                 <el-option
                                     v-for="item in rechargeTypeList"
@@ -203,7 +203,7 @@
                             </el-select>
                         </div>
                         <div class="dialog-item">
-                            <p class="dialog-title"><em>*</em>失效日期</p>
+                            <p class="dialog-title"><em>*</em>失效日期：</p>
                             <el-date-picker
                                 v-model="rechargeInfo.invalidTime"
                                 type="date"
@@ -215,7 +215,7 @@
                             </el-date-picker>
                         </div>
                         <div class="dialog-item">
-                            <p class="dialog-title"><em>*</em>关联产品</p>
+                            <p class="dialog-title"><em>*</em>关联产品：</p>
                             <el-select v-model="productArray[0]" placeholder="请选择" class="width-6">
                                 <el-option
                                     v-for="item in productList"
@@ -305,6 +305,7 @@
                                                 type="text"
                                                 @click="cancelRecharge(scope.row)"
                                                 v-show="scope.row.rechargeNum == scope.row.remainNum"
+                                                :disabled="scope.row.status == 2"
                                                 >撤销充值
                                             </el-button>
                                         </ul>
@@ -717,7 +718,7 @@ export default {
     }
     .dialog-item {
         p:first-child {
-            width: 100px;
+            width: 110px;
             text-align: right;
         }
         .dialog-title {

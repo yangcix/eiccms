@@ -95,7 +95,7 @@
 			//logo跳转首页
 			goHome(){
 				let routeUrl = this.$router.resolve({
-					path: "/home"
+					path: "/training"
 				});
 				window.open(routeUrl.href, '_blank');
 			},

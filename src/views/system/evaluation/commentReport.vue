@@ -53,7 +53,7 @@
                 <el-button
                     v-if="dataList.bctiReport !== null && dataList.bctiReport !== ''"
                     type="text"
-                    @click="downloadPDFReport(2)"
+                    @click="openBigDataReportNew(1)"
                     >下载</el-button
                 >
                 <span v-else style="width: 180px">无报告，请联系管理员</span>
@@ -138,6 +138,19 @@ export default {
                 this.dataList = res.data;
             });
             this.reportShow = true;
+        },
+        async openBigDataReportNew(downloadReport) {
+            const res = await this.$axios.get('/sm/comment/getOne', {id: id});
+            if (res.code == 200) {
+                if (!res.data.analysisId) {
+                    return;
+                }
+                let route = '/getNuBiAnalysisBctiData?analysisId=' + res.data.analysisId + '&analysisType=2';
+                if (downloadReport === 1) {
+                    route += '&downloadReport=1';
+                }
+                window.open(route, '_blank');
+            }
         },
     },
 };

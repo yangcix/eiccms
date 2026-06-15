@@ -1265,6 +1265,10 @@ export default {
                     if (!isTranslationPending) {
                         if (this.addEditInfo.type == 3 || this.$route.query.aiStatus == 3) {
                             formData.append('type', 0);
+                            if (this.$route.query.aiStatus == 3) {
+                                // 如果是分析失败然后重新提交aiStatus也重置一下，值为0
+                                formData.append('aiStatus', 0);
+                            }
                         }
                     }
                 }

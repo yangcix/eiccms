@@ -140,7 +140,7 @@ export default {
             this.reportShow = true;
         },
         async openBigDataReportNew(downloadReport) {
-            const res = await this.$axios.get('/sm/comment/getOne', {id: id});
+            const res = await this.$axios.get('/sm/comment/getOne', {id: this.$route.query.id});
             if (res.code == 200) {
                 if (!res.data.analysisId) {
                     return;

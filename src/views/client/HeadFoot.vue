@@ -31,10 +31,10 @@
                   <i class="el-icon-monitor"></i>
                   <span>进入后台</span>
                 </li>
-                <li @click="goUserHome">
+                <!-- <li @click="goUserHome">
                   <i class="el-icon-discount"></i>
                   <span>个人中心</span>
-                </li>
+                </li> -->
                 <li @click="openShow">
                   <i class="el-icon-lock"></i>
                   <span>修改密码</span>

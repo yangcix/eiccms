@@ -122,7 +122,7 @@
                     <div class="btn-wrap" v-if="permission.report && detailInfo.aiStatus == 2">
                         <el-button type="primary" style="width: 132px" @click="openReport()">查看复盘/报告</el-button>
                     </div>
-                    <div
+                    <!-- <div
                         class="btn-wrap"
                         v-if="permission.report && detailInfo.aiConfigId == 2 && detailInfo.aiStatus == 3"
                     >
@@ -137,7 +137,7 @@
                             disabled
                             >重置分析</el-button
                         >
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

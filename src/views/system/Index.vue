@@ -697,9 +697,14 @@ export default {
                     this.$route.path !== '/sm/themeaddedit' &&
                     this.$route.path !== '/sm/clip' &&
                     this.$route.path !== '/sys/terminal' &&
-                    this.$route.path !== '/sys/system/trial' &&
-                    this.$route.path !== '/aiConfig'
+                    this.$route.path !== '/sys/system/trial'
                 ) {
+                    // AI配置配置之后会刷新页面，如果是在AI配置页面刷新，刷新之后依旧留在当前页
+                    // 多设置一个this.sysModule == 6，主要用于区分是当前页面刷新还是从AI配置页跳转到其他模块下的页面
+                    // 可能设置的默认页面不显示，这时候就需要显示第一个子节点的页面
+                    if (this.$route.path == '/aiConfig' && this.sysModule == 6) {
+                        return;
+                    }
                     this.$router.push(this.menuList[0].children[0].url);
                 }
             });

@@ -254,7 +254,7 @@ export default {
                     this.orgId = userInfo.orgId;
                     // 角色权限（1全部数据，2全校数据，3下级数据, 4个人数据）
                     // 区分是学校还是个人
-                    if (userInfo.sysUserAuth[0].type == 4) {
+                    if (userInfo.sysUserAuth[0].type == 3) {
                         this.teacherUserId = userInfo.userId;
                     }
                     this.orgType = '4';

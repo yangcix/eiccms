@@ -101,7 +101,7 @@
                                         </div>
                                     </template>
                                 </el-table-column>
-                            </el-table>
+                            </el-table> -->
                             <el-checkbox
                                 v-model="authListChecked2"
                                 @change="setAuthList2"
@@ -142,7 +142,7 @@
                                         </div>
                                     </template>
                                 </el-table-column>
-                            </el-table> -->
+                            </el-table> 
                             <el-checkbox
                                 v-model="authListChecked6"
                                 @change="setAuthList6"
@@ -225,7 +225,7 @@
                                     </template>
                                 </el-table-column>
                             </el-table>
-                            <el-checkbox
+                            <!-- <el-checkbox
                                 v-model="authListChecked4"
                                 @change="setAuthList4"
                                 style="margin-top: 10px; font-size: 16px; font-weight: 600"
@@ -252,7 +252,7 @@
                                         >
                                     </template>
                                 </el-table-column>
-                            </el-table>
+                            </el-table> -->
 
                             <el-checkbox
                                 v-model="authListChecked5"

@@ -64,10 +64,10 @@
                             >
                             <!-- <span class="moduleTitle" :class="sysModule == 1 ? 'mActive' : ''" @click="changeModule(1)"
                                 >智慧教育</span
-                            >
+                            > -->
                             <span class="moduleTitle" :class="sysModule == 2 ? 'mActive' : ''" @click="changeModule(2)"
                                 >微集控录播</span
-                            > -->
+                            >
                             <span
                                 v-if="isShowProjectManage"
                                 class="moduleTitle"

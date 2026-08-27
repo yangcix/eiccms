@@ -48,7 +48,7 @@
         <div class="page-container" data-order="2">
             <div class="table-title">
                 <p>1、课堂教学分析</p>
-                <p>综合评分：{{ totalScore.toFixed(2) }}</p>
+                <p>综合评分：{{ totalScore?.toFixed(2) }}</p>
             </div>
 
             <section class="table-section">
@@ -252,13 +252,13 @@
                     <tbody>
                         <tr>
                             <td class="font-size-12 td-text-center">
-                                学生课堂兴趣指数: {{ indicatorScore['学生课堂兴趣指数'].toFixed(2) }}(常模:63.5)
+                                学生课堂兴趣指数: {{ indicatorScore['学生课堂兴趣指数']?.toFixed(2) }}(常模:63.5)
                             </td>
                             <td class="font-size-12 td-text-center">
-                                学生学科自信指数: {{ indicatorScore['学生学科自信指数'].toFixed(2) }}(常模:63.4)
+                                学生学科自信指数: {{ indicatorScore['学生学科自信指数']?.toFixed(2) }}(常模:63.4)
                             </td>
                             <td class="font-size-12 td-text-center">
-                                学科素养导向指数: {{ indicatorScore['学科素养导向指数'].toFixed(2) }}(常模:66.3)
+                                学科素养导向指数: {{ indicatorScore['学科素养导向指数']?.toFixed(2) }}(常模:66.3)
                             </td>
                         </tr>
                     </tbody>

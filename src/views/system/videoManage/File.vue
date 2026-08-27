@@ -416,7 +416,7 @@
             :visible.sync="flowLack"
             append-to-body
         >
-            <div class="tip">智教慧学灵枢云直播流量不足，请联系管理员！</div>
+            <div class="tip">AI 课堂培枢云直播流量不足，请联系管理员！</div>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="flowLack = false">确认</el-button>
             </div>

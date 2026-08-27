@@ -332,7 +332,7 @@
                         <p>公网录制</p>
                         <p><em>*</em>：</p>
                         <el-switch :active-value="1" :inactive-value="0" v-model="addEditInfo.publicLive"> </el-switch>
-                        <p class="err-notice">注：公网录制需保证智教慧学灵枢云账号中有足够的流量，否则可能影响录制</p>
+                        <p class="err-notice">注：公网录制需保证AI 课堂培枢云账号中有足够的流量，否则可能影响录制</p>
                     </div>
 
                     <div class="item-wrap" v-if="addEditInfo.publicLive === 1">
@@ -411,12 +411,12 @@
                 :visible.sync="innerVisible"
                 append-to-body
             >
-                <div class="tip">智教慧学灵枢云录制流量不足，请联系管理员！</div>
+                <div class="tip">AI 课堂培枢云录制流量不足，请联系管理员！</div>
                 <div slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="innerVisible = false">确认</el-button>
                 </div>
             </el-dialog>
-            <div class="tip">智教慧学灵枢云流量不足，无法创建公网录制</div>
+            <div class="tip">AI 课堂培枢云流量不足，无法创建公网录制</div>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="handleInstation">仅创建内网录制</el-button>
                 <el-button @click="innerVisible = true">仍创建公网录制</el-button>
@@ -432,12 +432,12 @@
                 :visible.sync="onDemandInner"
                 append-to-body
             >
-                <div class="tip">智教慧学灵枢云录制流量不足，请联系管理员！</div>
+                <div class="tip">AI 课堂培枢云录制流量不足，请联系管理员！</div>
                 <div slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="onDemandInner = false">确认</el-button>
                 </div>
             </el-dialog>
-            <div class="tip">智教慧学灵枢云流量不足，无法创建公网点播</div>
+            <div class="tip">AI 课堂培枢云流量不足，无法创建公网点播</div>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="handleInstation">仅创建内网录制</el-button>
                 <el-button @click="onDemandInner = true">仍创建公网点播</el-button>

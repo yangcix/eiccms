@@ -123,7 +123,7 @@
 							v-model="addEditInfo.publicVod"
 							>
 						</el-switch>
-						<!-- <p class="err-notice">注：公网直播需保证智教慧学灵枢云账号中有足够的流量，否则可能影响直播</p> -->
+						<!-- <p class="err-notice">注：公网直播需保证AI 课堂培枢云账号中有足够的流量，否则可能影响直播</p> -->
 					</div>
 					<div class="item-wrap notselect" v-if="addEditInfo.publicVod === 1">
 						<p>公网观看权限</p>

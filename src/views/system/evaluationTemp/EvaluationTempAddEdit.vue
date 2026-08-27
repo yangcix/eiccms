@@ -6,7 +6,7 @@
                 :content="`${$route.query.tepmid ? '编辑' : '新增'}评课模板页`"
             ></el-page-header>
         </p>
-        <div class="content-wrap">
+        <div class="content-wrap" v-show="isShowFirstPage">
             <div
                 class="item-wrap"
                 style="
@@ -143,6 +143,9 @@
                                             @focus="clarnHas(4, index, indexs)"
                                             v-model="vals.item"
                                             clearable
+                                            type="textarea"
+                                            :autosize="{minRows: 2, maxRows: 4}"
+                                            maxlength="1000"
                                         ></el-input>
                                         <p v-if="vals.children && vals.children.length == 0" class="input-s score">
                                             分数
@@ -200,6 +203,9 @@
                                                 @focus="clarnHas(5, index, indexs, indexss)"
                                                 v-model="valss.item"
                                                 clearable
+                                                type="textarea"
+                                                :autosize="{minRows: 2, maxRows: 4}"
+                                                maxlength="1000"
                                             ></el-input>
                                             <p class="input-s score">分数</p>
                                             <p><em>*</em>：</p>
@@ -488,6 +494,12 @@
             <i class="el-icon-remove-outline sub" @click="addAssistant(0, index)"></i>
           </div>
           </div> -->
+                    <div class="item-wrap" v-if="itemList[0] && itemList[0].type == 0">
+                        <p>关联数据报告</p>
+                        <p><em>*</em>：</p>
+                        <el-radio v-model="addEditInfo.associatedDataReport" :label="1">是</el-radio>
+                        <el-radio v-model="addEditInfo.associatedDataReport" :label="0">否</el-radio>
+                    </div>
                     <div v-if="addEditInfo.isOpenSummary == 1">
                         <p style="margin-top: 10px; font-size: 18px; font-weight: 600">评价小结：</p>
                         <div class="item-wrap">
@@ -502,6 +514,73 @@
                             <span class="del-btn notselect" @click="removeItem()">删除评价项</span>
                         </div>
                     </div>
+                    <el-button
+                        type="primary"
+                        class="edit-btn"
+                        @click="goNext(true)"
+                        v-if="itemList[0] && itemList[0].type == 0 && addEditInfo.associatedDataReport == 1"
+                        >下一步</el-button
+                    >
+                    <el-button type="primary" class="edit-btn" @click="save" v-else>{{
+                        $route.query.id ? '保存' : '提交'
+                    }}</el-button>
+                </div>
+            </div>
+        </div>
+        <!-- 下一步，配置关联信息 -->
+        <div class="content-wrap" v-show="!isShowFirstPage">
+            <div class="item-scroll">
+                <div class="box second-box">
+                    <div class="item-wrap" style="margin-bottom: 20px">
+                        <p>关联机构<em>*</em>：</p>
+                        <el-cascader
+                            v-model="addEditInfo.orgId"
+                            :props="cascaderProps"
+                            :options="departmentOptions"
+                            clearable
+                            :show-all-levels="false"
+                            class="width-5"
+                            placeholder="请选择关联机构"
+                            filterable
+                        ></el-cascader>
+                    </div>
+                    <div class="item-wrap rule-wrap">
+                        <p>关联规则<em>*</em>：</p>
+                        <div class="rule-item" v-for="(item, index) in ruleInfoArray" :key="item.item">
+                            <div class="title">{{ item.sort + '、' + item.item + ' - ' + item.total + ' 分' }}</div>
+                            <div class="item" v-for="(ite, idx) in item.rulesNum" :key="ite">
+                                <el-select
+                                    v-model="item['ruleArray'][idx]"
+                                    placeholder="请选择平台关联指标"
+                                    class="width-6"
+                                >
+                                    <el-option
+                                        v-for="item in ruleList"
+                                        :key="item.dictKey + item.dictName"
+                                        :label="item.dictName"
+                                        :value="item.dictKey"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <el-input
+                                    class="width-8"
+                                    v-model="item['numberArray'][idx]"
+                                    placeholder="请输入权重系数"
+                                ></el-input>
+                                <i
+                                    class="el-icon-circle-plus-outline el-icon"
+                                    @click="changeRuleNum('add', index)"
+                                    v-show="item.rulesNum < ruleList.length && idx == 0"
+                                ></i>
+                                <i
+                                    class="el-icon-remove-outline el-icon"
+                                    @click="changeRuleNum('', index, idx)"
+                                    v-show="idx != 0"
+                                ></i>
+                            </div>
+                        </div>
+                    </div>
+                    <el-button type="text" class="edit-btn" @click="goNext(false)">上一步</el-button>
                     <el-button type="primary" class="edit-btn" @click="save">{{
                         $route.query.id ? '保存' : '提交'
                     }}</el-button>
@@ -721,6 +800,7 @@ export default {
                 itemList: [],
                 isOpenSummary: 0,
                 summaryName: '',
+                associatedDataReport: 0,
             },
             itemList: [],
             itemLists: [
@@ -746,6 +826,16 @@ export default {
                 itemList: [],
                 summaryName: false,
             },
+            isShowFirstPage: true,
+            cascaderProps: {
+                value: 'orgId',
+                label: 'name',
+                emitPath: false,
+                checkStrictly: true,
+            },
+            departmentOptions: [],
+            ruleList: [],
+            ruleInfoArray: [],
         };
     },
     components: {},
@@ -1060,6 +1150,7 @@ export default {
                 this.addEditInfo.isOpenSummary = res.data.isOpenSummary;
                 this.addEditInfo.remarksName = res.data.remarksName;
                 this.addEditInfo.summaryName = res.data.summaryName;
+                this.addEditInfo.associatedDataReport = 0;
                 this.currentTemp = this.tempList.filter((item) => item.id === this.tempId)[0].name;
                 this.changeScore();
                 this.tempShow = false;
@@ -1072,6 +1163,7 @@ export default {
             this.addEditInfo.isOpenSummary = 0;
             this.addEditInfo.remarksName = '';
             this.addEditInfo.summaryName = '';
+            this.addEditInfo.associatedDataReport = 0;
             this.currentTemp = '';
             this.changeScore();
         },
@@ -1312,22 +1404,40 @@ export default {
             this.$router.go(-1);
         },
         save() {
-            this.addEditInfo.itemList = this.itemList;
-            if (!this.verify()) {
-                let url = '/sm/template/save';
-                if (this.$route.query.tepmid) {
-                    url = '/sm/template/update';
-                    this.addEditInfo.id = this.$route.query.tepmid;
-                }
-                this.$axios.post(url, this.addEditInfo).then((res) => {
-                    if (res.code == 200) {
-                        this.$route.query.tepmid
-                            ? this.$message('修改模板成功', 'success')
-                            : this.$message('新增模板成功', 'success');
-                        this.goBack();
-                    }
-                });
+            if (this.addEditInfo.associatedDataReport == 1 && this.verifyRule()) {
+                return;
             }
+            const result = [];
+            this.ruleInfoArray.forEach((item) => {
+                // 遍历数组的每一项
+                for (let i = 0; i < item.rulesNum; i++) {
+                    // 构建新对象
+                    const newObj = {
+                        dimensionCode: item.item,
+                        platformIndexId: item.ruleArray[i] ?? null, // ruleArray 的第 i 项作为 dictKey
+                        weight: item.numberArray[i] ?? null, // numberArray 的第 i 项作为 score
+                        sort: i, // 从 0 开始递增
+                        score: item.total,
+                        _relationId: item._relationId,
+                    };
+                    result.push(newObj);
+                }
+            });
+            this.addEditInfo.itemList = this.mergeArrays(this.itemList, result);
+            console.log('this.addEditInfo', this.addEditInfo);
+            let url = '/sm/template/save';
+            if (this.$route.query.tepmid) {
+                url = '/sm/template/update';
+                this.addEditInfo.id = this.$route.query.tepmid;
+            }
+            this.$axios.post(url, this.addEditInfo).then((res) => {
+                if (res.code == 200) {
+                    this.$route.query.tepmid
+                        ? this.$message('修改模板成功', 'success')
+                        : this.$message('新增模板成功', 'success');
+                    this.goBack();
+                }
+            });
         },
         //验证
         verify(type) {
@@ -1401,7 +1511,7 @@ export default {
                             );
                             return true;
                         }
-                        if (this.itemList[i].children[j].item.length > 100) {
+                        if (this.itemList[i].children[j].item.length > 1000) {
                             this.form.itemList[i].children[j].hasError = true;
                             this.$forceUpdate();
                             let message = '分数及文字';
@@ -1410,7 +1520,7 @@ export default {
                             }
                             this.$message(
                                 `${message}` +
-                                    `评价项一级项目${Number(i) + 1}下的二级项目${Number(j) + 1} 名称长度限制100字符内`,
+                                    `评价项一级项目${Number(i) + 1}下的二级项目${Number(j) + 1} 名称长度限制1000字符内`,
                                 'error'
                             );
                             return true;
@@ -1435,7 +1545,7 @@ export default {
                                     );
                                     return true;
                                 }
-                                if (this.itemList[i].children[j].children[k].item.length > 100) {
+                                if (this.itemList[i].children[j].children[k].item.length > 1000) {
                                     this.form.itemList[i].children[j].children[k].hasError = true;
                                     this.$forceUpdate();
                                     let message = '分数及文字';
@@ -1446,7 +1556,7 @@ export default {
                                         `${message}` +
                                             `评价项一级项目${Number(i) + 1}下的二级项目${Number(j) + 1}下的三级项目${
                                                 Number(k) + 1
-                                            } 名称长度限制100字符内`,
+                                            } 名称长度限制1000字符内`,
                                         'error'
                                     );
                                     return true;
@@ -1468,6 +1578,135 @@ export default {
                     return true;
                 }
             }
+        },
+        goNext(type) {
+            if (!this.verify()) {
+                if (type) {
+                    this.isShowFirstPage = !type;
+                    this.getOrgOptions();
+                    this.getProductList();
+                    console.log('itemList', this.itemList);
+                    this.ruleInfoArray = this.itemList.map(({sort, total, item}, index) => ({
+                        sort: sort ? sort : index + 1,
+                        total,
+                        item,
+                        ruleArray: [],
+                        numberArray: [],
+                        rulesNum: 1,
+                        _relationId: index,
+                    }));
+                    this.addEditInfo.orgId = '';
+                } else {
+                    this.$confirm('返回上一步后，当前已添加的关联指标内容将被清空，请谨慎操作！', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    })
+                        .then(() => {
+                            this.isShowFirstPage = !type;
+                        })
+                        .catch(() => {});
+                }
+            }
+        },
+        async getOrgOptions() {
+            await this.$axios.get('/sys/org/listDepartmentAndUser', {isAll: 1}).then((res) => {
+                this.departmentOptions = [];
+                this.departmentOptions = res.data;
+            });
+            return this.departmentOptions;
+        },
+        // 获取产品下拉
+        getProductList() {
+            this.$axios.get('/aiAnalysisDict/list', {dictModel: 'integral_analysis'}).then((res) => {
+                if (res.code == 200) {
+                    this.ruleList = res.data.resData;
+                }
+            });
+        },
+        addRule() {
+            this.ruleNum++;
+        },
+        decreaseRule(index) {
+            this.ruleNum--;
+            this.ruleArray1.splice(index, 1);
+            this.numberArray.splice(index, 1);
+        },
+        changeRuleNum(type, index, idx) {
+            if (type == 'add') {
+                this.ruleInfoArray[index].rulesNum++;
+            } else {
+                this.ruleInfoArray[index].rulesNum--;
+                this.ruleInfoArray[index].ruleArray.splice(idx, 1);
+                this.ruleInfoArray[index].numberArray.splice(idx, 1);
+            }
+        },
+        verifyRule() {
+            if (!this.addEditInfo.orgId) {
+                this.$message('请选择关联机构！', 'error');
+                return true;
+            }
+            for (let i = 0; i < this.ruleInfoArray.length; i++) {
+                let item = this.ruleInfoArray[i];
+                if (item.ruleArray.length == 0) {
+                    this.$message(item['item'] + '下有指标未选择！', 'error');
+                    return true;
+                }
+                if (item.numberArray.length == 0) {
+                    this.$message('请填写' + item['item'] + '下的指标权重系数！', 'error');
+                    return true;
+                }
+                if (item.ruleArray.length < item.numberArray.length) {
+                    this.$message(item['item'] + '下有指标未选择！', 'error');
+                    return true;
+                }
+                if (item.ruleArray.length > item.numberArray.length) {
+                    this.$message('请填写' + item['item'] + '下的指标权重系数！', 'error');
+                    return true;
+                }
+                if (item.ruleArray.length != item.rulesNum) {
+                    this.$message(item['item'] + '下有指标未选择！', 'error');
+                    return true;
+                }
+                if (new Set(item.ruleArray).size !== item.ruleArray.length) {
+                    this.$message(item['item'] + '下指标重复添加！', 'error');
+                    return true;
+                }
+                for (let j = 0; j < item.numberArray.length; j++) {
+                    let ite = item.numberArray[j];
+                    if (!ite) {
+                        this.$message('请填写' + item['item'] + '下的指标权重系数！', 'error');
+                        return true;
+                    }
+                    if (!Number.isFinite(parseFloat(ite))) {
+                        this.$message('权重系数是数值类型！', 'error');
+                        return true;
+                    }
+                    if (ite <= 0 || ite > 1) {
+                        this.$message('权重系数只能是大于0，小于等于1的数值！', 'error');
+                        return true;
+                    }
+                }
+            }
+        },
+        mergeArrays(arr1, arr2) {
+            // 将第二个数组按 id 分组
+            const configMap = new Map();
+            arr2.forEach((item) => {
+                const id = item._relationId;
+                console.log('id---', id);
+
+                if (!configMap.has(id)) {
+                    configMap.set(id, []);
+                }
+                configMap.get(id).push(item);
+            });
+
+            // 遍历第一个数组，添加 config 属性
+            return arr1.map((item, index) => ({
+                ...item,
+                smCommentTemplateIndexConfigs: configMap.get(index) || [], // 如果没有匹配则返回空数组
+            }));
         },
     },
 };
@@ -1522,11 +1761,17 @@ export default {
     width: 100%;
 
     .box {
-        min-width: 1400px;
+        min-width: 100%;
         // overflow-y: scroll;
         padding-top: 60px;
         // width: 105%;
         // height: 100%;
+    }
+    .second-box {
+        padding-top: 0;
+    }
+    .el-input {
+        margin-left: 8px;
     }
 }
 
@@ -1679,7 +1924,44 @@ export default {
         margin-left: 14px;
     }
 }
+.rule-wrap {
+    align-items: flex-start;
+    margin-top: 0;
+    flex-wrap: wrap;
 
+    p:nth-child(2) {
+        height: 40px;
+        line-height: 40px;
+        text-align: justify;
+        color: #303133;
+        font-size: 14px;
+    }
+    .rule-item {
+        width: 55%;
+        margin-left: 100px;
+        font-size: 14px;
+        color: #303133;
+
+        .title {
+            margin-top: 12px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+        }
+
+        .el-icon {
+            font-size: 35px;
+            color: #d7d7d7;
+            margin-left: 10px;
+        }
+    }
+    .rule-item:first-of-type {
+        margin-left: 0;
+    }
+}
 .add-assistant {
     cursor: pointer;
     text-align: center;
@@ -1721,6 +2003,15 @@ export default {
 
     ::v-deep .el-input__inner {
         border-color: #ff5d5d !important;
+    }
+}
+</style>
+<style lang="scss">
+.evaluation-content {
+    .el-table {
+        .cell {
+            white-space: pre-wrap;
+        }
     }
 }
 </style>

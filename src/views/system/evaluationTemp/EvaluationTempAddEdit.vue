@@ -1620,7 +1620,7 @@ export default {
         getProductList() {
             this.$axios.get('/aiAnalysisDict/list', {dictModel: 'integral_analysis'}).then((res) => {
                 if (res.code == 200) {
-                    this.ruleList = res.data.resData;
+                    this.ruleList = res.data.resData.filter(item => item.dictKey !== '0');
                 }
             });
         },

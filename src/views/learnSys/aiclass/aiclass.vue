@@ -458,6 +458,29 @@
                         padding: 0 20px;
                         margin-bottom: 10px;
                     "
+                    v-if="reportData.smCommentTemplate &&reportData.smCommentTemplate.associatedDataReport == 1"
+                >
+                    <span style="width: 300px">{{reportData.smCommentTemplate.name}}</span>
+                    <el-button
+                        type="text"
+                        @click="openEvaluationTempReportNew(2, reportData.commentId)"
+                        >查看</el-button
+                    >
+                    <el-button
+                        type="text"
+                        @click="openEvaluationTempReportNew(1, reportData.commentId)"
+                        >下载</el-button
+                    >
+                </div>
+                <div
+                    style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 0 20px;
+                        margin-bottom: 10px;
+                    "
+                    v-else
                 >
                     <span style="width: 300px">大数据报告</span>
                     <el-button
@@ -1651,6 +1674,19 @@ export default {
                     return;
                 }
                 let route = '/getNuBiAnalysisBctiData?analysisId=' + res.data.analysisId + '&analysisType=2';
+                if (downloadReport === 1) {
+                    route += '&downloadReport=1';
+                }
+                window.open(route, '_blank');
+            }
+        },
+        async openEvaluationTempReportNew(downloadReport, id) {
+            const res = await this.$axios.get('/aiGrinding/getDetail', {id: id});
+            if (res.code == 200) {
+                if (!res.data.analysisId) {
+                    return;
+                }
+                let route = '/getNLessonEvaluationScale?analysisId=' + res.data.analysisId + '&analysisType=2';
                 if (downloadReport === 1) {
                     route += '&downloadReport=1';
                 }

@@ -336,6 +336,27 @@
                                 padding: 0 20px;
                                 margin-bottom: 10px;
                             "
+                            v-if="
+                                reportAi.smCommentTemplate && reportAi.smCommentTemplate.associatedDataReport == 1
+                            "
+                        >
+                            <span style="width: 300px">{{ reportAi.smCommentTemplate.name }}</span>
+                            <el-button type="text" @click="openEvaluationTempReportNew(2, commentInfo.id)"
+                                >查看</el-button
+                            >
+                            <el-button type="text" @click="openEvaluationTempReportNew(1, commentInfo.id)"
+                                >下载</el-button
+                            >
+                        </div>
+                        <div
+                            style="
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                padding: 0 20px;
+                                margin-bottom: 10px;
+                            "
+                            v-else
                         >
                             <span style="width: 300px">大数据报告</span>
                             <el-button
@@ -1086,6 +1107,20 @@ export default {
                     return;
                 }
                 let route = '/getNuBiAnalysisBctiData?analysisId=' + res.data.analysisId + '&analysisType=2';
+                if (downloadReport === 1) {
+                    route += '&downloadReport=1';
+                }
+                window.open(route, '_blank');
+            }
+        },
+        async openEvaluationTempReportNew(downloadReport, id) {
+            const res = await this.$axios.get('/sm/comment/getOne', {id: id});
+            if (res.code == 200) {
+                console.log('analysisId: ', res.data.analysisId);
+                if (!res.data.analysisId) {
+                    return;
+                }
+                let route = '/getNLessonEvaluationScale?analysisId=' + res.data.analysisId + '&analysisType=2';
                 if (downloadReport === 1) {
                     route += '&downloadReport=1';
                 }

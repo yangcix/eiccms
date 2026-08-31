@@ -773,6 +773,14 @@ const routes = [{
             import ( /* webpackChunkName: "lessonPlanAnalysis" */ '@/views/aiReport/bigDataReport.vue'),
     },
     {
+        // 评课量表报告
+        path: '/getNLessonEvaluationScale',
+        name: 'evaluationTempReport',
+        meta: { keepAlive: true },
+        component: () =>
+            import ( /* webpackChunkName: "lessonPlanAnalysis" */ '@/views/aiReport/evaluationTempReport.vue'),
+    },
+    {
         // 甘肃URL跳转登录
         path: '/gansu/loginRedirect',
         name: 'ganSuLoginRedirect',

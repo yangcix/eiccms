@@ -534,6 +534,7 @@ export default {
             this.exportData['startDate'] = this.exportData.time ? this.exportData.time[0] + ' 00:00:00' : '';
             this.exportData['endDate'] = this.exportData.time ? this.exportData.time[1] + ' 23:59:59' : '';
             this.exportData['productIdList'] = this.exportData.productList;
+            this.exportData['projectId'] = this.$route.query.id;
             const now = this.$moment();
             let fileName = this.$route.query.projectName + '次数分配导出数据_' + now.format('YYYY-MM-DD HHmmss');
             this.$comjs.exportTableData(

@@ -23,6 +23,8 @@
 
 <script>
 import A4PaginateTable from './components/A4PaginateTable.vue';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 export default {
     name: 'AiTeacherReportPage',
@@ -63,119 +65,91 @@ export default {
         this.$message('报告渲染中...');
         this.getReportData().then(() => {
             if (downloadReport === '1') {
-                setTimeout(() => this.handlePrint(), 500);
+                setTimeout(() => this.handleDownloadPDF(), 500);
             }
         });
     },
     methods: {
-        handlePrint() {
-            const printContent = document.getElementById('ai-teacher-report').innerHTML;
-            const win = window.open('', '_blank');
-            win.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8" />
-                    <title>${this.name || 'AI课堂报告'}</title>
-                    <style>
-                        * { margin:0; padding:0; box-sizing:border-box; }
-                        body { background:white; padding:0; }
-                        .report-container { width:100%; max-width:794px; margin:0 auto; }
+        async handleDownloadPDF() {
+            try {
+                this.$message('PDF生成中...');
+                const container = document.getElementById('ai-teacher-report');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = 210;
+                const pdfHeight = 297;
 
-                        .page-a4 {
-                            width:210mm;
-                            min-height:297mm;
-                            padding:12mm 10mm;
-                            box-sizing:border-box;
-                            display:flex;
-                            flex-direction:column;
-                            page-break-after:always;
-                            margin:0 auto;
-                        }
-                        .page-a4:last-child { page-break-after:auto; }
-                        .page-a4 table { flex:1; }
+                // 获取所有页面
+                const pageElements = [];
 
-                        .page-footer {
-                            margin-top:auto;
-                            text-align:center;
-                            font-size:11px;
-                            color:#999;
-                            padding-top:10px;
-                            border-top:1px dashed #ddd;
-                            flex-shrink:0;
-                        }
+                // 收集所有需要分页的元素
+                const reportInfoPage = container.querySelector('.page-container');
+                if (reportInfoPage) {
+                    pageElements.push(reportInfoPage);
+                }
 
-                        .page-title { text-align:center; font-size:18px; font-weight:bold; margin-bottom:6px; }
+                // 数据表格可能在 .page-a4 中，也可能在 .report-container 的直接子元素中
+                const tablePages = container.querySelectorAll('.page-a4');
+                if (tablePages.length) {
+                    tablePages.forEach((el) => pageElements.push(el));
+                }
 
-                        table {
-                            width:100%;
-                            border-collapse:collapse;
-                            font-size:12px;
-                            table-layout:fixed;
-                        }
-                        table th, table td {
-                            border:1px solid #333;
-                            padding:4px 6px;
-                            word-break:break-word;
-                            line-height:1.7;
-                            text-align:left;
-                            vertical-align:middle;
-                        }
-                        table th { background:#f0f2f5; font-weight:700; text-align:center; }
-                        table td.center { text-align:center; }
+                // 如果没有找到 .page-a4，尝试找表格容器
+                if (pageElements.length === 1) {
+                    const tableContainer = container.querySelector('.table-container, [class*="table"]');
+                    if (tableContainer) {
+                        pageElements.push(tableContainer);
+                    }
+                }
+                for (let i = 0; i < pageElements.length; i++) {
+                    const pageEl = pageElements[i];
 
-                        .table-title {
-                            display:flex;
-                            justify-content:space-between;
-                            font-weight:700;
-                            font-size:20px;
-                            margin-bottom:8px;
-                        }
+                    // 显示当前处理进度
+                    if (i > 0) {
+                        pdf.addPage();
+                    }
 
-                        /* 报告信息页样式 */
-                        .page-container {
-                            width:210mm;
-                            min-height:297mm;
-                            padding:12mm 10mm;
-                            box-sizing:border-box;
-                            display:flex;
-                            flex-direction:column;
-                            page-break-after:always;
-                            margin:0 auto;
-                            background:white;
-                        }
-                        .page-container:last-child { page-break-after:auto; }
-                        .page-container header { text-align:center; width:56%; margin:0 auto; }
-                        .page-container header img { margin-top:80px; max-width:100%; }
-                        .page-container header h1 { margin:50px 0 0; }
-                        .page-container header p { margin:8px 0 80px; font-size:22px; font-weight:700; }
-                        .page-container main { width:50%; margin:150px auto auto auto; font-size:18px; line-height:18px; }
-                        .page-container .footer-version {
-                            margin-top:auto;
-                            text-align:right;
-                            padding-bottom:10px;
-                        }
-                        .page-container .footer-version p { font-size:14px; color:#b0b1c8; }
+                    const canvas = await html2canvas(pageEl, {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true,
+                        logging: false,
+                        backgroundColor: '#ffffff',
+                        height: pageEl.scrollHeight,
+                        width: pageEl.scrollWidth,
+                        windowHeight: pageEl.scrollHeight,
+                        // 重要：等待字体和图片加载完成
+                        useCORS: true,
+                        allowTaint: true,
+                    });
 
-                        @page { size:A4; margin:0; }
-                        @media print {
-                            body { margin:0; }
-                            .page-a4, .page-container {
-                                box-shadow:none !important;
-                                margin:0;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                    ${printContent}
-                </body>
-                </html>
-            `);
-            win.document.close();
-            setTimeout(() => win.print(), 500);
+                    const imgData = canvas.toDataURL('image/png', 1.0);
+
+                    // 计算尺寸
+                    const imgWidth = pdfWidth;
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                    // 如果内容超过一页，需要缩放
+                    if (imgHeight > pdfHeight) {
+                        // 直接缩放到一页
+                        const scale = pdfHeight / imgHeight;
+                        const finalWidth = imgWidth * scale;
+                        const finalHeight = pdfHeight;
+                        const xOffset = (pdfWidth - finalWidth) / 2;
+                        pdf.addImage(imgData, 'PNG', xOffset, 0, finalWidth, finalHeight);
+                    } else {
+                        // 内容少于或等于一页
+                        const yOffset = (pdfHeight - imgHeight) / 2;
+                        pdf.addImage(imgData, 'PNG', 0, Math.max(0, yOffset), imgWidth, imgHeight);
+                    }
+                }
+
+                pdf.save(`${this.name || 'AI课堂报告'}.pdf`);
+                this.$message.success('PDF下载成功！');
+            } catch (error) {
+                console.error('PDF生成失败:', error);
+                this.$message.error('PDF生成失败，请重试');
+            }
         },
-
         async getReportData() {
             try {
                 const res = await this.$axios.get('/aiReport/getNLessonEvaluationScale', {analysisId: this.analysisId});

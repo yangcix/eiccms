@@ -540,8 +540,9 @@
                             clearable
                             :show-all-levels="false"
                             class="width-5"
-                            placeholder="请选择关联机构"
+                            placeholder="请搜索或选择关联机构"
                             filterable
+                            :disabled="userInfo.orgId != 1"
                         ></el-cascader>
                     </div>
                     <div class="item-wrap rule-wrap">
@@ -803,14 +804,7 @@ export default {
                 associatedDataReport: 0,
             },
             itemList: [],
-            itemLists: [
-                // {
-                //   item:'',
-                //   type: 2,
-                //   content:'',
-                //   children: []
-                // }
-            ],
+            itemLists: [],
             type: 0,
             itemListss: [],
             openShow: false,
@@ -836,6 +830,8 @@ export default {
             departmentOptions: [],
             ruleList: [],
             ruleInfoArray: [],
+            userInfo: {},
+            isClearNext: false,
         };
     },
     components: {},
@@ -1404,8 +1400,10 @@ export default {
             this.$router.go(-1);
         },
         save() {
-            if (this.addEditInfo.associatedDataReport == 1 && this.verifyRule()) {
-                return;
+            if (this.addEditInfo.associatedDataReport == 1) {
+                if (this.verifyRule()) return;
+            } else {
+                if (this.verify()) return;
             }
             const result = [];
             this.ruleInfoArray.forEach((item) => {
@@ -1415,10 +1413,12 @@ export default {
                     const newObj = {
                         dimensionCode: item.item,
                         platformIndexId: item.ruleArray[i] ?? null, // ruleArray 的第 i 项作为 dictKey
-                        weight: item.numberArray[i] ?? null, // numberArray 的第 i 项作为 score
+                        weight:
+                            item.numberArray[i] == 1 ? parseInt(item.numberArray[i]) : parseFloat(item.numberArray[i]), // numberArray 的第 i 项作为 score
                         sort: i, // 从 0 开始递增
                         score: item.total,
                         _relationId: item._relationId,
+                        templateId: item.templateId,
                     };
                     result.push(newObj);
                 }
@@ -1585,27 +1585,65 @@ export default {
                     this.isShowFirstPage = !type;
                     this.getOrgOptions();
                     this.getProductList();
-                    console.log('itemList', this.itemList);
-                    this.ruleInfoArray = this.itemList.map(({sort, total, item}, index) => ({
-                        sort: sort ? sort : index + 1,
-                        total,
-                        item,
-                        ruleArray: [],
-                        numberArray: [],
-                        rulesNum: 1,
-                        _relationId: index,
-                    }));
-                    this.addEditInfo.orgId = '';
-                } else {
-                    this.$confirm('返回上一步后，当前已添加的关联指标内容将被清空，请谨慎操作！', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning',
-                    })
-                        .then(() => {
-                            this.isShowFirstPage = !type;
+                    this.userInfo = JSON.parse(localStorage.getItem('userInfo'));
+                    console.log('this.itemList', this.itemList);
+
+                    this.ruleInfoArray = this.itemList.map(
+                        ({sort, total, item, smCommentTemplateIndexConfigs, id}, index) => ({
+                            sort: sort ? sort : index + 1,
+                            total,
+                            item,
+                            ruleArray:
+                                smCommentTemplateIndexConfigs &&
+                                smCommentTemplateIndexConfigs.length != 0 &&
+                                !this.isClearNext
+                                    ? smCommentTemplateIndexConfigs?.map((config) => config.platformIndexId)
+                                    : [],
+                            numberArray:
+                                smCommentTemplateIndexConfigs &&
+                                smCommentTemplateIndexConfigs.length != 0 &&
+                                !this.isClearNext
+                                    ? smCommentTemplateIndexConfigs?.map((config) => config.weight)
+                                    : [],
+                            rulesNum:
+                                smCommentTemplateIndexConfigs &&
+                                smCommentTemplateIndexConfigs.length != 0 &&
+                                !this.isClearNext
+                                    ? smCommentTemplateIndexConfigs?.length
+                                    : 1,
+                            _relationId: index,
+                            templateId: this.$route.query.tepmid && id ? id : null,
                         })
-                        .catch(() => {});
+                    );
+                    console.log('this.ruleInfoArray', this.ruleInfoArray);
+
+                    if (this.isClearNext) {
+                        this.addEditInfo.orgId = '';
+                    } else {
+                        // 非编辑
+                        if (!this.$route.query.tepmid) {
+                            if (this.userInfo.orgId == 1) {
+                                this.addEditInfo.orgId = '';
+                            } else {
+                                this.addEditInfo.orgId = this.userInfo.orgId;
+                            }
+                        }
+                    }
+                } else {
+                    if (this.$route.query.tepmid) {
+                        this.isShowFirstPage = !type;
+                    } else {
+                        this.$confirm('返回上一步后，当前已添加的关联指标内容将被清空，请谨慎操作！', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning',
+                        })
+                            .then(() => {
+                                this.isShowFirstPage = !type;
+                                this.isClearNext = true;
+                            })
+                            .catch(() => {});
+                    }
                 }
             }
         },
@@ -1620,7 +1658,7 @@ export default {
         getProductList() {
             this.$axios.get('/aiAnalysisDict/list', {dictModel: 'integral_analysis'}).then((res) => {
                 if (res.code == 200) {
-                    this.ruleList = res.data.resData.filter(item => item.dictKey !== '0');
+                    this.ruleList = res.data.resData.filter((item) => item.dictKey !== '0');
                 }
             });
         },
@@ -1683,7 +1721,16 @@ export default {
                         return true;
                     }
                     if (ite <= 0 || ite > 1) {
-                        this.$message('权重系数只能是大于0，小于等于1的数值！', 'error');
+                        this.$message('权重系数只限填写大于0，小于1的一位小数以及1！例如：0.1、0.9、1。', 'error');
+                        return true;
+                    }
+                    const str = String(ite).trim();
+                    // 如果是小数，检查是否只有一位小数
+                    const decimalPart = str.split('.')[1];
+
+                    // 如果是整数（没有小数点），直接通过
+                    if (decimalPart && decimalPart.length != 1) {
+                        this.$message('权重系数只限填写大于0，小于1的一位小数以及1！例如：0.1、0.9、1。', 'error');
                         return true;
                     }
                 }

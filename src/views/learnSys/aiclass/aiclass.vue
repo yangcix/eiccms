@@ -185,7 +185,8 @@
                                             scope.row.type == 0 ||
                                             scope.row.type == 3 ||
                                             (scope.row.aiStatus == 3 &&
-                                                (scope.row.resources !== 1 && scope.row.resources !== 3)))
+                                                scope.row.resources !== 1 &&
+                                                scope.row.resources !== 3))
                                     "
                                     type="text"
                                     @click="add(0, scope.row)"
@@ -237,7 +238,8 @@
                                             scope.row.type == 0 ||
                                             scope.row.type == 3 ||
                                             (scope.row.aiStatus == 3 &&
-                                                (scope.row.resources !== 1 && scope.row.resources !== 3)))
+                                                scope.row.resources !== 1 &&
+                                                scope.row.resources !== 3))
                                     "
                                     type="text"
                                     style="color: #f56c6c"
@@ -458,17 +460,13 @@
                         padding: 0 20px;
                         margin-bottom: 10px;
                     "
-                    v-if="reportData.smCommentTemplate &&reportData.smCommentTemplate.associatedDataReport == 1"
+                    v-if="reportData.smCommentTemplate && reportData.smCommentTemplate.associatedDataReport == 1"
                 >
-                    <span style="width: 300px">{{reportData.smCommentTemplate.name}}</span>
-                    <el-button
-                        type="text"
-                        @click="openEvaluationTempReportNew(2, reportData.commentId)"
+                    <span style="width: 300px">{{ reportData.smCommentTemplate.name }}</span>
+                    <el-button type="text" @click="openEvaluationTempReportNew(2, reportData.commentId)"
                         >查看</el-button
                     >
-                    <el-button
-                        type="text"
-                        @click="openEvaluationTempReportNew(1, reportData.commentId)"
+                    <el-button type="text" @click="openEvaluationTempReportNew(1, reportData.commentId)"
                         >下载</el-button
                     >
                 </div>

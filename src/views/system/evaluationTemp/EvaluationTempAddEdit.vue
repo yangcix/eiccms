@@ -1400,10 +1400,13 @@ export default {
             this.$router.go(-1);
         },
         save() {
+            // 关联报告
             if (this.addEditInfo.associatedDataReport == 1) {
                 if (this.verifyRule()) return;
             } else {
                 if (this.verify()) return;
+                // 无关联报告，把当前登录人的机构id传给后端
+                this.addEditInfo.orgId = this.userInfo.orgId;
             }
             const result = [];
             this.ruleInfoArray.forEach((item) => {
@@ -1424,7 +1427,6 @@ export default {
                 }
             });
             this.addEditInfo.itemList = this.mergeArrays(this.itemList, result);
-            console.log('this.addEditInfo', this.addEditInfo);
             let url = '/sm/template/save';
             if (this.$route.query.tepmid) {
                 url = '/sm/template/update';

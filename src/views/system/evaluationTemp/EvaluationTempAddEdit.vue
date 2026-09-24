@@ -1607,9 +1607,6 @@ export default {
                     this.isShowFirstPage = !type;
                     this.getOrgOptions();
                     this.getProductList();
-                    this.userInfo = JSON.parse(localStorage.getItem('userInfo'));
-                    console.log('this.itemList', this.itemList);
-
                     this.ruleInfoArray = this.itemList.map(
                         ({sort, total, item, smCommentTemplateIndexConfigs, id}, index) => ({
                             sort: sort ? sort : index + 1,
@@ -1637,8 +1634,6 @@ export default {
                             templateId: this.$route.query.tepmid && id ? id : null,
                         })
                     );
-                    console.log('this.ruleInfoArray', this.ruleInfoArray);
-
                     if (this.isClearNext) {
                         this.addEditInfo.orgId = '';
                     } else {

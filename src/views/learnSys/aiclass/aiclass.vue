@@ -1730,6 +1730,15 @@ export default {
                 this.fallbackDownload(url);
             }
         },
+        // 降级方案
+        fallbackDownload(url) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = this.reportRow.name + '_AI教学建议书.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        },
     },
 };
 </script>

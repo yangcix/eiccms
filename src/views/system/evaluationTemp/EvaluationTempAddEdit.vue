@@ -1409,8 +1409,10 @@ export default {
                 if (this.verifyRule()) return;
             } else {
                 if (this.verify()) return;
-                // 无关联报告，把当前登录人的机构id传给后端
-                this.addEditInfo.orgId = this.userInfo.orgId;
+                // 无关联报告，把当前登录人的机构id传给后端。超管不需要传
+                if (!this.$route.query.tepmid && this.userInfo.orgId != 1) {
+                    this.addEditInfo.orgId = this.userInfo.orgId;
+                }
             }
             const result = [];
             this.ruleInfoArray.forEach((item) => {

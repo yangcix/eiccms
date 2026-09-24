@@ -499,6 +499,9 @@
                         <p><em>*</em>：</p>
                         <el-radio v-model="addEditInfo.associatedDataReport" :label="1">是</el-radio>
                         <el-radio v-model="addEditInfo.associatedDataReport" :label="0">否</el-radio>
+                        <p class="specialp">
+                            <em>*</em>关联数据报告时，评分一级项目下只能添加一个评分二级项目且不支持添加评分三级项目
+                        </p>
                     </div>
                     <div v-if="addEditInfo.isOpenSummary == 1">
                         <p style="margin-top: 10px; font-size: 18px; font-weight: 600">评价小结：</p>
@@ -837,6 +840,7 @@ export default {
     components: {},
     mounted() {
         this.getTemplate();
+        this.userInfo = JSON.parse(localStorage.getItem('userInfo'));
         if (this.$route.query.tepmid) {
             this.tempId = parseInt(this.$route.query.tepmid);
             this.getThemeInfo(this.tempId); //编辑获取主体信息
@@ -1496,6 +1500,15 @@ export default {
                     return true;
                 }
                 if (this.itemList[i].children && this.itemList[i].children.length > 0) {
+                    if (this.addEditInfo.associatedDataReport == 1) {
+                        if (this.itemList[i].children.length > 1) {
+                            this.$message(
+                                '关联数据报告时，评分一级项目下只能添加一个评分二级项目且不支持添加评分三级项目，请及时调整！',
+                                'error'
+                            );
+                            return true;
+                        }
+                    }
                     for (let j in this.itemList[i].children) {
                         if (this.itemList[i].children[j].item === '') {
                             this.form.itemList[i].children[j].hasError = true;
@@ -1528,6 +1541,13 @@ export default {
                             return true;
                         }
                         if (this.itemList[i].children[j].children && this.itemList[i].children[j].children.length > 0) {
+                            if (this.addEditInfo.associatedDataReport == 1) {
+                                this.$message(
+                                    '关联数据报告时，评分一级项目下只能添加一个评分二级项目且不支持添加评分三级项目，请及时调整！',
+                                    'error'
+                                );
+                                return true;
+                            }
                             for (let k in this.itemList[i].children[j].children) {
                                 if (this.itemList[i].children[j].children[k].item === '') {
                                     this.form.itemList[i].children[j].children[k].hasError = true;

@@ -4,8 +4,7 @@
         <div class="page-container" data-order="1">
             <header style="width: 56%; margin: 0 auto">
                 <img src="../../assets/imgs/logo-eicc.png" alt="Logo" style="margin-top: 80px" />
-                <h1 style="margin: 50px 0 0">AI课堂报告</h1>
-                <p style="margin: 8px 0 80px; font-size: 22px; font-weight: 700">（{{ name }}）</p>
+                <h1 style="margin: 50px 0 80px">{{ name }}</h1>
                 <h2>《 {{ baseInfo?.analysisName }} 》</h2>
             </header>
             <main style="width: 50%; margin: 150px auto auto auto; font-size: 18px; line-height: 18px">

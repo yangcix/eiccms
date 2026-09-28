@@ -8,8 +8,7 @@
                   <button @click="downloadPDF">下载 PDF</button>
                 </div>-->
                 <img src="../../assets/imgs/logo-eicc.png" alt="Logo" style="margin-top: 80px" />
-                <h1 style="margin: 50px 0 0">AI课堂报告</h1>
-                <p style="margin: 8px 0 80px; font-size: 22px; font-weight: 700">（教 师 版）</p>
+                <h1 style="margin: 50px 0 80px">教学诊断数据</h1>
                 <h2 style="width: 100%">《 {{ baseInfo?.analysisName }} 》</h2>
             </header>
             <main style="width: 50%; height: 40%; margin: 150px auto auto auto; font-size: 18px; line-height: 18px">
@@ -50,7 +49,7 @@
         </div>
 
         <!--  第二页，课堂整体表现  -->
-        <div class="page-container" data-order="2">
+        <div class="page-container" data-order="2" v-if="$route.query.associatedDataReport != 1">
             <header>
                 <h2 style="margin-top: 30px">第一部分 课堂概要</h2>
                 <h3 style="margin-top: 30px; margin-bottom: 20px">（一）课堂整体表现</h3>
@@ -133,7 +132,9 @@
         <!--  第三页，教学效果序列分析  -->
         <div class="page-container" data-order="3">
             <header>
-                <h3 style="margin-top: 30px">（二）教学效果序列分析</h3>
+                <h3 style="margin-top: 30px">
+                    {{ $route.query.associatedDataReport == 1 ? '（一）' : '（二）' }}教学效果序列分析
+                </h3>
             </header>
 
             <!--   periodAnalysis.periods   -->
@@ -406,14 +407,14 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 2 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '1' : '2' }} —</div>
             </footer>
         </div>
 
         <!--  第四页，课堂特点  -->
         <div class="page-container" data-order="4">
             <header>
-                <h3>（三）课堂特点</h3>
+                <h3>{{ $route.query.associatedDataReport == 1 ? '（二）' : '（三）' }}课堂特点</h3>
             </header>
 
             <section class="table-section" style="margin-top: 60px">
@@ -458,14 +459,14 @@
             </section>
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 3 —</div>
+                <div class="page-number">—{{ $route.query.associatedDataReport == 1 ? '2' : '3' }} —</div>
             </footer>
         </div>
 
         <!--  第五页，教与学基本参数  -->
         <div class="page-container" data-order="5">
             <header>
-                <h3>（四）教与学基本参数</h3>
+                <h3>{{ $route.query.associatedDataReport == 1 ? '（三）' : '（四）' }}教与学基本参数</h3>
                 <h4 style="margin-top: 30px; float: left; font-size: 17px">1. 教师的教学特点</h4>
             </header>
 
@@ -644,7 +645,7 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 4 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '3' : '4' }} —</div>
             </footer>
         </div>
 
@@ -824,7 +825,7 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 5 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '4' : '5' }} —</div>
             </footer>
         </div>
 
@@ -1060,7 +1061,7 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 6 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '5' : '6' }} —</div>
             </footer>
         </div>
 
@@ -1118,7 +1119,7 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 7 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '6' : '7' }} —</div>
             </footer>
         </div>
 
@@ -1247,7 +1248,7 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 8 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '7' : '8' }} —</div>
             </footer>
         </div>
 
@@ -1317,9 +1318,7 @@
                     </p>
                     <p style="margin-left: 20px">
                         根据数据的概率分布，本次课想象力激发较大。本次课平均想象力激发：
-                        <span class="value">
-                            {{ parseFloat(timeDistributed.mean).toFixed(2) }} </span
-                        >。
+                        <span class="value"> {{ parseFloat(timeDistributed.mean).toFixed(2) }} </span>。
                     </p>
                     <p style="margin-left: 20px; color: #b2b1c2">
                         参考值：《物理学的进化》的发散程度为：<span>{{ timeDistributed?.low }}</span
@@ -1337,7 +1336,7 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 9 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '8' : '9' }} —</div>
             </footer>
         </div>
 
@@ -1426,7 +1425,7 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 10 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '9' : '10' }} —</div>
             </footer>
         </div>
 
@@ -1556,7 +1555,7 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 11 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '10' : '11' }} —</div>
             </footer>
         </div>
 
@@ -1693,7 +1692,7 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 12 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '11' : '12' }} —</div>
             </footer>
         </div>
 
@@ -1752,7 +1751,7 @@
 
             <!-- 页脚，包含页码 -->
             <footer class="footer">
-                <div class="page-number">— 13 —</div>
+                <div class="page-number">— {{ $route.query.associatedDataReport == 1 ? '12' : '13' }} —</div>
             </footer>
         </div>
 

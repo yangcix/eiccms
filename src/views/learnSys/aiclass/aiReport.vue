@@ -9,10 +9,39 @@
             frameborder="0"
         ></iframe>
         <el-dialog title="下载报告" :close-on-click-modal="false" :visible.sync="reportShow" width="500px">
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px">
-                <span style="width: 300px">教师版</span>
-                <!-- <el-button type="text" @click="downloadReport(0)">下载</el-button> -->
-                <!-- <el-button type="text" @click="downloadPDFReport(0)">下载</el-button> -->
+            <div class="report-title">
+                <div class="title">AI磨课</div>
+                <div v-if="!isUnfold" class="icon-content" @click="changeUnfoldState">
+                    <i class="el-icon-arrow-down"></i>展开
+                </div>
+                <div v-else class="icon-content" @click="changeUnfoldState"><i class="el-icon-arrow-up"></i>收起</div>
+            </div>
+            <div
+                class="report-item"
+                v-if="dataList.smCommentTemplate && dataList.smCommentTemplate.associatedDataReport == 1"
+            >
+                <span style="width: 300px">{{ dataList.smCommentTemplate.name }}</span>
+                <el-button type="text" @click="openEvaluationTempReportNew(2, dataList.commentId)">查看</el-button>
+                <el-button type="text" @click="openEvaluationTempReportNew(1, dataList.commentId)">下载</el-button>
+            </div>
+            <div
+                v-else-if="
+                    !(dataList.smCommentTemplate && dataList.smCommentTemplate.associatedDataReport == 1) &&
+                    reportPermission.bigData
+                "
+                class="report-item"
+            >
+                <span style="width: 300px">课堂教学分析表</span>
+                <el-button
+                    v-if="dataList.bctiReport !== null && dataList.bctiReport !== ''"
+                    type="text"
+                    @click="openBigDataReportNew(1)"
+                    >下载</el-button
+                >
+                <span v-else style="width: 180px">无报告，请联系管理员</span>
+            </div>
+            <div class="report-item" v-show="isUnfold && reportPermission.teacher">
+                <span style="width: 300px">教学诊断数据</span>
                 <el-button
                     v-if="dataList.teacherReport !== null && dataList.teacherReport !== ''"
                     type="text"
@@ -27,10 +56,8 @@
                 >
                 <span v-else style="width: 180px">无报告，请联系管理员</span>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px">
-                <span style="width: 300px">专业版</span>
-                <!-- <el-button type="text" @click="downloadReport(1)">下载</el-button> -->
-                <!-- <el-button type="text" @click="downloadPDFReport(1)">下载</el-button> -->
+            <div class="report-item" v-show="isUnfold && reportPermission.professional">
+                <span style="width: 300px">全量数据</span>
                 <el-button
                     v-if="dataList.professionalReport !== null && dataList.professionalReport !== ''"
                     type="text"
@@ -39,43 +66,6 @@
                 >
                 <span v-else style="width: 180px">无报告，请联系管理员</span>
             </div>
-            <div
-                style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 0 20px;
-                    margin-bottom: 10px;
-                "
-                v-if="dataList.smCommentTemplate && dataList.smCommentTemplate.associatedDataReport == 1"
-            >
-                <span style="width: 300px">{{ dataList.smCommentTemplate.name }}</span>
-                <el-button type="text" @click="openEvaluationTempReportNew(2, dataList.commentId)">查看</el-button>
-                <el-button type="text" @click="openEvaluationTempReportNew(1, dataList.commentId)">下载</el-button>
-            </div>
-            <div
-                v-else
-                style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 0 20px;
-                    margin-bottom: 10px;
-                "
-            >
-                <span style="width: 300px">大数据报告</span>
-                <el-button
-                    v-if="dataList.bctiReport !== null && dataList.bctiReport !== ''"
-                    type="text"
-                    @click="openBigDataReportNew(1)"
-                    >下载</el-button
-                >
-                <span v-else style="width: 180px">无报告，请联系管理员</span>
-            </div>
-            <!-- <div style="text-align: right;">
-        <el-button @click="reportShow = false" style="margin-right: 30px;">取消</el-button>
-        <el-button type="primary">确定</el-button>
-      </div> -->
         </el-dialog>
     </div>
 </template>
@@ -88,6 +78,8 @@ export default {
             detailInfo: {},
             dataList: {},
             reportShow: false,
+            isUnfold: false,
+            reportPermission:{}
         };
     },
     mounted() {
@@ -137,8 +129,10 @@ export default {
             this.$axios.get('/aiGrinding/downloadReport', {id: this.$route.query.id}).then((res) => {
                 console.log(res.data);
                 this.dataList = res.data;
+                this.reportPermission = this.creatPermit(res.data.permit);
             });
             this.reportShow = true;
+            this.isUnfold = false;
         },
         async openAiReportNew(downloadReport) {
             const res = await this.$axios.get('/aiGrinding/getDetail', {id: this.$route.query.id});
@@ -180,6 +174,9 @@ export default {
                 window.open(route, '_blank');
             }
         },
+        changeUnfoldState() {
+            this.isUnfold = !this.isUnfold;
+        },
     },
 };
 </script>
@@ -187,5 +184,23 @@ export default {
 <style lang="scss" type="text/scss" scoped>
 ::v-deep .el-dialog {
     padding: 10px 20px;
+}
+.report-title {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    margin-bottom: 20px;
+
+    .icon-content {
+        cursor: pointer;
+        color: #aaaaaa;
+    }
+}
+.report-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px 0 50px;
+    margin-bottom: 5px;
 }
 </style>

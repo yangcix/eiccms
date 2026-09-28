@@ -26,7 +26,7 @@
                                 style="margin-top: 10px; font-size: 16px; font-weight: 600"
                                 >智能研修</el-checkbox
                             >
-                            <el-table :data="authList3" border style="min-width: 1320px; margin-top: 10px">
+                            <el-table :data="authList3" border style="min-width: 1920px; margin-top: 10px">
                                 <el-table-column prop="name" align="left" width="120" label="一级菜单">
                                     <template slot-scope="scope">
                                         <el-checkbox
@@ -142,7 +142,7 @@
                                         </div>
                                     </template>
                                 </el-table-column>
-                            </el-table> 
+                            </el-table>
                             <el-checkbox
                                 v-model="authListChecked6"
                                 @change="setAuthList6"
@@ -939,6 +939,13 @@ export default {
                         });
                     }
                 });
+                const sourceIndex = this.authList3[1].children[0].children.findIndex((item) => item.id === 12623);
+                if (sourceIndex !== 5) {
+                    // 已在第四项
+                    const [target] = this.authList3[1].children[0].children.splice(sourceIndex, 1);
+                    this.authList3[1].children[0].children.splice(5, 0, target);
+                }
+
                 this.authList2.forEach((el) => {
                     if (el.children) {
                         el.children.forEach((ele) => {

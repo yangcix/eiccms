@@ -267,78 +267,35 @@
                 </div>
             </el-dialog>
             <el-dialog
-                title="听评课活动报告"
+                title="教研评课"
                 :close-on-click-modal="false"
                 :visible.sync="reportShow"
                 width="500px"
                 @close="closeReport"
             >
                 <div>
-                    <p>人工评课报告</p>
-                    <div
-                        v-for="(item, index) in reportList"
-                        :key="index"
-                        style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px"
-                    >
+                    <p>人工评课</p>
+                    <div v-for="(item, index) in reportList" :key="index" class="report-item">
                         <span style="width: 300px; padding-top: 15px; padding-bottom: 15px">{{ item.name }}</span>
                         <el-button type="text" @click="viewReport(0, item)">查看</el-button>
                         <el-button type="text" @click="downloadReport(0, item)">下载 </el-button>
                     </div>
+                    <div style="padding: 0">
+                        <hr class="divider" />
+                    </div>
                     <div v-if="reportAi">
-                        <div
-                            style="padding: 0 10px"
-                            v-if="reportAi.professionalReport !== null && reportAi.professionalReport !== ''"
-                        >
-                            <hr class="divider" />
-                        </div>
-
-                        <p>AI评课报告</p>
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px"
-                        >
-                            <span style="width: 300px">教师版</span>
-                            <!-- <el-button type="text" @click="downloadReport(0)">下载</el-button> -->
-                            <!-- <el-button type="text" @click="downloadPDFReport(0)">下载</el-button> -->
-                            <!--        <el-button v-if="dataList.teacherReport !== null && dataList.teacherReport !== ''" type="text" @click="downloadPDFReport(0)">下载</el-button>-->
-                            <el-button
-                                v-if="reportAi.teacherReport !== null && reportAi.teacherReport !== ''"
-                                type="text"
-                                @click="openAiReportNew(0, commentInfo.id)"
-                                >查看</el-button
-                            >
-                            <el-button
-                                v-if="reportAi.teacherReport !== null && reportAi.teacherReport !== ''"
-                                type="text"
-                                @click="openAiReportNew(1, commentInfo.id)"
-                                >下载</el-button
-                            >
-                            <span v-else style="width: 180px">无报告，请联系管理员</span>
+                        <div class="report-title">
+                            <div class="title">AI分析</div>
+                            <div v-if="!isUnfold" class="icon-content" @click="changeUnfoldState">
+                                <i class="el-icon-arrow-down"></i>展开
+                            </div>
+                            <div v-else class="icon-content" @click="changeUnfoldState">
+                                <i class="el-icon-arrow-up"></i>收起
+                            </div>
                         </div>
                         <div
-                            style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px"
-                        >
-                            <span style="width: 300px">专业版</span>
-                            <!-- <el-button type="text" @click="downloadReport(1)">下载</el-button> -->
-                            <!-- <el-button type="text" @click="downloadPDFReport(1)">下载</el-button> -->
-                            <el-button
-                                v-if="reportAi.professionalReport !== null && reportAi.professionalReport !== ''"
-                                type="text"
-                                @click="downloadPDFReport(1, commentInfo.id)"
-                                >下载</el-button
-                            >
-                            <span v-else style="width: 180px">无报告，请联系管理员</span>
-                        </div>
-                        <div
-                            style="
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                padding: 0 20px;
-                                margin-bottom: 10px;
-                            "
-                            v-if="
-                                reportAi.smCommentTemplate && reportAi.smCommentTemplate.associatedDataReport == 1
-                            "
+                            v-if="reportAi.smCommentTemplate && reportAi.smCommentTemplate.associatedDataReport == 1"
+                            class="report-item"
                         >
                             <span style="width: 300px">{{ reportAi.smCommentTemplate.name }}</span>
                             <el-button type="text" @click="openEvaluationTempReportNew(2, commentInfo.id)"
@@ -349,16 +306,13 @@
                             >
                         </div>
                         <div
-                            style="
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                padding: 0 20px;
-                                margin-bottom: 10px;
+                            v-else-if="
+                                !(reportAi.smCommentTemplate && reportAi.smCommentTemplate.associatedDataReport == 1) &&
+                                reportPermission.bigData
                             "
-                            v-else
+                            class="report-item"
                         >
-                            <span style="width: 300px">大数据报告</span>
+                            <span style="width: 300px">课堂教学分析表</span>
                             <el-button
                                 v-if="reportAi.bctiReport !== null && reportAi.bctiReport !== ''"
                                 type="text"
@@ -373,16 +327,39 @@
                             >
                             <span v-else style="width: 180px">无报告，请联系管理员</span>
                         </div>
-                        <div
-                            style="padding: 0 10px"
-                            v-if="
-                                reportAi && reportAi.professionalReport !== null && reportAi.professionalReport !== ''
-                            "
-                        >
+                        <div v-show="isUnfold && reportPermission.teacher" class="report-item">
+                            <span style="width: 300px">教学诊断数据</span>
+                            <el-button
+                                v-if="reportAi.teacherReport !== null && reportAi.teacherReport !== ''"
+                                type="text"
+                                @click="openAiReportNew(0, commentInfo.id)"
+                                >查看</el-button
+                            >
+                            <el-button
+                                v-if="reportAi.teacherReport !== null && reportAi.teacherReport !== ''"
+                                type="text"
+                                @click="openAiReportNew(1, commentInfo.id)"
+                                >下载</el-button
+                            >
+                            <span v-else style="width: 180px">无报告，请联系管理员</span>
+                        </div>
+                        <div v-show="isUnfold && reportPermission.professional" class="report-item">
+                            <span style="width: 300px">全量数据</span>
+                            <el-button
+                                v-if="reportAi.professionalReport !== null && reportAi.professionalReport !== ''"
+                                type="text"
+                                @click="downloadPDFReport(1, commentInfo.id)"
+                                >下载</el-button
+                            >
+                            <span v-else style="width: 180px">无报告，请联系管理员</span>
+                        </div>
+
+                        <div style="padding: 0">
                             <hr class="divider" />
                         </div>
 
                         <div
+                            v-if="reportPermission.guidanceReport"
                             style="
                                 display: flex;
                                 justify-content: space-between;
@@ -391,7 +368,7 @@
                                 margin-bottom: 10px;
                             "
                         >
-                            <span style="width: 300px">AI教学建议书</span>
+                            <span style="width: 300px">课堂教学建议书</span>
                             <el-button
                                 v-if="
                                     reportAi.teachingSuggestionReport !== null &&
@@ -844,6 +821,8 @@ export default {
             reportAiList: [],
             useList: [],
             showChooseProjectTimes: false,
+            isUnfold: false,
+            reportPermission: {},
         };
     },
     computed: {
@@ -1203,9 +1182,11 @@ export default {
                         const resAiReport = await this.$axios.get('/sm/comment/downloadReport', {id: val.id});
                         if (resAiReport.code == 200) {
                             this.reportAi = resAiReport.data;
+                            this.reportPermission = this.creatPermit(resAiReport.data.permit);
                             console.log('reportAi: ', this.reportAi);
                         }
                         this.reportShow = true;
+                        this.isUnfold = false;
                     }
                 }
                 /*this.$axios.get("/sm/comment/info", { id: val.id }).then((res) => {
@@ -1618,6 +1599,9 @@ export default {
             this.aiNum = 0;
             this.useList = [];
         },
+        changeUnfoldState() {
+            this.isUnfold = !this.isUnfold;
+        },
     },
 };
 </script>
@@ -1784,5 +1768,24 @@ export default {
     ::v-deep .el-dialog__body {
         padding-top: 30px !important;
     }
+}
+.report-title {
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    margin-bottom: 20px;
+
+    .icon-content {
+        cursor: pointer;
+        color: #aaaaaa;
+    }
+}
+.report-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px 0 30px;
+    margin-bottom: 5px;
+    height: 35px;
 }
 </style>

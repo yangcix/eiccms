@@ -418,49 +418,24 @@
             </el-dialog>
             <!--  查看AI报告   -->
             <el-dialog
-                title="查看报告"
+                title="AI磨课"
                 :close-on-click-modal="false"
                 :visible.sync="reportShow"
                 @close="closeReport"
                 width="500px"
             >
-                <div
-                    style="
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding: 0 20px;
-                        margin-top: 30px;
-                    "
-                >
-                    <span style="width: 300px">教师版</span>
-                    <el-button v-if="reportAiStatus == 2" type="text" @click="openAiReportNew(reportRow, 0)"
-                        >查看</el-button
-                    >
-                    <el-button v-if="reportAiStatus == 2" type="text" @click="openAiReportNew(reportRow, 1)"
-                        >下载</el-button
-                    >
-                    <span v-if="reportAiStatus != 2" style="width: 180px">无报告，请联系管理员</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px">
-                    <span style="width: 300px">专业版</span>
-                    <el-button
-                        v-if="reportData.professionalReport !== null && reportData.professionalReport !== ''"
-                        type="text"
-                        @click="downloadPDFReport(1)"
-                        >下载</el-button
-                    >
-                    <span v-else style="width: 180px">无报告，请联系管理员</span>
+                <div class="report-title">
+                    <div class="title">AI磨课</div>
+                    <div v-if="!isUnfold" class="icon-content" @click="changeUnfoldState">
+                        <i class="el-icon-arrow-down"></i>展开
+                    </div>
+                    <div v-else class="icon-content" @click="changeUnfoldState">
+                        <i class="el-icon-arrow-up"></i>收起
+                    </div>
                 </div>
                 <div
-                    style="
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding: 0 20px;
-                        margin-bottom: 10px;
-                    "
                     v-if="reportData.smCommentTemplate && reportData.smCommentTemplate.associatedDataReport == 1"
+                    class="report-item"
                 >
                     <span style="width: 300px">{{ reportData.smCommentTemplate.name }}</span>
                     <el-button type="text" @click="openEvaluationTempReportNew(2, reportData.commentId)"
@@ -471,16 +446,13 @@
                     >
                 </div>
                 <div
-                    style="
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding: 0 20px;
-                        margin-bottom: 10px;
+                    class="report-item"
+                    v-else-if="
+                        !(reportData.smCommentTemplate && reportData.smCommentTemplate.associatedDataReport == 1) &&
+                        reportPermission.bigData
                     "
-                    v-else
                 >
-                    <span style="width: 300px">大数据报告</span>
+                    <span style="width: 300px">课堂教学分析表</span>
                     <el-button
                         v-if="reportData.bctiReport !== null && reportData.bctiReport !== ''"
                         type="text"
@@ -495,10 +467,50 @@
                     >
                     <span v-else style="width: 180px">无报告，请联系管理员</span>
                 </div>
+                <div class="report-item" v-show="isUnfold && reportPermission.teacher">
+                    <span style="width: 300px">教学诊断数据</span>
+                    <el-button
+                        v-if="reportAiStatus == 2"
+                        type="text"
+                        @click="
+                            openAiReportNew(
+                                reportRow,
+                                0,
+                                reportData.smCommentTemplate && reportData.smCommentTemplate.associatedDataReport == 1
+                            )
+                        "
+                        >查看</el-button
+                    >
+                    <el-button
+                        v-if="reportAiStatus == 2"
+                        type="text"
+                        @click="
+                            openAiReportNew(
+                                reportRow,
+                                1,
+                                reportData.smCommentTemplate && reportData.smCommentTemplate.associatedDataReport == 1
+                            )
+                        "
+                        >下载</el-button
+                    >
+                    <span v-if="reportAiStatus != 2" style="width: 180px">无报告，请联系管理员</span>
+                </div>
+                <div class="report-item" v-show="isUnfold && reportPermission.professional">
+                    <span style="width: 300px">全量数据</span>
+                    <el-button
+                        v-if="reportData.professionalReport !== null && reportData.professionalReport !== ''"
+                        type="text"
+                        @click="downloadPDFReport(1)"
+                        >下载</el-button
+                    >
+                    <span v-else style="width: 180px">无报告，请联系管理员</span>
+                </div>
+
                 <div style="padding: 0 20px">
                     <hr class="divider" />
                 </div>
                 <div
+                    v-if="reportPermission.guidanceReport"
                     style="
                         display: flex;
                         justify-content: space-between;
@@ -507,7 +519,7 @@
                         margin-bottom: 10px;
                     "
                 >
-                    <span style="width: 300px">AI教学建议书</span>
+                    <span style="width: 300px">课堂教学建议书</span>
                     <el-button
                         v-if="
                             reportData.teachingSuggestionReport !== null && reportData.teachingSuggestionReport !== ''
@@ -860,6 +872,8 @@ export default {
             exportUrl: baseUrl + '/aiGrinding/exportGrinding',
             showChooseProjectTimes: false,
             useList: [],
+            isUnfold: false,
+            reportPermission: {},
         };
     },
     created() {},
@@ -962,11 +976,15 @@ export default {
                 window.open(val.aiReport, '_blank');
             }
         },
-        openAiReportNew(row, downloadReport) {
+        openAiReportNew(row, downloadReport, associatedDataReport) {
             if (!row.analysisId) {
                 return;
             }
-            let route = '/ai/teacherReport?analysisId=' + row.analysisId + '&analysisType=1';
+            let route =
+                '/ai/teacherReport?analysisId=' +
+                row.analysisId +
+                '&analysisType=1&associatedDataReport=' +
+                (associatedDataReport ? 1 : 0);
             if (downloadReport === 1) {
                 route += '&downloadReport=1';
             }
@@ -1251,12 +1269,12 @@ export default {
             } else if (row.aiStatus == 2) {
                 this.reportAiStatus = row.aiStatus;
                 this.$axios.get('/aiGrinding/downloadReport', {id: row.id}).then((res) => {
-                    console.log(res.data);
                     this.reportData = res.data;
+                    this.reportPermission = this.creatPermit(res.data.permit);
                 });
                 this.reportRow = row;
-                console.log('this.reportData.aiStatus: ', this.reportData.aiStatus);
                 this.reportShow = true;
+                this.isUnfold = false;
                 this.rowData = row;
             }
         },
@@ -1739,6 +1757,9 @@ export default {
             link.click();
             document.body.removeChild(link);
         },
+        changeUnfoldState() {
+            this.isUnfold = !this.isUnfold;
+        },
     },
 };
 </script>
@@ -1869,6 +1890,24 @@ export default {
     margin: 20px 0;
     border: none;
     border-top: 1px solid #ddd;
+}
+.report-title {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    margin-bottom: 20px;
+
+    .icon-content {
+        cursor: pointer;
+        color: #aaaaaa;
+    }
+}
+.report-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px 0 50px;
+    margin-bottom: 5px;
 }
 </style>
 <style lang="scss">

@@ -132,6 +132,7 @@
         <!--  第三页，教学效果序列分析  -->
         <div class="page-container" data-order="3">
             <header>
+                <h2 style="margin-top: 30px" v-if="$route.query.associatedDataReport == 1">第一部分 课堂概要</h2>
                 <h3 style="margin-top: 30px">
                     {{ $route.query.associatedDataReport == 1 ? '（一）' : '（二）' }}教学效果序列分析
                 </h3>

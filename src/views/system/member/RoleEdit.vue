@@ -939,11 +939,19 @@ export default {
                         });
                     }
                 });
-                const sourceIndex = this.authList3[1].children[0].children.findIndex((item) => item.id === 12623);
-                if (sourceIndex !== 5) {
-                    // 已在第四项
-                    const [target] = this.authList3[1].children[0].children.splice(sourceIndex, 1);
+                
+                const aiclassIndex = this.authList3[1].children[0].children.findIndex((item) => item.id === 12623);
+                const commentIndex = this.authList3[2].children[0].children.findIndex((item) => item.id === 13003);
+                console.log('this.authList3',commentIndex);
+                if (aiclassIndex !== 5) {
+                    // 已在第六项
+                    const [target] = this.authList3[1].children[0].children.splice(aiclassIndex, 1);
                     this.authList3[1].children[0].children.splice(5, 0, target);
+                }
+                if (commentIndex !== 9) {
+                    // 已在第十项
+                    const [target] = this.authList3[2].children[0].children.splice(commentIndex, 1);
+                    this.authList3[2].children[0].children.splice(9, 0, target);
                 }
 
                 this.authList2.forEach((el) => {

@@ -434,7 +434,11 @@
                     </div>
                 </div>
                 <div
-                    v-if="reportData.smCommentTemplate && reportData.smCommentTemplate.associatedDataReport == 1"
+                    v-if="
+                        reportData.smCommentTemplate &&
+                        reportData.smCommentTemplate.associatedDataReport == 1 &&
+                        reportPermission.bigData
+                    "
                     class="report-item"
                 >
                     <span style="width: 300px">{{ reportData.smCommentTemplate.name }}</span>

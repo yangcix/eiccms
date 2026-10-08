@@ -18,7 +18,11 @@
             </div>
             <div
                 class="report-item"
-                v-if="dataList.smCommentTemplate && dataList.smCommentTemplate.associatedDataReport == 1"
+                v-if="
+                    dataList.smCommentTemplate &&
+                    dataList.smCommentTemplate.associatedDataReport == 1 &&
+                    reportPermission.bigData
+                "
             >
                 <span style="width: 300px">{{ dataList.smCommentTemplate.name }}</span>
                 <el-button type="text" @click="openEvaluationTempReportNew(2, dataList.commentId)">查看</el-button>
@@ -79,7 +83,7 @@ export default {
             dataList: {},
             reportShow: false,
             isUnfold: false,
-            reportPermission:{}
+            reportPermission: {},
         };
     },
     mounted() {

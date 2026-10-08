@@ -2220,7 +2220,7 @@ export default {
             this.$nextTick(() => {
                 htmlToPdf.downloadPDF(
                     '.page-container',
-                    this.baseInfo.analysisName + '_教师版',
+                    this.baseInfo.analysisName + '_教学诊断数据',
                     uploadUrl,
                     this.analysisId,
                     this.analysisType

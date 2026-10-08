@@ -322,7 +322,7 @@ export default {
             this.$nextTick(() => {
                 htmlToPdf.downloadPDF(
                     '.page-container',
-                    this.baseInfo.analysisName + '_大数据版',
+                    this.baseInfo.analysisName + '_课堂教学分析表',
                     uploadUrl,
                     this.analysisId,
                     this.analysisType

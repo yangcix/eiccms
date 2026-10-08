@@ -101,7 +101,7 @@ export default {
                     link.download =
                         this.detailInfo.name +
                         '_' +
-                        (val == 1 ? '专业版' : val == 0 ? '教师版' : '大数据报告') +
+                        (val == 1 ? '全量数据' : val == 0 ? '教学诊断数据' : '课堂教学分析表') +
                         '.pdf';
                     document.body.appendChild(link);
                     link.click();

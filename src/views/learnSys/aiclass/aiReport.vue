@@ -49,13 +49,23 @@
                 <el-button
                     v-if="dataList.teacherReport !== null && dataList.teacherReport !== ''"
                     type="text"
-                    @click="openAiReportNew(0)"
+                    @click="
+                        openAiReportNew(
+                            0,
+                            dataList.smCommentTemplate && dataList.smCommentTemplate.associatedDataReport == 1
+                        )
+                    "
                     >查看</el-button
                 >
                 <el-button
                     v-if="dataList.teacherReport !== null && dataList.teacherReport !== ''"
                     type="text"
-                    @click="openAiReportNew(1)"
+                    @click="
+                        openAiReportNew(
+                            1,
+                            dataList.smCommentTemplate && dataList.smCommentTemplate.associatedDataReport == 1
+                        )
+                    "
                     >下载</el-button
                 >
                 <span v-else style="width: 180px">无报告，请联系管理员</span>
@@ -138,14 +148,18 @@ export default {
             this.reportShow = true;
             this.isUnfold = false;
         },
-        async openAiReportNew(downloadReport) {
+        async openAiReportNew(downloadReport, associatedDataReport) {
             const res = await this.$axios.get('/aiGrinding/getDetail', {id: this.$route.query.id});
             if (res.code == 200) {
                 console.log('analysisId: ', res.data.analysisId);
                 if (!res.data.analysisId) {
                     return;
                 }
-                let route = '/ai/teacherReport?analysisId=' + res.data.analysisId + '&analysisType=1';
+                let route =
+                    '/ai/teacherReport?analysisId=' +
+                    res.data.analysisId +
+                    '&analysisType=1&associatedDataReport=' +
+                    (associatedDataReport ? 1 : 0);
                 if (downloadReport === 1) {
                     route += '&downloadReport=1';
                 }

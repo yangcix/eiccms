@@ -336,13 +336,27 @@
                             <el-button
                                 v-if="reportAi.teacherReport !== null && reportAi.teacherReport !== ''"
                                 type="text"
-                                @click="openAiReportNew(0, commentInfo.id)"
+                                @click="
+                                    openAiReportNew(
+                                        0,
+                                        commentInfo.id,
+                                        reportAi.smCommentTemplate &&
+                                            reportAi.smCommentTemplate.associatedDataReport == 1
+                                    )
+                                "
                                 >查看</el-button
                             >
                             <el-button
                                 v-if="reportAi.teacherReport !== null && reportAi.teacherReport !== ''"
                                 type="text"
-                                @click="openAiReportNew(1, commentInfo.id)"
+                                @click="
+                                    openAiReportNew(
+                                        1,
+                                        commentInfo.id,
+                                        reportAi.smCommentTemplate &&
+                                            reportAi.smCommentTemplate.associatedDataReport == 1
+                                    )
+                                "
                                 >下载</el-button
                             >
                             <span v-else style="width: 180px">无报告，请联系管理员</span>
@@ -1068,14 +1082,18 @@ export default {
                 }
             }
         },
-        async openAiReportNew(downloadReport, id) {
+        async openAiReportNew(downloadReport, id, associatedDataReport) {
             const res = await this.$axios.get('/sm/comment/getOne', {id: id});
             if (res.code == 200) {
                 console.log('analysisId: ', res.data.analysisId);
                 if (!res.data.analysisId) {
                     return;
                 }
-                let route = '/ai/teacherReport?analysisId=' + res.data.analysisId + '&analysisType=2';
+                let route =
+                    '/ai/teacherReport?analysisId=' +
+                    res.data.analysisId +
+                    '&analysisType=2&associatedDataReport=' +
+                    (associatedDataReport ? 1 : 0);
                 if (downloadReport === 1) {
                     route += '&downloadReport=1';
                 }

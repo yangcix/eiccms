@@ -73,73 +73,61 @@ export default {
             try {
                 this.$message('PDF生成中...');
                 const container = document.getElementById('ai-teacher-report');
-                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdf = new jsPDF({
+                    orientation: 'p',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true,
+                });
                 const pdfWidth = 210;
                 const pdfHeight = 297;
 
-                // 获取所有页面
+                // 收集页面
                 const pageElements = [];
-
-                // 收集所有需要分页的元素
                 const reportInfoPage = container.querySelector('.page-container');
-                if (reportInfoPage) {
-                    pageElements.push(reportInfoPage);
-                }
+                if (reportInfoPage) pageElements.push(reportInfoPage);
 
-                // 数据表格可能在 .page-a4 中，也可能在 .report-container 的直接子元素中
                 const tablePages = container.querySelectorAll('.page-a4');
                 if (tablePages.length) {
                     tablePages.forEach((el) => pageElements.push(el));
+                } else if (pageElements.length === 1) {
+                    const tableContainer = container.querySelector('.table-container, [class*="table"]');
+                    if (tableContainer) pageElements.push(tableContainer);
                 }
 
-                // 如果没有找到 .page-a4，尝试找表格容器
-                if (pageElements.length === 1) {
-                    const tableContainer = container.querySelector('.table-container, [class*="table"]');
-                    if (tableContainer) {
-                        pageElements.push(tableContainer);
-                    }
-                }
                 for (let i = 0; i < pageElements.length; i++) {
                     const pageEl = pageElements[i];
-
-                    // 显示当前处理进度
-                    if (i > 0) {
-                        pdf.addPage();
-                    }
+                    if (i > 0) pdf.addPage();
 
                     const canvas = await html2canvas(pageEl, {
-                        scale: 2,
+                        scale: 1.5, // 降采样
                         useCORS: true,
                         allowTaint: true,
                         logging: false,
                         backgroundColor: '#ffffff',
-                        height: pageEl.scrollHeight,
-                        width: pageEl.scrollWidth,
-                        windowHeight: pageEl.scrollHeight,
-                        // 重要：等待字体和图片加载完成
-                        useCORS: true,
-                        allowTaint: true,
                     });
 
-                    const imgData = canvas.toDataURL('image/png', 1.0);
+                    // 用 blob -> Uint8Array，避免 base64 大字符串
+                    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+                    const arrayBuffer = await blob.arrayBuffer();
+                    const imgData = new Uint8Array(arrayBuffer);
 
-                    // 计算尺寸
                     const imgWidth = pdfWidth;
                     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-                    // 如果内容超过一页，需要缩放
                     if (imgHeight > pdfHeight) {
-                        // 直接缩放到一页
                         const scale = pdfHeight / imgHeight;
                         const finalWidth = imgWidth * scale;
-                        const finalHeight = pdfHeight;
                         const xOffset = (pdfWidth - finalWidth) / 2;
-                        pdf.addImage(imgData, 'PNG', xOffset, 0, finalWidth, finalHeight);
+                        pdf.addImage(imgData, 'JPEG', xOffset, 0, finalWidth, pdfHeight);
                     } else {
-                        // 内容少于或等于一页
                         const yOffset = (pdfHeight - imgHeight) / 2;
-                        pdf.addImage(imgData, 'PNG', 0, Math.max(0, yOffset), imgWidth, imgHeight);
+                        pdf.addImage(imgData, 'JPEG', 0, Math.max(0, yOffset), imgWidth, imgHeight);
                     }
+
+                    // 释放 canvas 内存
+                    canvas.width = 0;
+                    canvas.height = 0;
                 }
 
                 pdf.save(`${this.name || 'AI课堂报告'}.pdf`);

@@ -101,6 +101,7 @@
                     <div :class="operates.className ? operates.className : 'operate-group'">
                         <template v-for="(btn, index) in getBtnList(scope.row)">
                             <el-button
+                                :key="index"
                                 :type="btn.type"
                                 :disabled="btn.disabled ? btn.disabled(scope.row) : false"
                                 @click="btn.handleClick(scope.row, scope.$index)"
@@ -187,8 +188,11 @@ export default {
             type: Object,
         },
         isRemoteSort: {
-            type: Boolean | 'custom',
-            default: true, // 默认后端排序
+            type: [Boolean, String],
+            default: true,
+            validator: (value) => {
+                return value === true || value === false || value === 'custom';
+            },
         },
         //是否后台分页
         remotePaging: {

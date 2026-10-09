@@ -8,7 +8,7 @@
     >
         <div class="data-board-title">
             <div class="text">AI课堂分析数据平台</div>
-            <div class="select-group">
+            <div class="select-group" v-show="false">
                 <div class="rect-left">
                     <div class="white-rect"></div>
                     <div class="blue-rect"></div>
@@ -96,7 +96,7 @@
                 <div class="board-item1 board-item">
                     <div class="title">
                         <div class="title-name">教学模式分布</div>
-                        <div class="view-detail btn" @click="viewTypeDetail()">
+                        <div class="view-detail btn" @click="viewTypeDetail()" v-show="false">
                             <p>详情</p>
                             <img src="../../assets/imgs/3j.png" />
                         </div>
@@ -107,7 +107,7 @@
                 <div class="board-item2 board-item">
                     <div class="title">
                         <div class="title-name">课堂教学情况</div>
-                        <div class="right-btn">
+                        <div class="right-btn" v-show="false">
                             <div plain class="view-trend btn" @click="viewTrendDetail()">查看趋势分析</div>
                             <div class="view-detail btn" @click="viewTeachDetail()">
                                 <p>详情</p>
@@ -121,7 +121,7 @@
                 <div class="board-item3 board-item">
                     <div class="title">
                         <div class="title-name">弗兰德斯互动分析</div>
-                        <div class="view-detail btn" @click="viewFlandersDetail()">
+                        <div class="view-detail btn" @click="viewFlandersDetail()" v-show="false">
                             <p>详情</p>
                             <img src="../../assets/imgs/3j.png" />
                         </div>
@@ -169,13 +169,13 @@
                                 <span class="highlight-text" v-show="!isSchool && !isTeacher">{{ curMapTitle }}</span>
                                 <span v-show="isSchool" class="highlight-text">{{ curSchoolTitle }}</span>
                                 <span v-show="isTeacher" class="highlight-text">{{ curTeacherTitle }}</span>
-                                <img src="../../assets/imgs/down.png" v-show="positionOptions.length > 1" />
+                                <!-- <img src="../../assets/imgs/down.png" v-show="positionOptions.length > 1" /> -->
                             </span>
-                            <el-dropdown-menu slot="dropdown" class="option_dropdown" v-if="positionOptions.length > 1">
+                            <!-- <el-dropdown-menu slot="dropdown" class="option_dropdown" v-if="positionOptions.length > 1">
                                 <el-dropdown-item v-for="(item, index) in positionOptions" :key="index" :command="item">
                                     {{ item.name }}
                                 </el-dropdown-item>
-                            </el-dropdown-menu>
+                            </el-dropdown-menu> -->
                         </el-dropdown>
                     </div>
                 </div>
@@ -310,7 +310,7 @@
                 <div class="analysis-trend" v-if="isTeacher">
                     <div class="title">
                         <div class="title-name">课堂教学综合评分分析</div>
-                        <div class="view-detail btn" @click="viewClassAnalysisDetail()">
+                        <div class="view-detail btn" @click="viewClassAnalysisDetail()" v-show="false">
                             <p>详情</p>
                             <img src="../../assets/imgs/3j.png" />
                         </div>
@@ -340,7 +340,7 @@
                         }"
                     >
                         <div class="title-name">课堂教学综合评分排行</div>
-                        <div class="view-detail btn" @click="viewScoreDetail" v-if="isSchool">
+                        <div class="view-detail btn" @click="viewScoreDetail" v-show="false">
                             <p>详情</p>
                             <img src="../../assets/imgs/3j.png" />
                         </div>
@@ -351,8 +351,7 @@
                         :columns="columns"
                         :showIndex="false"
                         :stripe="true"
-                        :sortParams="sortParams"
-                        :getTableData="getClassroomTeachingScoreRankingList"
+                        :isRemoteSort="'custom'"
                         :loading="tableLoading"
                     >
                         <template #header="{column}">
@@ -370,7 +369,7 @@
                         <template #slotColumn="{row, column}">
                             <div
                                 v-if="column.prop == 'name'"
-                                class="underline-text"
+                                :class="[curPage == 'CITY' ? 'underline-text' : '']"
                                 @click="intoNextPage(row.name, row.id)"
                             >
                                 {{ row.name }}
@@ -431,7 +430,7 @@
                 <div class="board-item4 board-item">
                     <div class="title">
                         <div class="title-name">课堂投放信息与课堂问答的四何分析</div>
-                        <div class="view-detail btn" @click="viewFWAnalysisDetail()">
+                        <div class="view-detail btn" @click="viewFWAnalysisDetail()" v-show="false">
                             <p>详情</p>
                             <img src="../../assets/imgs/3j.png" />
                         </div>
@@ -444,7 +443,7 @@
                 <div class="board-item5 board-item">
                     <div class="title">
                         <div class="title-name">教学风格和学习风格</div>
-                        <div class="view-detail btn" @click="viewStyleDetail()">
+                        <div class="view-detail btn" @click="viewStyleDetail()" v-show="false">
                             <p>详情</p>
                             <img src="../../assets/imgs/3j.png" />
                         </div>
@@ -457,7 +456,7 @@
                 <div class="board-item6 board-item">
                     <div class="title">
                         <div class="title-name">“问-答-评”结构（IRE）互动分析</div>
-                        <div class="view-detail btn" @click="viewIREAnalysisDetail()">
+                        <div class="view-detail btn" @click="viewIREAnalysisDetail()" v-show="false">
                             <p>详情</p>
                             <img src="../../assets/imgs/3j.png" />
                         </div>
@@ -557,6 +556,616 @@ import teachScoreDlg from '@/components/teachScoreDlg.vue';
 import classAnalysisDlg from '@/components/classAnalysisDlg.vue';
 import * as echarts from 'echarts';
 import SymbolImg from '@/assets/imgs/highlight-circle.png';
+
+// ========== 写死数据：所有数据替代后端接口 ==========
+// 区县层级排行（CITY页面表格展示），aiClassCount取自Excel按区县统计
+const DISTRICT_RANKING_DATA = [
+    {id: 353660, rank: 1, districtRank: null, name: '庆阳市庆城县教育局', aiClassCount: 245, classroomScore: 77.0},
+    {id: 2, rank: 2, districtRank: null, name: '市属校', aiClassCount: 916, classroomScore: 75.6},
+    {id: 353377, rank: 3, districtRank: null, name: '庆阳市西峰区教育局', aiClassCount: 1119, classroomScore: 75.3},
+    {id: 354483, rank: 4, districtRank: null, name: '庆阳市宁县教育局', aiClassCount: 326, classroomScore: 74.5},
+    {id: 354340, rank: 5, districtRank: null, name: '庆阳市正宁县教育局', aiClassCount: 276, classroomScore: 72.4},
+    {
+        id: 355377,
+        rank: 6,
+        districtRank: null,
+        name: '庆阳市合水县教育和科学技术局',
+        aiClassCount: 328,
+        classroomScore: 72.2,
+    },
+    {id: 353893, rank: 7, districtRank: null, name: '庆阳市环县教育局', aiClassCount: 436, classroomScore: 72.0},
+    {id: 354195, rank: 8, districtRank: null, name: '庆阳市华池县教育局', aiClassCount: 219, classroomScore: 70.0},
+    {id: 354846, rank: 9, districtRank: null, name: '庆阳市镇原县教育局', aiClassCount: 350, classroomScore: 69.7},
+];
+
+// 按区县分组的学校排行数据（DISTRICT层级），aiClassCount取自Excel按学校统计，classroomScore取自txt固定数据
+// key为区县短名（与地图区域名一致），value为该区县下学校排行列表
+const DISTRICT_SCHOOL_DATA = {
+    // 市属校（16所学校）
+    市属校: [
+        {id: 364031, rank: 1, districtRank: 1, name: '庆阳市庆化学校', aiClassCount: 47, classroomScore: 81.1},
+        {id: 353540, rank: 2, districtRank: 2, name: '庆阳第五中学', aiClassCount: 104, classroomScore: 79.1},
+        {id: 353601, rank: 3, districtRank: 3, name: '庆阳市西峰区团结小学', aiClassCount: 167, classroomScore: 78.4},
+        {id: 364034, rank: 4, districtRank: 4, name: '庆阳市东方红小学', aiClassCount: 45, classroomScore: 78.2},
+        {id: 364034, rank: 5, districtRank: 5, name: '庆阳东方红小学', aiClassCount: 20, classroomScore: 78.2},
+        {id: 364037, rank: 6, districtRank: 6, name: '庆阳第七中学', aiClassCount: 29, classroomScore: 78.1},
+        {id: 364038, rank: 7, districtRank: 7, name: '甘肃省庆阳第一中学', aiClassCount: 67, classroomScore: 77.0},
+        {id: 364038, rank: 8, districtRank: 8, name: '庆阳第一中学', aiClassCount: 55, classroomScore: 77.0},
+        {id: 364035, rank: 9, districtRank: 9, name: '陇东学院附属中学', aiClassCount: 47, classroomScore: 75.8},
+        {id: 364030, rank: 10, districtRank: 10, name: '庆阳第六中学', aiClassCount: 311, classroomScore: 72.0},
+        {id: 43448, rank: 11, districtRank: 11, name: '北京师范大学庆阳实验学校', aiClassCount: 18, classroomScore: 0},
+        {id: 83290, rank: 12, districtRank: 12, name: '庆阳市实验小学', aiClassCount: 9, classroomScore: 0},
+        {id: 9406, rank: 13, districtRank: 13, name: '北京师范大学庆阳附属学校', aiClassCount: 3, classroomScore: 0},
+        {id: 42119, rank: 14, districtRank: 14, name: '庆阳特殊教育学校', aiClassCount: 1, classroomScore: 0},
+        {id: 24413, rank: 15, districtRank: 15, name: '甘肃省西峰职业中等专业学校', aiClassCount: 1, classroomScore: 0},
+        {id: 238, rank: 16, districtRank: 16, name: '庆阳市教育局', aiClassCount: 1, classroomScore: 0},
+    ],
+    // 西峰区（72所学校）
+    西峰区: [
+        {id: 353569, rank: 1, districtRank: 1, name: '西峰区温泉镇何坳小学', aiClassCount: 4, classroomScore: 89.8},
+        {id: 353538, rank: 2, districtRank: 2, name: '西峰区董志镇周岭小学', aiClassCount: 8, classroomScore: 85.5},
+        {id: 353495, rank: 3, districtRank: 3, name: '西峰区什社乡新庄小学', aiClassCount: 3, classroomScore: 84.9},
+        {id: 353567, rank: 4, districtRank: 4, name: '西峰区彭原镇芦子渠小学', aiClassCount: 10, classroomScore: 83.9},
+        {id: 353380, rank: 5, districtRank: 5, name: '西峰区彭原镇顾家咀小学', aiClassCount: 4, classroomScore: 83.6},
+        {id: 353550, rank: 6, districtRank: 6, name: '西峰区什社乡新兴小学', aiClassCount: 2, classroomScore: 83.4},
+        {id: 353573, rank: 7, districtRank: 7, name: '西峰区董志镇罗杭小学', aiClassCount: 4, classroomScore: 82.3},
+        {id: 353457, rank: 8, districtRank: 8, name: '西峰区董志镇渠里张小学', aiClassCount: 3, classroomScore: 81.2},
+        {id: 353590, rank: 9, districtRank: 9, name: '庆阳市西峰区南街小学', aiClassCount: 53, classroomScore: 80.6},
+        {id: 353590, rank: 10, districtRank: 10, name: '庆阳市西峰区南街小学', aiClassCount: 10, classroomScore: 80.6},
+        {id: 353620, rank: 11, districtRank: 11, name: '西峰区董志镇寥坳小学', aiClassCount: 3, classroomScore: 80.3},
+        {
+            id: 353391,
+            rank: 12,
+            districtRank: 12,
+            name: '庆阳市西峰区北街实验学校',
+            aiClassCount: 61,
+            classroomScore: 80.2,
+        },
+        {id: 353381, rank: 13, districtRank: 13, name: '庆阳市西峰区新建小学', aiClassCount: 17, classroomScore: 80.1},
+        {id: 353381, rank: 14, districtRank: 14, name: '庆阳市西峰区新建小学', aiClassCount: 5, classroomScore: 80.1},
+        {
+            id: 353381,
+            rank: 15,
+            districtRank: 15,
+            name: '西峰区庆阳市西峰区新建小学',
+            aiClassCount: 1,
+            classroomScore: 80.1,
+        },
+        {id: 353593, rank: 16, districtRank: 16, name: '西峰区什社乡红星小学', aiClassCount: 2, classroomScore: 79.8},
+        {
+            id: 353605,
+            rank: 17,
+            districtRank: 17,
+            name: '西峰区董志镇董志初级中学',
+            aiClassCount: 1,
+            classroomScore: 79.2,
+        },
+        {
+            id: 353604,
+            rank: 18,
+            districtRank: 18,
+            name: '西峰区董志镇庄子洼小学',
+            aiClassCount: 13,
+            classroomScore: 79.0,
+        },
+        {id: 353591, rank: 19, districtRank: 19, name: '西峰区彭原镇张坳小学', aiClassCount: 2, classroomScore: 78.8},
+        {id: 353491, rank: 20, districtRank: 20, name: '西峰区彭原镇赵沟畎小学', aiClassCount: 7, classroomScore: 77.2},
+        {id: 353460, rank: 21, districtRank: 21, name: '西峰区什社乡任岭小学', aiClassCount: 9, classroomScore: 75.5},
+        {id: 353463, rank: 22, districtRank: 22, name: '西峰区肖金镇贺咀小学', aiClassCount: 7, classroomScore: 75.4},
+        {id: 353612, rank: 23, districtRank: 23, name: '西峰区肖金中学', aiClassCount: 16, classroomScore: 75.3},
+        {id: 353612, rank: 24, districtRank: 24, name: '庆阳市西峰区肖金中学', aiClassCount: 2, classroomScore: 75.3},
+        {id: 353480, rank: 25, districtRank: 25, name: '西峰区显胜实验学校', aiClassCount: 46, classroomScore: 73.8},
+        {id: 353467, rank: 26, districtRank: 26, name: '西峰区董志镇董志小学', aiClassCount: 7, classroomScore: 73.8},
+        {id: 353425, rank: 27, districtRank: 27, name: '西峰区肖金镇左咀小学', aiClassCount: 7, classroomScore: 73.6},
+        {id: 353537, rank: 28, districtRank: 28, name: '西峰区什社乡文安小学', aiClassCount: 7, classroomScore: 73.0},
+        {id: 353439, rank: 29, districtRank: 29, name: '西峰区董志镇六年小学', aiClassCount: 4, classroomScore: 72.7},
+        {id: 353487, rank: 30, districtRank: 30, name: '西峰区彭原镇草滩小学', aiClassCount: 4, classroomScore: 72.6},
+        {id: 353441, rank: 31, districtRank: 31, name: '西峰区肖金镇上刘小学', aiClassCount: 12, classroomScore: 72.2},
+        {
+            id: 353477,
+            rank: 32,
+            districtRank: 32,
+            name: '庆阳市西峰区黄官寨实验学校',
+            aiClassCount: 85,
+            classroomScore: 70.1,
+        },
+        {id: 353395, rank: 33, districtRank: 33, name: '庆阳第三中学', aiClassCount: 99, classroomScore: 67.6},
+        {id: 353531, rank: 34, districtRank: 34, name: '庆阳第二中学', aiClassCount: 169, classroomScore: 66.4},
+        {id: 353432, rank: 35, districtRank: 35, name: '庆阳第四中学', aiClassCount: 124, classroomScore: 63.5},
+        {id: 353592, rank: 36, districtRank: 36, name: '西峰区董志镇冯堡小学', aiClassCount: 8, classroomScore: 63.1},
+        {id: 353449, rank: 37, districtRank: 37, name: '西峰区什社乡塔头小学', aiClassCount: 5, classroomScore: 62.3},
+        {id: 353496, rank: 38, districtRank: 38, name: '西峰区什社中学', aiClassCount: 11, classroomScore: 62.2},
+        {id: 353517, rank: 39, districtRank: 39, name: '西峰区什社乡李岭小学', aiClassCount: 11, classroomScore: 61.7},
+        {id: 353575, rank: 40, districtRank: 40, name: '西峰区肖金镇杨咀小学', aiClassCount: 4, classroomScore: 60.4},
+        {
+            id: 353456,
+            rank: 41,
+            districtRank: 41,
+            name: '西峰区肖金镇三不同小学',
+            aiClassCount: 14,
+            classroomScore: 59.2,
+        },
+        {id: 353586, rank: 42, districtRank: 42, name: '西峰区彭原镇五郎铺小学', aiClassCount: 4, classroomScore: 55.7},
+        {id: 353392, rank: 43, districtRank: 43, name: '西峰区肖金镇双桐小学', aiClassCount: 8, classroomScore: 54.0},
+        {id: 353594, rank: 44, districtRank: 44, name: '西峰区肖金镇漳水小学', aiClassCount: 16, classroomScore: 53.9},
+        {id: 353428, rank: 45, districtRank: 45, name: '西峰区彭原镇上何小学', aiClassCount: 9, classroomScore: 48.6},
+        {
+            id: 26191,
+            rank: 46,
+            districtRank: 46,
+            name: '庆阳市西峰区学院路实验学校',
+            aiClassCount: 40,
+            classroomScore: 0,
+        },
+        {id: 96362, rank: 47, districtRank: 47, name: '显胜乡显胜实验学校', aiClassCount: 37, classroomScore: 0},
+        {id: 64786, rank: 48, districtRank: 48, name: '西峰区董志初中', aiClassCount: 18, classroomScore: 0},
+        {id: 56946, rank: 49, districtRank: 49, name: '西峰区温泉初中', aiClassCount: 12, classroomScore: 0},
+        {id: 1725, rank: 50, districtRank: 50, name: '庆阳市西峰区向阳小学', aiClassCount: 11, classroomScore: 0},
+        {id: 74608, rank: 51, districtRank: 51, name: '西峰区什社乡永丰小学', aiClassCount: 10, classroomScore: 0},
+        {id: 1712, rank: 52, districtRank: 52, name: '西峰区彭原镇周寨小学', aiClassCount: 8, classroomScore: 0},
+        {id: 49972, rank: 53, districtRank: 53, name: '西峰区温泉镇齐楼小学', aiClassCount: 8, classroomScore: 0},
+        {id: 1486, rank: 54, districtRank: 54, name: '西峰区什社乡什社小学', aiClassCount: 7, classroomScore: 0},
+        {id: 97322, rank: 55, districtRank: 55, name: '西峰区肖金镇老山小学', aiClassCount: 7, classroomScore: 0},
+        {id: 11824, rank: 56, districtRank: 56, name: '西峰区温泉镇温泉小学', aiClassCount: 6, classroomScore: 0},
+        {id: 41338, rank: 57, districtRank: 57, name: '西峰区彭原镇地坑小学', aiClassCount: 5, classroomScore: 0},
+        {id: 59621, rank: 58, districtRank: 58, name: '西峰区肖金镇米王小学', aiClassCount: 4, classroomScore: 0},
+        {id: 58425, rank: 59, districtRank: 59, name: '西峰区彭原镇顾咀小学', aiClassCount: 4, classroomScore: 0},
+        {id: 62092, rank: 60, districtRank: 60, name: '西峰区温泉镇地庄小学', aiClassCount: 4, classroomScore: 0},
+        {id: 1725, rank: 61, districtRank: 61, name: '庆阳市西峰区向阳小学', aiClassCount: 3, classroomScore: 0},
+        {id: 89079, rank: 62, districtRank: 62, name: '西峰区彭原初中', aiClassCount: 3, classroomScore: 0},
+        {id: 22403, rank: 63, districtRank: 63, name: '西峰区温泉镇刘店小学', aiClassCount: 3, classroomScore: 0},
+        {id: 12671, rank: 64, districtRank: 64, name: '西峰区温泉镇巨塬小学', aiClassCount: 3, classroomScore: 0},
+        {id: 98209, rank: 65, districtRank: 65, name: '西峰区温泉镇湫沟小学', aiClassCount: 3, classroomScore: 0},
+        {id: 6996, rank: 66, districtRank: 66, name: '西峰区董志镇寺里田小学', aiClassCount: 3, classroomScore: 0},
+        {id: 68645, rank: 67, districtRank: 67, name: '西峰区西街小学', aiClassCount: 3, classroomScore: 0},
+        {id: 89323, rank: 68, districtRank: 68, name: '西峰区后官寨镇后官寨小学', aiClassCount: 2, classroomScore: 0},
+        {id: 45480, rank: 69, districtRank: 69, name: '西峰区彭原镇杨坳小学', aiClassCount: 2, classroomScore: 0},
+        {id: 58763, rank: 70, districtRank: 70, name: '西峰区彭原初级中学', aiClassCount: 1, classroomScore: 0},
+        {id: 14931, rank: 71, districtRank: 71, name: '西峰区彭原镇下庄小学', aiClassCount: 1, classroomScore: 0},
+        {id: 617, rank: 72, districtRank: 72, name: '西峰区彭原镇刘家岭小学', aiClassCount: 1, classroomScore: 0},
+    ],
+    // 庆城县（30所学校）
+    庆城县: [
+        {id: 353716, rank: 1, districtRank: 1, name: '庆城县白马初级中学', aiClassCount: 1, classroomScore: 87.7},
+        {id: 353723, rank: 2, districtRank: 2, name: '庆城县卅铺镇卅铺小学', aiClassCount: 1, classroomScore: 87.3},
+        {id: 353664, rank: 3, districtRank: 3, name: '庆城县桐川初中', aiClassCount: 4, classroomScore: 85.5},
+        {id: 353663, rank: 4, districtRank: 4, name: '庆城县熊家庙九年制学校', aiClassCount: 2, classroomScore: 85.0},
+        {id: 353683, rank: 5, districtRank: 5, name: '庆城县蔡口集九年制学校', aiClassCount: 2, classroomScore: 84.1},
+        {id: 353797, rank: 6, districtRank: 6, name: '庆城县葛崾岘九年制学校', aiClassCount: 2, classroomScore: 83.6},
+        {id: 353704, rank: 7, districtRank: 7, name: '庆城县桐川镇中心小学', aiClassCount: 1, classroomScore: 81.0},
+        {id: 353739, rank: 8, districtRank: 8, name: '庆城县长庆小学', aiClassCount: 39, classroomScore: 80.5},
+        {id: 353750, rank: 9, districtRank: 9, name: '庆城县田家城小学', aiClassCount: 2, classroomScore: 78.8},
+        {id: 353665, rank: 10, districtRank: 10, name: '庆城县陇东中学', aiClassCount: 59, classroomScore: 77.3},
+        {id: 353807, rank: 11, districtRank: 11, name: '庆城县玄马镇中心小学', aiClassCount: 1, classroomScore: 76.9},
+        {id: 353712, rank: 12, districtRank: 12, name: '庆城县驿马中学', aiClassCount: 43, classroomScore: 76.5},
+        {id: 353667, rank: 13, districtRank: 13, name: '庆城县马岭初中', aiClassCount: 1, classroomScore: 75.7},
+        {id: 353781, rank: 14, districtRank: 14, name: '庆城县赤城初中', aiClassCount: 2, classroomScore: 72.7},
+        {id: 353713, rank: 15, districtRank: 15, name: '庆城县凤城初中', aiClassCount: 4, classroomScore: 69.7},
+        {id: 353713, rank: 16, districtRank: 16, name: '庆城县凤城初级中学', aiClassCount: 2, classroomScore: 69.7},
+        {id: 353793, rank: 17, districtRank: 17, name: '庆城县陇东中学分校', aiClassCount: 51, classroomScore: 65.8},
+        {id: 353734, rank: 18, districtRank: 18, name: '庆城县庆城中学', aiClassCount: 11, classroomScore: 64.0},
+        {id: 62726, rank: 19, districtRank: 19, name: '庆城县庆城小学', aiClassCount: 4, classroomScore: 0},
+        {id: 35280, rank: 20, districtRank: 20, name: '庆城县庆华小学', aiClassCount: 2, classroomScore: 0},
+        {id: 39912, rank: 21, districtRank: 21, name: '庆城县赤城镇中心小学', aiClassCount: 2, classroomScore: 0},
+        {id: 28746, rank: 22, districtRank: 22, name: '庆城县冰淋岔九年制学校', aiClassCount: 1, classroomScore: 0},
+        {id: 15454, rank: 23, districtRank: 23, name: '庆城县卅铺初中', aiClassCount: 1, classroomScore: 0},
+        {id: 46019, rank: 24, districtRank: 24, name: '庆城县特殊教育学校', aiClassCount: 1, classroomScore: 0},
+        {id: 56709, rank: 25, districtRank: 25, name: '庆城县白马铺镇中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 43513, rank: 26, districtRank: 26, name: '庆城县翟家河乡中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 73549, rank: 27, districtRank: 27, name: '庆城县西川中学', aiClassCount: 1, classroomScore: 0},
+        {id: 77391, rank: 28, districtRank: 28, name: '庆城县马岭镇董家滩明德小学', aiClassCount: 1, classroomScore: 0},
+        {id: 62326, rank: 29, districtRank: 29, name: '庆城县驿马镇中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 5213, rank: 30, districtRank: 30, name: '庆城职业中等专业学校', aiClassCount: 1, classroomScore: 0},
+    ],
+    // 环县（79所学校）
+    环县: [
+        {id: 354045, rank: 1, districtRank: 1, name: '环县合道镇初级中学', aiClassCount: 4, classroomScore: 84.9},
+        {id: 354046, rank: 2, districtRank: 2, name: '环县小南沟乡粉子山小学', aiClassCount: 3, classroomScore: 82.8},
+        {id: 354118, rank: 3, districtRank: 3, name: '环县小南沟乡李上山小学', aiClassCount: 3, classroomScore: 80.7},
+        {id: 354063, rank: 4, districtRank: 4, name: '环县演武乡中心小学', aiClassCount: 1, classroomScore: 80.6},
+        {id: 354125, rank: 5, districtRank: 5, name: '环县小南沟乡九年制学校', aiClassCount: 1, classroomScore: 79.6},
+        {id: 354060, rank: 6, districtRank: 6, name: '甘肃省环县第一中学', aiClassCount: 13, classroomScore: 78.2},
+        {id: 353963, rank: 7, districtRank: 7, name: '环县第二中学', aiClassCount: 1, classroomScore: 77.3},
+        {id: 353976, rank: 8, districtRank: 8, name: '环县天池乡中心小学', aiClassCount: 1, classroomScore: 75.8},
+        {id: 353988, rank: 9, districtRank: 9, name: '环县南关小学', aiClassCount: 3, classroomScore: 74.5},
+        {id: 354057, rank: 10, districtRank: 10, name: '环县第四中学', aiClassCount: 6, classroomScore: 72.7},
+        {
+            id: 354088,
+            rank: 11,
+            districtRank: 11,
+            name: '环县樊家川镇九年制学校',
+            aiClassCount: 10,
+            classroomScore: 72.6,
+        },
+        {id: 353981, rank: 12, districtRank: 12, name: '环县第三中学', aiClassCount: 1, classroomScore: 72.5},
+        {id: 353902, rank: 13, districtRank: 13, name: '环县第五中学', aiClassCount: 48, classroomScore: 72.1},
+        {id: 353975, rank: 14, districtRank: 14, name: '环县红星小学', aiClassCount: 6, classroomScore: 69.7},
+        {id: 353936, rank: 15, districtRank: 15, name: '环县车道镇初级中学', aiClassCount: 10, classroomScore: 68.1},
+        {id: 353952, rank: 16, districtRank: 16, name: '环县合道镇何坪小学', aiClassCount: 4, classroomScore: 67.1},
+        {id: 353998, rank: 17, districtRank: 17, name: '环县吴城子初级中学', aiClassCount: 7, classroomScore: 66.4},
+        {id: 353919, rank: 18, districtRank: 18, name: '环县车道镇万安小学', aiClassCount: 6, classroomScore: 66.4},
+        {id: 354123, rank: 19, districtRank: 19, name: '环县环城小学', aiClassCount: 7, classroomScore: 63.5},
+        {id: 353973, rank: 20, districtRank: 20, name: '环县车道镇安掌小学', aiClassCount: 4, classroomScore: 62.7},
+        {id: 353996, rank: 21, districtRank: 21, name: '环县天池乡吴城子小学', aiClassCount: 3, classroomScore: 61.4},
+        {id: 353913, rank: 22, districtRank: 22, name: '环县毛井镇初级中学', aiClassCount: 3, classroomScore: 61.1},
+        {id: 353942, rank: 23, districtRank: 23, name: '环县车道镇吊渠小学', aiClassCount: 4, classroomScore: 60.4},
+        {id: 354021, rank: 24, districtRank: 24, name: '环县陶洼子九年制学校', aiClassCount: 4, classroomScore: 58.1},
+        {id: 353959, rank: 25, districtRank: 25, name: '环县八珠乡八珠塬小学', aiClassCount: 3, classroomScore: 51.8},
+        {id: 354102, rank: 26, districtRank: 26, name: '环县八珠红军小学', aiClassCount: 7, classroomScore: 50.2},
+        {id: 353898, rank: 27, districtRank: 27, name: '环县思源实验学校', aiClassCount: 10, classroomScore: 46.8},
+        {id: 33595, rank: 28, districtRank: 28, name: '环县一中', aiClassCount: 34, classroomScore: 0},
+        {id: 9437, rank: 29, districtRank: 29, name: '环县甜水镇中心小学', aiClassCount: 14, classroomScore: 0},
+        {id: 51551, rank: 30, districtRank: 30, name: '环县何坪九年制学校', aiClassCount: 10, classroomScore: 0},
+        {id: 90744, rank: 31, districtRank: 31, name: '环县南湫乡中心小学', aiClassCount: 10, classroomScore: 0},
+        {id: 88442, rank: 32, districtRank: 32, name: '环县四合原初级中学', aiClassCount: 8, classroomScore: 0},
+        {id: 11915, rank: 33, districtRank: 33, name: '环县环城初级中学', aiClassCount: 8, classroomScore: 0},
+        {id: 80747, rank: 34, districtRank: 34, name: '环县芦家湾乡九年制学校', aiClassCount: 8, classroomScore: 0},
+        {id: 62370, rank: 35, districtRank: 35, name: '环县八珠乡初级中学', aiClassCount: 7, classroomScore: 0},
+        {id: 4370, rank: 36, districtRank: 36, name: '环县南湫初级中学', aiClassCount: 7, classroomScore: 0},
+        {id: 3342, rank: 37, districtRank: 37, name: '环县合道镇赵塬小学', aiClassCount: 7, classroomScore: 0},
+        {id: 89209, rank: 38, districtRank: 38, name: '环县四合原中心小学', aiClassCount: 7, classroomScore: 0},
+        {id: 79331, rank: 39, districtRank: 39, name: '环县小南沟九年制学校', aiClassCount: 7, classroomScore: 0},
+        {id: 82038, rank: 40, districtRank: 40, name: '环县秦团庄乡中心小学', aiClassCount: 7, classroomScore: 0},
+        {id: 11440, rank: 41, districtRank: 41, name: '环县车道镇魏洼小学', aiClassCount: 7, classroomScore: 0},
+        {id: 68707, rank: 42, districtRank: 42, name: '环县八珠乡鄂塬小学', aiClassCount: 6, classroomScore: 0},
+        {id: 76021, rank: 43, districtRank: 43, name: '环县天池乡初级中学', aiClassCount: 6, classroomScore: 0},
+        {id: 53260, rank: 44, districtRank: 44, name: '环县罗山川九年制学校', aiClassCount: 6, classroomScore: 0},
+        {id: 39112, rank: 45, districtRank: 45, name: '环县八珠乡侯岔小学', aiClassCount: 4, classroomScore: 0},
+        {id: 18422, rank: 46, districtRank: 46, name: '环县樊家川镇长城小学', aiClassCount: 4, classroomScore: 0},
+        {id: 9581, rank: 47, districtRank: 47, name: '环县毛井镇大户掌小学', aiClassCount: 4, classroomScore: 0},
+        {id: 23337, rank: 48, districtRank: 48, name: '环县毛井镇希望小学', aiClassCount: 4, classroomScore: 0},
+        {id: 60783, rank: 49, districtRank: 49, name: '环县演武初级中学', aiClassCount: 4, classroomScore: 0},
+        {id: 39170, rank: 50, districtRank: 50, name: '环县罗山川乡光明小学', aiClassCount: 4, classroomScore: 0},
+        {id: 6505, rank: 51, districtRank: 51, name: '环县芦家湾乡王庄小学', aiClassCount: 4, classroomScore: 0},
+        {id: 87292, rank: 52, districtRank: 52, name: '环县虎洞镇魏家河小学', aiClassCount: 4, classroomScore: 0},
+        {id: 35382, rank: 53, districtRank: 53, name: '环县八珠乡瓦崾岘小学', aiClassCount: 3, classroomScore: 0},
+        {id: 87171, rank: 54, districtRank: 54, name: '环县南开小学', aiClassCount: 3, classroomScore: 0},
+        {id: 3817, rank: 55, districtRank: 55, name: '环县合道镇大路洼小学', aiClassCount: 3, classroomScore: 0},
+        {id: 69641, rank: 56, districtRank: 56, name: '环县合道镇尚西坪小学', aiClassCount: 3, classroomScore: 0},
+        {id: 25971, rank: 57, districtRank: 57, name: '环县城北新区九年制学校', aiClassCount: 3, classroomScore: 0},
+        {id: 65332, rank: 58, districtRank: 58, name: '环县天池乡井渠塘小学', aiClassCount: 3, classroomScore: 0},
+        {id: 77319, rank: 59, districtRank: 59, name: '环县天池乡大岔小学', aiClassCount: 3, classroomScore: 0},
+        {id: 8533, rank: 60, districtRank: 60, name: '环县天池乡老庄湾小学', aiClassCount: 3, classroomScore: 0},
+        {id: 76891, rank: 61, districtRank: 61, name: '环县天池乡鲜岔小学', aiClassCount: 3, classroomScore: 0},
+        {id: 96549, rank: 62, districtRank: 62, name: '环县小南沟乡杨胡套子小学', aiClassCount: 3, classroomScore: 0},
+        {id: 51211, rank: 63, districtRank: 63, name: '环县樊家川镇马驿沟小学', aiClassCount: 3, classroomScore: 0},
+        {id: 56118, rank: 64, districtRank: 64, name: '环县毛井镇中心小学', aiClassCount: 3, classroomScore: 0},
+        {id: 15117, rank: 65, districtRank: 65, name: '环县毛井镇黄寨柯小学', aiClassCount: 3, classroomScore: 0},
+        {id: 51948, rank: 66, districtRank: 66, name: '环县演武乡佛家岔小学', aiClassCount: 3, classroomScore: 0},
+        {id: 42170, rank: 67, districtRank: 67, name: '环县演武乡吴家塬小学', aiClassCount: 3, classroomScore: 0},
+        {id: 76703, rank: 68, districtRank: 68, name: '环县演武乡走马硷小学', aiClassCount: 3, classroomScore: 0},
+        {id: 76823, rank: 69, districtRank: 69, name: '环县甜水镇第二小学', aiClassCount: 3, classroomScore: 0},
+        {id: 67158, rank: 70, districtRank: 70, name: '环县秦团庄乡初级中学', aiClassCount: 3, classroomScore: 0},
+        {id: 67470, rank: 71, districtRank: 71, name: '环县罗山川乡西阳洼小学', aiClassCount: 3, classroomScore: 0},
+        {id: 53166, rank: 72, districtRank: 72, name: '环县虎洞镇贾塬小学', aiClassCount: 3, classroomScore: 0},
+        {id: 99593, rank: 73, districtRank: 73, name: '环县车道镇陈掌小学', aiClassCount: 3, classroomScore: 0},
+        {id: 86809, rank: 74, districtRank: 74, name: '环县习仲勋红军小学', aiClassCount: 2, classroomScore: 0},
+        {id: 51701, rank: 75, districtRank: 75, name: '环县木钵镇中心小学', aiClassCount: 2, classroomScore: 0},
+        {id: 85836, rank: 76, districtRank: 76, name: '庆阳市环县教育局', aiClassCount: 2, classroomScore: 0},
+        {id: 16565, rank: 77, districtRank: 77, name: '环县环城镇西川小学', aiClassCount: 1, classroomScore: 0},
+        {id: 46333, rank: 78, districtRank: 78, name: '环县耿湾乡初级中学', aiClassCount: 1, classroomScore: 0},
+        {id: 51399, rank: 79, districtRank: 79, name: '环县职业中等专业学校', aiClassCount: 1, classroomScore: 0},
+    ],
+    // 华池县（33所学校）
+    华池县: [
+        {id: 354266, rank: 1, districtRank: 1, name: '华池县第二中学', aiClassCount: 1, classroomScore: 90.2},
+        {id: 354298, rank: 2, districtRank: 2, name: '华池县柔远小学', aiClassCount: 10, classroomScore: 86.2},
+        {id: 354287, rank: 3, districtRank: 3, name: '华池县列宁学校', aiClassCount: 3, classroomScore: 84.7},
+        {id: 354314, rank: 4, districtRank: 4, name: '华池县上里塬初级中学', aiClassCount: 2, classroomScore: 80.9},
+        {id: 354226, rank: 5, districtRank: 5, name: '华池县第一中学', aiClassCount: 72, classroomScore: 71.2},
+        {id: 354238, rank: 6, districtRank: 6, name: '华池县乔河初级中学', aiClassCount: 36, classroomScore: 60.4},
+        {id: 354239, rank: 7, districtRank: 7, name: '华池县五蛟初级中学', aiClassCount: 7, classroomScore: 51.0},
+        {id: 91333, rank: 8, districtRank: 8, name: '华池县柔远初级中学', aiClassCount: 11, classroomScore: 0},
+        {id: 61093, rank: 9, districtRank: 9, name: '华池县五蛟镇刘南沟小学', aiClassCount: 7, classroomScore: 0},
+        {id: 49946, rank: 10, districtRank: 10, name: '华池县元城镇元城小学', aiClassCount: 7, classroomScore: 0},
+        {id: 69030, rank: 11, districtRank: 11, name: '华池县王咀子乡王咀子点', aiClassCount: 7, classroomScore: 0},
+        {id: 61376, rank: 12, districtRank: 12, name: '华池县五蛟镇刘沟岔小学', aiClassCount: 6, classroomScore: 0},
+        {id: 48077, rank: 13, districtRank: 13, name: '华池县林镇乡林镇小学', aiClassCount: 6, classroomScore: 0},
+        {id: 29793, rank: 14, districtRank: 14, name: '华池县王咀子乡井子塬点', aiClassCount: 6, classroomScore: 0},
+        {id: 35094, rank: 15, districtRank: 15, name: '华池县上里塬乡上里塬小学', aiClassCount: 4, classroomScore: 0},
+        {id: 65866, rank: 16, districtRank: 16, name: '华池县五蛟镇蒋塬小学', aiClassCount: 4, classroomScore: 0},
+        {id: 48685, rank: 17, districtRank: 17, name: '华池县乔川九年制学校', aiClassCount: 3, classroomScore: 0},
+        {id: 48978, rank: 18, districtRank: 18, name: '华池县城壕初级中学', aiClassCount: 3, classroomScore: 0},
+        {id: 76527, rank: 19, districtRank: 19, name: '华池县城壕镇庙湾点', aiClassCount: 3, classroomScore: 0},
+        {id: 72210, rank: 20, districtRank: 20, name: '华池县悦乐镇黄大湾小学', aiClassCount: 3, classroomScore: 0},
+        {id: 62184, rank: 21, districtRank: 21, name: '华池县白马九年制学校', aiClassCount: 3, classroomScore: 0},
+        {id: 60812, rank: 22, districtRank: 22, name: '华池县南梁希望小学', aiClassCount: 2, classroomScore: 0},
+        {id: 53823, rank: 23, districtRank: 23, name: '华池县悦乐镇温台小学', aiClassCount: 2, classroomScore: 0},
+        {id: 22306, rank: 24, districtRank: 24, name: '华池县职业中等专业学校', aiClassCount: 2, classroomScore: 0},
+        {id: 38748, rank: 25, districtRank: 25, name: '华池县五蛟小学', aiClassCount: 1, classroomScore: 0},
+        {id: 87074, rank: 26, districtRank: 26, name: '华池县五蛟镇李良子小学', aiClassCount: 1, classroomScore: 0},
+        {id: 82557, rank: 27, districtRank: 27, name: '华池县列宁小学', aiClassCount: 1, classroomScore: 0},
+        {id: 6413, rank: 28, districtRank: 28, name: '华池县城关小学', aiClassCount: 1, classroomScore: 0},
+        {id: 33242, rank: 29, districtRank: 29, name: '华池县实验小学', aiClassCount: 1, classroomScore: 0},
+        {id: 57607, rank: 30, districtRank: 30, name: '华池县山庄乡山庄小学', aiClassCount: 1, classroomScore: 0},
+        {id: 47777, rank: 31, districtRank: 31, name: '华池县柔远镇孙家川教学点', aiClassCount: 1, classroomScore: 0},
+        {
+            id: 80244,
+            rank: 32,
+            districtRank: 32,
+            name: '华池县职业中等专业学校（庆阳开放大学华池学院）',
+            aiClassCount: 1,
+            classroomScore: 0,
+        },
+        {id: 785, rank: 33, districtRank: 33, name: '庆阳市华池县教育局', aiClassCount: 1, classroomScore: 0},
+    ],
+    // 合水县（30所学校）
+    合水县: [
+        {id: 355530, rank: 1, districtRank: 1, name: '合水县吉岘九年制学校', aiClassCount: 14, classroomScore: 84.5},
+        {id: 355420, rank: 2, districtRank: 2, name: '合水县太莪乡中心小学', aiClassCount: 5, classroomScore: 84.3},
+        {id: 355381, rank: 3, districtRank: 3, name: '合水县段家集乡枣洼小学', aiClassCount: 5, classroomScore: 82.5},
+        {id: 355461, rank: 4, districtRank: 4, name: '合水县蒿咀铺乡中心小学', aiClassCount: 3, classroomScore: 81.5},
+        {id: 355440, rank: 5, districtRank: 5, name: '合水县太白九年制学校', aiClassCount: 24, classroomScore: 79.6},
+        {id: 365979, rank: 6, districtRank: 6, name: '合水县老城镇九年制学校', aiClassCount: 1, classroomScore: 77.2},
+        {id: 355477, rank: 7, districtRank: 7, name: '合水县乐蟠初级中学', aiClassCount: 61, classroomScore: 74.6},
+        {id: 355498, rank: 8, districtRank: 8, name: '合水县肖咀镇初级中学', aiClassCount: 3, classroomScore: 74.3},
+        {id: 355439, rank: 9, districtRank: 9, name: '合水县何家畔九年制学校', aiClassCount: 17, classroomScore: 70.4},
+        {id: 355479, rank: 10, districtRank: 10, name: '合水县第二中学', aiClassCount: 42, classroomScore: 68.3},
+        {id: 355499, rank: 11, districtRank: 11, name: '合水第一中学', aiClassCount: 42, classroomScore: 67.6},
+        {id: 355499, rank: 12, districtRank: 12, name: '合水县第一中学', aiClassCount: 22, classroomScore: 67.6},
+        {
+            id: 355486,
+            rank: 13,
+            districtRank: 13,
+            name: '合水县段家集九年制学校',
+            aiClassCount: 20,
+            classroomScore: 64.1,
+        },
+        {id: 355505, rank: 14, districtRank: 14, name: '合水县西华池初级中学', aiClassCount: 11, classroomScore: 57.4},
+        {id: 355519, rank: 15, districtRank: 15, name: '合水县三里店小学', aiClassCount: 4, classroomScore: 47.2},
+        {id: 71630, rank: 16, districtRank: 16, name: '合水县肖咀初级中学', aiClassCount: 16, classroomScore: 0},
+        {id: 99259, rank: 17, districtRank: 17, name: '合水县西华池镇孙家寨沟小学', aiClassCount: 6, classroomScore: 0},
+        {id: 90754, rank: 18, districtRank: 18, name: '合水县西华池小学', aiClassCount: 5, classroomScore: 0},
+        {id: 29435, rank: 19, districtRank: 19, name: '合水县板桥镇中心小学', aiClassCount: 4, classroomScore: 0},
+        {id: 77605, rank: 20, districtRank: 20, name: '合水县肖咀镇博华希望小学', aiClassCount: 4, classroomScore: 0},
+        {id: 67526, rank: 21, districtRank: 21, name: '合水县吉岘镇丑家川村点', aiClassCount: 3, classroomScore: 0},
+        {id: 85790, rank: 22, districtRank: 22, name: '合水县板桥镇太白坳小学', aiClassCount: 3, classroomScore: 0},
+        {id: 36740, rank: 23, districtRank: 23, name: '合水县段家集乡宜州小学', aiClassCount: 3, classroomScore: 0},
+        {id: 12096, rank: 24, districtRank: 24, name: '合水县老城镇中心小学', aiClassCount: 3, classroomScore: 0},
+        {id: 13648, rank: 25, districtRank: 25, name: '合水县乐蟠小学', aiClassCount: 2, classroomScore: 0},
+        {id: 15813, rank: 26, districtRank: 26, name: '合水县太莪中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 62200, rank: 27, districtRank: 27, name: '合水县板桥镇太白肴小学', aiClassCount: 1, classroomScore: 0},
+        {id: 73713, rank: 28, districtRank: 28, name: '合水县老城镇牧家沟教学点', aiClassCount: 1, classroomScore: 0},
+        {id: 74699, rank: 29, districtRank: 29, name: '合水县职业中等专业学校', aiClassCount: 1, classroomScore: 0},
+        {
+            id: 61679,
+            rank: 30,
+            districtRank: 30,
+            name: '庆阳市合水县教育和科学技术局',
+            aiClassCount: 1,
+            classroomScore: 0,
+        },
+    ],
+    // 正宁县（31所学校）
+    正宁县: [
+        {id: 354455, rank: 1, districtRank: 1, name: '正宁县永和镇逸夫小学', aiClassCount: 2, classroomScore: 88.9},
+        {id: 354459, rank: 2, districtRank: 2, name: '正宁县西关小学', aiClassCount: 3, classroomScore: 86.9},
+        {id: 354428, rank: 3, districtRank: 3, name: '正宁县山河镇东关小学', aiClassCount: 1, classroomScore: 84.2},
+        {id: 354414, rank: 4, districtRank: 4, name: '正宁县罗川九年制学校', aiClassCount: 1, classroomScore: 83.0},
+        {
+            id: 354419,
+            rank: 5,
+            districtRank: 5,
+            name: '正宁县五顷塬回族乡九年制寄宿学校',
+            aiClassCount: 2,
+            classroomScore: 81.1,
+        },
+        {id: 354415, rank: 6, districtRank: 6, name: '正宁县三嘉九年制学校', aiClassCount: 4, classroomScore: 80.8},
+        {id: 354366, rank: 7, districtRank: 7, name: '正宁县榆林子初级中学', aiClassCount: 3, classroomScore: 73.6},
+        {id: 354409, rank: 8, districtRank: 8, name: '正宁县第一中学', aiClassCount: 15, classroomScore: 73.5},
+        {id: 354393, rank: 9, districtRank: 9, name: '正宁县第四中学', aiClassCount: 11, classroomScore: 73.3},
+        {id: 354421, rank: 10, districtRank: 10, name: '正宁县山河初级中学', aiClassCount: 35, classroomScore: 68.2},
+        {id: 354456, rank: 11, districtRank: 11, name: '正宁县第三中学', aiClassCount: 12, classroomScore: 64.6},
+        {id: 354429, rank: 12, districtRank: 12, name: '正宁县西坡初级中学', aiClassCount: 2, classroomScore: 62.7},
+        {id: 354403, rank: 13, districtRank: 13, name: '正宁县苟仁九年制学校', aiClassCount: 8, classroomScore: 55.0},
+        {id: 76217, rank: 14, districtRank: 14, name: '正宁一中', aiClassCount: 38, classroomScore: 0},
+        {id: 14300, rank: 15, districtRank: 15, name: '正宁三中', aiClassCount: 36, classroomScore: 0},
+        {id: 14701, rank: 16, districtRank: 16, name: '正宁四中', aiClassCount: 36, classroomScore: 0},
+        {id: 38202, rank: 17, districtRank: 17, name: '正宁县永和镇初级中学', aiClassCount: 20, classroomScore: 0},
+        {id: 96683, rank: 18, districtRank: 18, name: '正宁县湫头镇西沟小学', aiClassCount: 7, classroomScore: 0},
+        {id: 68179, rank: 19, districtRank: 19, name: '正宁县山河小学', aiClassCount: 6, classroomScore: 0},
+        {id: 40456, rank: 20, districtRank: 20, name: '正宁县永和镇沟圈小学', aiClassCount: 6, classroomScore: 0},
+        {id: 84318, rank: 21, districtRank: 21, name: '正宁县湫头镇王郎坡小学', aiClassCount: 6, classroomScore: 0},
+        {id: 52230, rank: 22, districtRank: 22, name: '正宁县永和镇安兴小学', aiClassCount: 5, classroomScore: 0},
+        {id: 40407, rank: 23, districtRank: 23, name: '正宁县五顷塬九年制学校', aiClassCount: 4, classroomScore: 0},
+        {id: 27543, rank: 24, districtRank: 24, name: '正宁县榆林子镇初级中学', aiClassCount: 4, classroomScore: 0},
+        {id: 83842, rank: 25, districtRank: 25, name: '正宁县北辰小学', aiClassCount: 3, classroomScore: 0},
+        {id: 9727, rank: 26, districtRank: 26, name: '正宁县周家初级中学', aiClassCount: 1, classroomScore: 0},
+        {id: 7348, rank: 27, districtRank: 27, name: '正宁县宫河镇彭川小学', aiClassCount: 1, classroomScore: 0},
+        {id: 85855, rank: 28, districtRank: 28, name: '正宁县榆林子镇石家小学', aiClassCount: 1, classroomScore: 0},
+        {id: 57960, rank: 29, districtRank: 29, name: '正宁县永正初级中学', aiClassCount: 1, classroomScore: 0},
+        {id: 68642, rank: 30, districtRank: 30, name: '正宁县永正镇纪村小学', aiClassCount: 1, classroomScore: 0},
+        {id: 83781, rank: 31, districtRank: 31, name: '庆阳市正宁县教育局', aiClassCount: 1, classroomScore: 0},
+    ],
+    // 宁县（76所学校）
+    宁县: [
+        {id: 354804, rank: 1, districtRank: 1, name: '宁县宁江小学', aiClassCount: 10, classroomScore: 89.6},
+        {id: 354744, rank: 2, districtRank: 2, name: '宁县平子镇中心小学', aiClassCount: 12, classroomScore: 79.8},
+        {id: 353540, rank: 3, districtRank: 3, name: '宁县第五中学', aiClassCount: 1, classroomScore: 79.1},
+        {id: 354689, rank: 4, districtRank: 4, name: '宁县第二中学', aiClassCount: 71, classroomScore: 73.8},
+        {id: 354528, rank: 5, districtRank: 5, name: '宁县新庄初级中学', aiClassCount: 3, classroomScore: 70.2},
+        {id: 353395, rank: 6, districtRank: 6, name: '宁县第三中学', aiClassCount: 11, classroomScore: 67.6},
+        {id: 353432, rank: 7, districtRank: 7, name: '宁县第四中学', aiClassCount: 10, classroomScore: 63.5},
+        {id: 354756, rank: 8, districtRank: 8, name: '宁县第一中学', aiClassCount: 9, classroomScore: 58.0},
+        {id: 58624, rank: 9, districtRank: 9, name: '宁县一中', aiClassCount: 13, classroomScore: 0},
+        {id: 32419, rank: 10, districtRank: 10, name: '宁县早胜初级中学', aiClassCount: 10, classroomScore: 0},
+        {id: 26503, rank: 11, districtRank: 11, name: '宁县四中', aiClassCount: 9, classroomScore: 0},
+        {id: 73313, rank: 12, districtRank: 12, name: '宁县九岘乡桃树庄小学', aiClassCount: 8, classroomScore: 0},
+        {id: 44872, rank: 13, districtRank: 13, name: '宁县金村初中', aiClassCount: 8, classroomScore: 0},
+        {id: 67859, rank: 14, districtRank: 14, name: '宁县九岘初中', aiClassCount: 7, classroomScore: 0},
+        {id: 53852, rank: 15, districtRank: 15, name: '宁县宁江初级中学', aiClassCount: 5, classroomScore: 0},
+        {id: 21856, rank: 16, districtRank: 16, name: '宁县新庄镇新桥小学', aiClassCount: 5, classroomScore: 0},
+        {id: 56120, rank: 17, districtRank: 17, name: '宁县长庆桥镇西塬小学', aiClassCount: 5, classroomScore: 0},
+        {id: 81261, rank: 18, districtRank: 18, name: '宁县中村镇苏韩小学', aiClassCount: 4, classroomScore: 0},
+        {id: 77916, rank: 19, districtRank: 19, name: '宁县九岘乡川口小学', aiClassCount: 4, classroomScore: 0},
+        {id: 51790, rank: 20, districtRank: 20, name: '宁县平子镇下塬小学', aiClassCount: 4, classroomScore: 0},
+        {id: 20989, rank: 21, districtRank: 21, name: '宁县新庄镇米家沟小学', aiClassCount: 4, classroomScore: 0},
+        {id: 39505, rank: 22, districtRank: 22, name: '宁县新庄镇颉家小学', aiClassCount: 4, classroomScore: 0},
+        {id: 46305, rank: 23, districtRank: 23, name: '宁县盘克初中', aiClassCount: 4, classroomScore: 0},
+        {id: 24900, rank: 24, districtRank: 24, name: '宁县米桥镇屈家小学', aiClassCount: 4, classroomScore: 0},
+        {id: 66184, rank: 25, districtRank: 25, name: '宁县长庆桥镇安河小学', aiClassCount: 4, classroomScore: 0},
+        {id: 4318, rank: 26, districtRank: 26, name: '宁县长庆桥镇贺家川小学', aiClassCount: 4, classroomScore: 0},
+        {id: 65218, rank: 27, districtRank: 27, name: '宁县中村镇弥家小学', aiClassCount: 3, classroomScore: 0},
+        {id: 57075, rank: 28, districtRank: 28, name: '宁县九岘乡左川小学', aiClassCount: 3, classroomScore: 0},
+        {id: 52754, rank: 29, districtRank: 29, name: '宁县九岘乡枣林小学', aiClassCount: 3, classroomScore: 0},
+        {id: 41715, rank: 30, districtRank: 30, name: '宁县南义乡中心小学', aiClassCount: 3, classroomScore: 0},
+        {id: 12401, rank: 31, districtRank: 31, name: '宁县城关小学', aiClassCount: 3, classroomScore: 0},
+        {id: 25345, rank: 32, districtRank: 32, name: '宁县平子镇孟城小学', aiClassCount: 3, classroomScore: 0},
+        {id: 97642, rank: 33, districtRank: 33, name: '宁县平子镇惠堡小学', aiClassCount: 3, classroomScore: 0},
+        {id: 58873, rank: 34, districtRank: 34, name: '宁县平子镇贾家小学', aiClassCount: 3, classroomScore: 0},
+        {id: 45505, rank: 35, districtRank: 35, name: '宁县新庄镇下肖小学', aiClassCount: 3, classroomScore: 0},
+        {id: 91550, rank: 36, districtRank: 36, name: '宁县新庄镇东剡小学', aiClassCount: 3, classroomScore: 0},
+        {id: 72409, rank: 37, districtRank: 37, name: '宁县早胜小学', aiClassCount: 3, classroomScore: 0},
+        {id: 57410, rank: 38, districtRank: 38, name: '宁县湘乐镇中心小学', aiClassCount: 3, classroomScore: 0},
+        {id: 85543, rank: 39, districtRank: 39, name: '宁县焦村初级中学', aiClassCount: 3, classroomScore: 0},
+        {id: 77732, rank: 40, districtRank: 40, name: '宁县良平镇付家小学', aiClassCount: 3, classroomScore: 0},
+        {id: 82983, rank: 41, districtRank: 41, name: '庆阳市宁县教育局', aiClassCount: 3, classroomScore: 0},
+        {id: 22273, rank: 42, districtRank: 42, name: '宁县和盛初级中学', aiClassCount: 2, classroomScore: 0},
+        {id: 20115, rank: 43, districtRank: 43, name: '宁县平子镇半坡小学', aiClassCount: 2, classroomScore: 0},
+        {id: 841, rank: 44, districtRank: 44, name: '宁县平子镇蒋邑小学', aiClassCount: 2, classroomScore: 0},
+        {id: 33486, rank: 45, districtRank: 45, name: '宁县新庄镇白店小学', aiClassCount: 2, classroomScore: 0},
+        {id: 51809, rank: 46, districtRank: 46, name: '宁县新庄镇马家小学', aiClassCount: 2, classroomScore: 0},
+        {id: 73791, rank: 47, districtRank: 47, name: '宁县早胜第二小学', aiClassCount: 2, classroomScore: 0},
+        {id: 39961, rank: 48, districtRank: 48, name: '宁县早胜镇中心小学', aiClassCount: 2, classroomScore: 0},
+        {id: 42424, rank: 49, districtRank: 49, name: '宁县瓦斜乡中心小学', aiClassCount: 2, classroomScore: 0},
+        {id: 6467, rank: 50, districtRank: 50, name: '宁县盘克初级中学', aiClassCount: 2, classroomScore: 0},
+        {id: 36208, rank: 51, districtRank: 51, name: '宁县米桥镇红星小学', aiClassCount: 2, classroomScore: 0},
+        {id: 94268, rank: 52, districtRank: 52, name: '宁县良平镇段村小学', aiClassCount: 2, classroomScore: 0},
+        {id: 81825, rank: 53, districtRank: 53, name: '宁县良平镇第家小学', aiClassCount: 2, classroomScore: 0},
+        {id: 4401, rank: 54, districtRank: 54, name: '宁县良平镇老庄小学', aiClassCount: 2, classroomScore: 0},
+        {id: 95719, rank: 55, districtRank: 55, name: '宁县中村初级中学', aiClassCount: 1, classroomScore: 0},
+        {id: 67970, rank: 56, districtRank: 56, name: '宁县中村镇中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 17184, rank: 57, districtRank: 57, name: '宁县九岘乡中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 37086, rank: 58, districtRank: 58, name: '宁县九岘乡马洼小学', aiClassCount: 1, classroomScore: 0},
+        {id: 74720, rank: 59, districtRank: 59, name: '宁县南义乡小台小学', aiClassCount: 1, classroomScore: 0},
+        {id: 74090, rank: 60, districtRank: 60, name: '宁县南义初级中学', aiClassCount: 1, classroomScore: 0},
+        {id: 42144, rank: 61, districtRank: 61, name: '宁县和盛园区小学', aiClassCount: 1, classroomScore: 0},
+        {id: 58518, rank: 62, districtRank: 62, name: '宁县新宁镇中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 34342, rank: 63, districtRank: 63, name: '宁县新宁镇五里铺小学', aiClassCount: 1, classroomScore: 0},
+        {id: 86164, rank: 64, districtRank: 64, name: '宁县新宁镇渔池小学', aiClassCount: 1, classroomScore: 0},
+        {id: 89844, rank: 65, districtRank: 65, name: '宁县新宁镇高山堡小学', aiClassCount: 1, classroomScore: 0},
+        {id: 81446, rank: 66, districtRank: 66, name: '宁县春荣初级中学', aiClassCount: 1, classroomScore: 0},
+        {id: 19696, rank: 67, districtRank: 67, name: '宁县春荣镇雷家畔小学', aiClassCount: 1, classroomScore: 0},
+        {id: 3546, rank: 68, districtRank: 68, name: '宁县湘乐镇樊湾小学', aiClassCount: 1, classroomScore: 0},
+        {id: 96230, rank: 69, districtRank: 69, name: '宁县焦村镇中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 69134, rank: 70, districtRank: 70, name: '宁县焦村镇坳马小学', aiClassCount: 1, classroomScore: 0},
+        {id: 72163, rank: 71, districtRank: 71, name: '宁县焦村镇森王小学', aiClassCount: 1, classroomScore: 0},
+        {id: 91033, rank: 72, districtRank: 72, name: '宁县焦村镇西卜小学', aiClassCount: 1, classroomScore: 0},
+        {id: 17778, rank: 73, districtRank: 73, name: '宁县盘克镇中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 4980, rank: 74, districtRank: 74, name: '宁县米桥镇高仓小学', aiClassCount: 1, classroomScore: 0},
+        {id: 56257, rank: 75, districtRank: 75, name: '宁县职业中等专业学校', aiClassCount: 1, classroomScore: 0},
+        {id: 17156, rank: 76, districtRank: 76, name: '宁县金村乡南堡小学', aiClassCount: 1, classroomScore: 0},
+    ],
+    // 镇原县（67所学校）
+    镇原县: [
+        {id: 355326, rank: 1, districtRank: 1, name: '镇原县莲池小学', aiClassCount: 4, classroomScore: 85.0},
+        {id: 354965, rank: 2, districtRank: 2, name: '镇原城关初级中学', aiClassCount: 12, classroomScore: 84.1},
+        {id: 354965, rank: 3, districtRank: 3, name: '镇原县城关初级中学', aiClassCount: 5, classroomScore: 84.1},
+        {id: 354996, rank: 4, districtRank: 4, name: '镇原县新集初级中学', aiClassCount: 3, classroomScore: 82.9},
+        {id: 355145, rank: 5, districtRank: 5, name: '镇原县马渠九年制学校', aiClassCount: 4, classroomScore: 82.7},
+        {id: 355367, rank: 6, districtRank: 6, name: '镇原县三岔中学', aiClassCount: 4, classroomScore: 82.3},
+        {id: 355248, rank: 7, districtRank: 7, name: '镇原县兴华初级中学', aiClassCount: 2, classroomScore: 79.4},
+        {id: 355171, rank: 8, districtRank: 8, name: '镇原县庙渠初级中学', aiClassCount: 3, classroomScore: 78.0},
+        {id: 355290, rank: 9, districtRank: 9, name: '镇原第二中学', aiClassCount: 28, classroomScore: 76.3},
+        {id: 355290, rank: 10, districtRank: 10, name: '镇原县第二中学', aiClassCount: 9, classroomScore: 76.3},
+        {id: 366171, rank: 11, districtRank: 11, name: '镇原第三中学', aiClassCount: 43, classroomScore: 72.3},
+        {id: 366171, rank: 12, districtRank: 12, name: '镇原县第三中学', aiClassCount: 8, classroomScore: 72.3},
+        {id: 355358, rank: 13, districtRank: 13, name: '镇原县平泉中学', aiClassCount: 3, classroomScore: 72.1},
+        {id: 355212, rank: 14, districtRank: 14, name: '镇原县殷家城九年制学校', aiClassCount: 7, classroomScore: 67.7},
+        {id: 355229, rank: 15, districtRank: 15, name: '镇原中学', aiClassCount: 2, classroomScore: 67.5},
+        {id: 355181, rank: 16, districtRank: 16, name: '镇原县方山九年制学校', aiClassCount: 6, classroomScore: 64.7},
+        {id: 354967, rank: 17, districtRank: 17, name: '镇原县东街小学', aiClassCount: 10, classroomScore: 59.7},
+        {id: 354867, rank: 18, districtRank: 18, name: '镇原县中原乡中心小学', aiClassCount: 1, classroomScore: 59.6},
+        {id: 355227, rank: 19, districtRank: 19, name: '镇原县中原乡姜白教学点', aiClassCount: 1, classroomScore: 59.5},
+        {id: 354935, rank: 20, districtRank: 20, name: '镇原县屯字中学', aiClassCount: 3, classroomScore: 52.4},
+        {id: 355207, rank: 21, districtRank: 21, name: '镇原县新集镇段掌小学', aiClassCount: 4, classroomScore: 51.2},
+        {id: 25218, rank: 22, districtRank: 22, name: '镇原第一中学', aiClassCount: 78, classroomScore: 0},
+        {id: 55181, rank: 23, districtRank: 23, name: '镇原县第一中学', aiClassCount: 6, classroomScore: 0},
+        {id: 39855, rank: 24, districtRank: 24, name: '镇原县南区小学', aiClassCount: 5, classroomScore: 0},
+        {id: 85938, rank: 25, districtRank: 25, name: '镇原县三岔镇吕马岔点', aiClassCount: 4, classroomScore: 0},
+        {id: 23779, rank: 26, districtRank: 26, name: '镇原县三岔镇寺庄湾点', aiClassCount: 4, classroomScore: 0},
+        {id: 69398, rank: 27, districtRank: 27, name: '镇原县新集镇老王山点', aiClassCount: 4, classroomScore: 0},
+        {id: 99272, rank: 28, districtRank: 28, name: '镇原县方山乡小方点', aiClassCount: 4, classroomScore: 0},
+        {id: 57796, rank: 29, districtRank: 29, name: '镇原县方山乡曹湾点', aiClassCount: 4, classroomScore: 0},
+        {id: 78032, rank: 30, districtRank: 30, name: '镇原县方山乡金岔点', aiClassCount: 4, classroomScore: 0},
+        {id: 2335, rank: 31, districtRank: 31, name: '镇原县殷家城乡白沟圈点', aiClassCount: 4, classroomScore: 0},
+        {id: 40639, rank: 32, districtRank: 32, name: '镇原县马渠镇三合点', aiClassCount: 4, classroomScore: 0},
+        {id: 12599, rank: 33, districtRank: 33, name: '镇原县马渠镇四坪点', aiClassCount: 4, classroomScore: 0},
+        {id: 2064, rank: 34, districtRank: 34, name: '镇原县马渠镇甘川点', aiClassCount: 4, classroomScore: 0},
+        {id: 43194, rank: 35, districtRank: 35, name: '镇原县教育局', aiClassCount: 4, classroomScore: 0},
+        {id: 69530, rank: 36, districtRank: 36, name: '镇原县三岔镇安岔点', aiClassCount: 3, classroomScore: 0},
+        {id: 7244, rank: 37, districtRank: 37, name: '镇原县三岔镇董渠小学', aiClassCount: 3, classroomScore: 0},
+        {id: 75449, rank: 38, districtRank: 38, name: '镇原县平泉初级中学', aiClassCount: 3, classroomScore: 0},
+        {id: 14757, rank: 39, districtRank: 39, name: '镇原县新集镇关坪点', aiClassCount: 3, classroomScore: 0},
+        {id: 13459, rank: 40, districtRank: 40, name: '镇原县新集镇吴原点', aiClassCount: 3, classroomScore: 0},
+        {id: 86161, rank: 41, districtRank: 41, name: '镇原县方山乡十八岘点', aiClassCount: 3, classroomScore: 0},
+        {id: 13606, rank: 42, districtRank: 42, name: '镇原县方山乡高粱点', aiClassCount: 3, classroomScore: 0},
+        {id: 87365, rank: 43, districtRank: 43, name: '镇原县武沟九年制学校', aiClassCount: 3, classroomScore: 0},
+        {id: 73481, rank: 44, districtRank: 44, name: '镇原县殷家城乡敬岔小学', aiClassCount: 3, classroomScore: 0},
+        {id: 20673, rank: 45, districtRank: 45, name: '镇原县临泾初级中学', aiClassCount: 2, classroomScore: 0},
+        {id: 97894, rank: 46, districtRank: 46, name: '镇原县孟坝中学', aiClassCount: 2, classroomScore: 0},
+        {id: 87871, rank: 47, districtRank: 47, name: '镇原县孟坝初级中学', aiClassCount: 2, classroomScore: 0},
+        {id: 21534, rank: 48, districtRank: 48, name: '镇原县新城初级中学', aiClassCount: 2, classroomScore: 0},
+        {id: 18367, rank: 49, districtRank: 49, name: '镇原县职业中等专业学校', aiClassCount: 2, classroomScore: 0},
+        {id: 32424, rank: 50, districtRank: 50, name: '镇原县临泾镇峁原教学点', aiClassCount: 1, classroomScore: 0},
+        {id: 79981, rank: 51, districtRank: 51, name: '镇原县临泾镇祁家庙明德小学', aiClassCount: 1, classroomScore: 0},
+        {id: 46599, rank: 52, districtRank: 52, name: '镇原县城关镇中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 38874, rank: 53, districtRank: 53, name: '镇原县城关镇许河湾教学点', aiClassCount: 1, classroomScore: 0},
+        {id: 71663, rank: 54, districtRank: 54, name: '镇原县城关镇路坡教学点', aiClassCount: 1, classroomScore: 0},
+        {id: 29668, rank: 55, districtRank: 55, name: '镇原县太平初级中学', aiClassCount: 1, classroomScore: 0},
+        {id: 6363, rank: 56, districtRank: 56, name: '镇原县太平镇兰庙小学', aiClassCount: 1, classroomScore: 0},
+        {id: 21313, rank: 57, districtRank: 57, name: '镇原县孟坝寄宿制小学', aiClassCount: 1, classroomScore: 0},
+        {id: 96390, rank: 58, districtRank: 58, name: '镇原县孟坝镇中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 8803, rank: 59, districtRank: 59, name: '镇原县孟坝镇孟坝小学', aiClassCount: 1, classroomScore: 0},
+        {id: 46079, rank: 60, districtRank: 60, name: '镇原县屯字镇中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 39655, rank: 61, districtRank: 61, name: '镇原县屯字镇阳宁小学', aiClassCount: 1, classroomScore: 0},
+        {id: 86904, rank: 62, districtRank: 62, name: '镇原县新集镇中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 1538, rank: 63, districtRank: 63, name: '镇原县新集镇高峰小学', aiClassCount: 1, classroomScore: 0},
+        {id: 463, rank: 64, districtRank: 64, name: '镇原县殷家城乡中心小学', aiClassCount: 1, classroomScore: 0},
+        {id: 494, rank: 65, districtRank: 65, name: '镇原县王寨初级中学', aiClassCount: 1, classroomScore: 0},
+        {id: 60403, rank: 66, districtRank: 66, name: '镇原县郭原乡张湾教学点', aiClassCount: 1, classroomScore: 0},
+        {id: 30961, rank: 67, districtRank: 67, name: '镇原县郭原初级中学', aiClassCount: 1, classroomScore: 0},
+    ],
+};
+
+// 各层级统计数据（顶部数字卡片）
+const COUNT_DATA = {
+    CITY: {aiCount: 4215, teacherCount: 2166, districtCount: 9, schoolCount: 430},
+    市属校: {aiCount: 916, teacherCount: 546, schoolCount: 16},
+    西峰区: {aiCount: 1119, teacherCount: 530, schoolCount: 73},
+    环县: {aiCount: 436, teacherCount: 195, schoolCount: 78},
+    宁县: {aiCount: 326, teacherCount: 183, schoolCount: 75},
+    镇原县: {aiCount: 350, teacherCount: 178, schoolCount: 66},
+    华池县: {aiCount: 219, teacherCount: 110, schoolCount: 32},
+    合水县: {aiCount: 328, teacherCount: 151, schoolCount: 30},
+    正宁县: {aiCount: 276, teacherCount: 148, schoolCount: 30},
+    庆城县: {aiCount: 245, teacherCount: 125, schoolCount: 30},
+};
+
+// 区县ID映射（写死，替代后端接口）
+const DISTRICT_ORG_MAP = {
+    庆城县: 353660,
+    市属校: 2,
+    西峰区: 353377,
+    宁县: 354483,
+    正宁县: 354340,
+    合水县: 355377,
+    环县: 353893,
+    华池县: 354195,
+    镇原县: 354846,
+};
+
+const DISTRICT_NAME_MAP = {
+    353660: '庆城县',
+    2: '市属校',
+    353377: '西峰区',
+    354483: '宁县',
+    354340: '正宁县',
+    355377: '合水县',
+    353893: '环县',
+    354195: '华池县',
+    354846: '镇原县',
+};
 export default {
     components: {
         commonTable,
@@ -833,9 +1442,9 @@ export default {
         };
     },
     mounted() {
-        this.getTermList();
-        this.getSubjectList();
-        this.getGradeList();
+        // this.getTermList();
+        // this.getSubjectList();
+        // this.getGradeList();
         // 右上角显示当前时间
         this.getNowTime();
         clearInterval(this.myTimeDisplay);
@@ -877,17 +1486,19 @@ export default {
                     let orgLevel = res.data.orgLevel;
                     // 可能存在市级底下的教师，直接显示到教师个人层级（区县也可能出现这种角色
                     if (userInfo.roleType == 1 && userInfo.sysUserAuth[0].type == 4) {
-                        this.curUserPower = true;
-                        this.isBackCityMap = false;
-                        this.isBackCountyMap = false;
-                        this.isBackSchool = false;
-                        this.curId = res.data.id;
-                        this.curUserId = userInfo.userId;
-                        this.curSchoolTitle = res.data.name;
-                        this.curSchoolId = res.data.id;
-                        this.noUpdateTeacherOptions = true;
-                        this.intoTeacherPage({teacher: userInfo.nickName, id: userInfo.userId});
-                        this.getOrgDirectlyUp();
+                        // this.curUserPower = true;
+                        // this.isBackCityMap = false;
+                        // this.isBackCountyMap = false;
+                        // this.isBackSchool = false;
+                        // this.curId = res.data.id;
+                        // this.curUserId = userInfo.userId;
+                        // this.curSchoolTitle = res.data.name;
+                        // this.curSchoolId = res.data.id;
+                        // this.noUpdateTeacherOptions = true;
+                        // this.intoTeacherPage({teacher: userInfo.nickName, id: userInfo.userId});
+                        // this.getOrgDirectlyUp();
+                        this.$message('当前角色暂无权限！', 'warning');
+                        return;
                     } else {
                         if (orgLevel == 2) {
                             this.curCityId = res.data.id;
@@ -902,41 +1513,45 @@ export default {
                             this.curCityName = res.data.nikeName;
                             this.updateData();
                         } else if (orgLevel == 3) {
-                            this.isBackCityMap = false;
-                            this.isBackCountyMap = true;
-                            this.isBackSchool = true;
-                            this.curId = res.data.id;
-                            this.curDistrictId = res.data.id;
-                            this.curPage = 'DISTRICT';
-                            // 如果是当前层级，就不获取当前层级的下拉
-                            this.noUpdateDistrictOptions = true;
-                            this.intoCountyMap(res.data.nikeName, res.data.id);
-                            this.getDirectOptions(res.data.parentId);
-                            this.getOrgDirectlyUp();
+                            // this.isBackCityMap = false;
+                            // this.isBackCountyMap = true;
+                            // this.isBackSchool = true;
+                            // this.curId = res.data.id;
+                            // this.curDistrictId = res.data.id;
+                            // this.curPage = 'DISTRICT';
+                            // // 如果是当前层级，就不获取当前层级的下拉
+                            // this.noUpdateDistrictOptions = true;
+                            // this.intoCountyMap(res.data.nikeName, res.data.id);
+                            // this.getDirectOptions(res.data.parentId);
+                            // this.getOrgDirectlyUp();
+                            this.$message('当前角色暂无权限！', 'warning');
+                            return;
                         } else if (orgLevel == 4) {
                             // 教师：orgLevel == 4 roleType == 1 且是个人数据
-                            if (userInfo.roleType == 1 && userInfo.sysUserAuth[0].type == 4) {
-                                this.isBackCityMap = false;
-                                this.isBackCountyMap = false;
-                                this.isBackSchool = false;
-                                this.curId = res.data.id;
-                                this.curUserId = userInfo.userId;
-                                this.curSchoolTitle = res.data.name;
-                                this.curSchoolId = res.data.id;
-                                this.noUpdateTeacherOptions = true;
-                                this.intoTeacherPage({teacher: userInfo.nickName, id: userInfo.userId});
-                                this.getOrgDirectlyUp();
-                            } else {
-                                this.isBackCityMap = false;
-                                this.isBackCountyMap = false;
-                                this.isBackSchool = true;
-                                this.curId = res.data.id;
-                                this.curSchoolId = res.data.id;
-                                this.noUpdateSchoolOptions = true;
-                                this.intoSchoolPage(res.data.name, res.data.id);
-                                this.getSchoolOptions(res.data.parentId);
-                                this.getOrgDirectlyUp();
-                            }
+                            // if (userInfo.roleType == 1 && userInfo.sysUserAuth[0].type == 4) {
+                            //     this.isBackCityMap = false;
+                            //     this.isBackCountyMap = false;
+                            //     this.isBackSchool = false;
+                            //     this.curId = res.data.id;
+                            //     this.curUserId = userInfo.userId;
+                            //     this.curSchoolTitle = res.data.name;
+                            //     this.curSchoolId = res.data.id;
+                            //     this.noUpdateTeacherOptions = true;
+                            //     this.intoTeacherPage({teacher: userInfo.nickName, id: userInfo.userId});
+                            //     this.getOrgDirectlyUp();
+                            // } else {
+                            //     this.isBackCityMap = false;
+                            //     this.isBackCountyMap = false;
+                            //     this.isBackSchool = true;
+                            //     this.curId = res.data.id;
+                            //     this.curSchoolId = res.data.id;
+                            //     this.noUpdateSchoolOptions = true;
+                            //     this.intoSchoolPage(res.data.name, res.data.id);
+                            //     this.getSchoolOptions(res.data.parentId);
+                            //     this.getOrgDirectlyUp();
+                            // }
+                            this.$message('当前角色暂无权限！', 'warning');
+                            return;
                         }
                     }
                 });
@@ -1025,11 +1640,20 @@ export default {
          * @param isCurPageUpdate 是否当前页面刷新
          */
         async updateData(isCurPageUpdate) {
+            // 写死模式：不请求后端接口，直接使用硬编码数据
             // 需要等待学校地图数据请求成功之后再去渲染地图
             if (!isCurPageUpdate && this.curPage != 'SCHOOL' && this.curPage != 'USER') {
                 await this.getOrgDirectlySub();
             }
             this.getCountData();
+            // 图表数据留空（后端接口不可用）
+            // this.classType_Data.data = [];
+            // this.FWAnalysis_Data.series1.data = [];
+            // this.FWAnalysis_Data.series2.data = [];
+            // this.styleAndLearn_Data.series1.data = [];
+            // this.styleAndLearn_Data.series2.data = [];
+            // this.IRE_Data.data = [];
+            // this.getCountData();
             this.drawPieChart1();
             this.drawRadar1();
             this.drawRadar2();
@@ -1044,23 +1668,15 @@ export default {
                     this.drawCityMap();
                 });
             } else if (this.curPage == 'DISTRICT') {
-                if (!this.noUpdateDistrictOptions) {
-                    this.getDirectOptions(this.curCityId);
-                }
+                // 写死模式：不请求下拉接口
                 if (!this.isMunicipalSchool) {
                     this.$nextTick(() => {
                         this.drawCountyMap();
                     });
                 }
             } else if (this.curPage == 'SCHOOL') {
-                if (!this.noUpdateSchoolOptions) {
-                    this.getSchoolOptions(this.curDistrictId);
-                }
-            } else if (this.curPage == 'USER') {
-                this.getTeacherDistrictRankingList();
-                if (!this.noUpdateTeacherOptions) {
-                    this.getTeacherOptions(this.curSchoolId);
-                }
+                // 学校层级暂不展示教师排行
+                this.tableData = [];
             }
         },
         // 获取下拉
@@ -1102,19 +1718,26 @@ export default {
             return params;
         },
         getCountData() {
-            let params = this.getParams();
-            this.$axios.get('ai/bigdata/loginBoard', params).then((res) => {
-                this.countList = {};
-                this.catchphraseArray = [];
-                if (res.data) {
-                    this.countList = res.data;
-                    this.catchphraseArray = res.data.petPhrasesList ? res.data.petPhrasesList : [];
+            // 写死模式：使用硬编码统计数据
+            this.countList = {};
+            this.catchphraseArray = [];
+            if (this.curPage == 'CITY') {
+                this.countList = {...COUNT_DATA['CITY']};
+            } else if (this.curPage == 'DISTRICT' || this.curPage == 'SCHOOL') {
+                let key = this.curPage == 'DISTRICT' ? this.curMapTitle : this.curMapTitle;
+                if (COUNT_DATA[key]) {
+                    this.countList = {...COUNT_DATA[key]};
+                } else {
+                    this.countList = {aiCount: 0, teacherCount: 0, schoolCount: 0};
                 }
-            });
+            } else {
+                this.countList = {aiCount: 0, teacherCount: 0, schoolCount: 0};
+            }
         },
-        // 教学模式分布
+        // 教学模式分布（写死模式：无后端数据，留空）
         drawPieChart1() {
             let chartDom = document.getElementById('pieChart1');
+            if (!chartDom) return;
             this.pie1Chart = echarts.init(chartDom);
             let params = this.getParams();
             this.$axios.get('ai/bigdata/getClassTypeDistributionChart', params).then((res) => {
@@ -1125,6 +1748,7 @@ export default {
         },
         drawPieChart2() {
             let chartDom = document.getElementById('pieChart2');
+            if (!chartDom) return;
             this.dbPie1Chart = echarts.init(chartDom);
             let params = this.getParams();
             this.$axios.get('/ai/bigdata/getClassroomQuestionAnalysis', params).then((res) => {
@@ -1136,6 +1760,7 @@ export default {
         },
         drawPieChart3() {
             let chartDom = document.getElementById('pieChart3');
+            if (!chartDom) return;
             this.dbPie2Chart = echarts.init(chartDom);
             let params = this.getParams();
             this.$axios.get('/ai/bigdata/getTeachingAndLearningStyle', params).then((res) => {
@@ -1165,9 +1790,9 @@ export default {
                 tooltip: {
                     trigger: 'item',
                     formatter:
-                        '{a} <br/>{b}:&nbsp;&nbsp;<b>{c}' +
-                        (pieParams.title == '教学模式分布' ? '节' : '次') +
-                        '</b>&nbsp;&nbsp;(<b>{d}%</b>)',
+                        '{a} <br/>{b}:&nbsp;&nbsp;<b>' +
+                        // (pieParams.title == '教学模式分布' ? '节' : '次') +
+                        '</b>&nbsp;&nbsp;<b>{d}%</b>',
                     backgroundColor: '#00000099',
                     textStyle: {
                         fontFamily: 'SourceHanSansCN-Regular',
@@ -1371,6 +1996,7 @@ export default {
         // 获取雷达图
         drawRadar1() {
             let chartDom = document.getElementById('radarChart1');
+            if (!chartDom) return;
             this.radar1Chart = echarts.init(chartDom);
             let params = this.getParams();
             this.$axios.get('ai/bigdata/getClassroomTeachingSituation', params).then((res) => {
@@ -1545,6 +2171,7 @@ export default {
         },
         drawRadar2() {
             let chartDom = document.getElementById('radarChart2');
+            if (!chartDom) return;
             this.radar2Chart = echarts.init(chartDom);
             let params = this.getParams();
             this.$axios.get('ai/bigdata/getFlandersInteractionAnalysis', params).then((res) => {
@@ -1846,6 +2473,8 @@ export default {
         },
         // 切换到县级地图
         intoCountyMap(county, id) {
+            console.log(county, id);
+
             if (!this.isBackCountyMap) return;
             // 移除省级地图的点击事件，虽然页面不在，但是监听事件依旧会进行
             this.isCityMap = false;
@@ -1859,6 +2488,16 @@ export default {
             this.columns = this.$comjs.setColumns(this.columns, ['rank'], true);
             this.columns = this.$comjs.setColumns(this.columns, ['districtRank'], false);
             this.columns[2].label = '学校名称';
+            // 写死模式：设置学校名称→ID映射
+            this.curSchoolOrgMap = {};
+            this.schoolOptions = [];
+            let schools = DISTRICT_SCHOOL_DATA[county];
+            if (schools) {
+                schools.forEach((s) => {
+                    this.curSchoolOrgMap[s.name] = s.id;
+                    this.schoolOptions.push({name: s.name, id: s.id});
+                });
+            }
             if (county == '市属校') {
                 this.myCountyChart && this.myCountyChart.dispose();
                 this.isMunicipalSchool = true;
@@ -1969,12 +2608,12 @@ export default {
                 ],
             };
             this.myCountyChart.setOption(option, true);
-            this.myCountyChart.on('click', 'series', (params) => {
-                // series引入地图，所以点击第二个参数设置series不能限制点击空白处不会触发事件，所以多加一层判断
-                if (params.data) {
-                    this.intoSchoolPage(params.name, this.curSchoolOrgMap[params.name]);
-                }
-            });
+            // this.myCountyChart.on('click', 'series', (params) => {
+            //     // series引入地图，所以点击第二个参数设置series不能限制点击空白处不会触发事件，所以多加一层判断
+            //     if (params.data) {
+            //         this.intoSchoolPage(params.name, this.curSchoolOrgMap[params.name]);
+            //     }
+            // });
             window.addEventListener('resize', () => {
                 this.myCountyChart.resize();
             });
@@ -2367,25 +3006,24 @@ export default {
         },
         // 课堂教学综合评分排行
         getClassroomTeachingScoreRankingList() {
-            let params = {...this.getParams(), ...this.sortParams};
-            params['pageNum'] = 1;
-            params['pageSize'] = 50;
-            let countDimension = 1;
+            this.tableLoading = false;
+            // CITY层级：展示区县排行（写死数据）
             if (this.curPage == 'CITY') {
-                countDimension = 1;
-            } else if (this.curPage == 'DISTRICT') {
-                countDimension = 2;
-            } else if (this.curPage == 'SCHOOL') {
-                countDimension = 5;
+                this.tableData = DISTRICT_RANKING_DATA;
+                return;
             }
-            params['countDimension'] = countDimension;
-            this.tableLoading = true;
-            this.$axios.get('/ai/bigdata/getClassroomTeachingScoreRankingList', params).then((res) => {
-                if (res.data) {
-                    this.tableData = res.data.pageList;
-                    this.tableLoading = false;
+            // DISTRICT层级：展示当前区县下学校排行（写死数据）
+            if (this.curPage == 'DISTRICT') {
+                let schools = DISTRICT_SCHOOL_DATA[this.curMapTitle];
+                if (schools) {
+                    this.tableData = schools;
+                } else {
+                    this.tableData = [];
                 }
-            });
+                return;
+            }
+            // SCHOOL及以下层级：无写死数据
+            this.tableData = [];
         },
         // 点击表格，跳转到下一级
         intoNextPage(name, id) {
@@ -2394,9 +3032,9 @@ export default {
                 let districtName = this.curDistrictNameMap[id];
                 this.intoCountyMap(districtName, id);
             } else if (this.curPage == 'DISTRICT') {
-                this.intoSchoolPage(name, id);
+                // this.intoSchoolPage(name, id);
             } else if (this.curPage == 'SCHOOL') {
-                this.intoTeacherPage({teacher: name, id: id});
+                // this.intoTeacherPage({teacher: name, id: id});
             }
         },
         /**

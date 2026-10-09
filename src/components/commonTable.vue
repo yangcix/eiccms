@@ -101,6 +101,7 @@
                     <div :class="operates.className ? operates.className : 'operate-group'">
                         <template v-for="(btn, index) in getBtnList(scope.row)">
                             <el-button
+                                :key="index"
                                 :type="btn.type"
                                 :disabled="btn.disabled ? btn.disabled(scope.row) : false"
                                 @click="btn.handleClick(scope.row, scope.$index)"
@@ -187,8 +188,11 @@ export default {
             type: Object,
         },
         isRemoteSort: {
-            type: Boolean | 'custom',
-            default: true, // 默认后端排序
+            type: [Boolean, String],
+            default: true,
+            validator: (value) => {
+                return value === true || value === false || value === 'custom';
+            },
         },
         //是否后台分页
         remotePaging: {
@@ -307,33 +311,26 @@ export default {
             }
         },
         goCustomSortMethod(column, prop, order) {
+            const dir = order === 'descending' ? -1 : 1;
             this.tableData.sort((x, y) => {
-                if (y.topping == x.topping) {
-                    let xtype = typeof x[prop];
-                    let ytype = typeof y[prop];
-                    if (xtype === 'string' && ytype === 'string') {
-                        if (order === 'ascending') {
-                            return (x[prop] != null) - (y[prop] != null) || x[prop].localeCompare(y[prop]);
-                        }
-                        if (order === 'descending') {
-                            return (y[prop] != null) - (x[prop] != null) || y[prop].localeCompare(x[prop]);
-                        }
-                    } else {
-                        x[prop] = !this.$comjs.isEmpty(x[prop]) ? parseFloat(x[prop]) : '';
-                        y[prop] = !this.$comjs.isEmpty(y[prop]) ? parseFloat(y[prop]) : '';
-                        if (order === 'ascending') {
-                            return (x[prop] != null) - (y[prop] != null) || x[prop] - y[prop];
-                        }
-                        if (order === 'descending') {
-                            return (y[prop] != null) - (x[prop] != null) || y[prop] - x[prop];
-                        }
-                    }
+                const a = x[prop];
+                const b = y[prop];
+
+                // 空值排最后
+                if (a == null && b == null) return 0;
+                if (a == null) return 1;
+                if (b == null) return -1;
+
+                if (typeof a === 'string' && typeof b === 'string') {
+                    return a.localeCompare(b) * dir;
                 }
-                return y.topping - x.topping;
+                return (Number(a) - Number(b)) * dir;
             });
-            if (this.getTableData) {
-                return this.getTableData();
-            }
+
+            // 强制刷新（Vue2 保险做法）
+            this.tableData = [...this.tableData];
+
+            if (this.getTableData) return this.getTableData();
         },
     },
     watch: {

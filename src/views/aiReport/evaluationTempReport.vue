@@ -130,7 +130,7 @@ export default {
                     canvas.height = 0;
                 }
 
-                pdf.save(`${this.name || 'AI课堂报告'}.pdf`);
+                pdf.save(`${this.baseInfo.analysisName + '_' + this.name || 'AI课堂报告'}.pdf`);
                 this.$message.success('PDF下载成功！');
             } catch (error) {
                 console.error('PDF生成失败:', error);

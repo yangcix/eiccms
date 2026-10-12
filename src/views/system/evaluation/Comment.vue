@@ -283,7 +283,7 @@
                     <div style="padding: 0">
                         <hr class="divider" />
                     </div>
-                    <div v-if="reportAi">
+                    <div v-if="aiDetail.aiStatus == 2">
                         <div class="report-title">
                             <div class="title">AI分析</div>
                             <div v-if="!isUnfold" class="icon-content" @click="changeUnfoldState">
@@ -302,12 +302,19 @@
                             class="report-item"
                         >
                             <span style="width: 300px">{{ reportAi.smCommentTemplate.name }}</span>
-                            <el-button type="text" @click="openEvaluationTempReportNew(2, commentInfo.id)"
+                            <el-button
+                                v-if="reportAi.bctiReport !== null && reportAi.bctiReport !== ''"
+                                type="text"
+                                @click="openEvaluationTempReportNew(2, commentInfo.id)"
                                 >查看</el-button
                             >
-                            <el-button type="text" @click="openEvaluationTempReportNew(1, commentInfo.id)"
+                            <el-button
+                                v-if="reportAi.bctiReport !== null && reportAi.bctiReport !== ''"
+                                type="text"
+                                @click="openEvaluationTempReportNew(1, commentInfo.id)"
                                 >下载</el-button
                             >
+                            <span v-else style="width: 180px">无报告，请联系管理员</span>
                         </div>
                         <div
                             v-else-if="

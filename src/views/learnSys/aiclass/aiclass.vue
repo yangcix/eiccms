@@ -442,10 +442,16 @@
                     class="report-item"
                 >
                     <span style="width: 300px">{{ reportData.smCommentTemplate.name }}</span>
-                    <el-button type="text" @click="openEvaluationTempReportNew(2, reportData.commentId)"
+                    <el-button
+                        v-if="reportData.bctiReport !== null && reportData.bctiReport !== ''"
+                        type="text"
+                        @click="openEvaluationTempReportNew(2, reportData.commentId)"
                         >查看</el-button
                     >
-                    <el-button type="text" @click="openEvaluationTempReportNew(1, reportData.commentId)"
+                    <el-button
+                        v-if="reportData.bctiReport !== null && reportData.bctiReport !== ''"
+                        type="text"
+                        @click="openEvaluationTempReportNew(1, reportData.commentId)"
                         >下载</el-button
                     >
                 </div>

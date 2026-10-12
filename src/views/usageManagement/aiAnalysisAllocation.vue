@@ -240,10 +240,7 @@ export default {
     methods: {
         getUserPower() {
             let userInfo = JSON.parse(localStorage.getItem('userInfo'));
-            if (
-                JSON.parse(localStorage.getItem('userInfo')).userId == 1 ||
-                JSON.parse(localStorage.getItem('userInfo')).userId == 2
-            ) {
+            if (userInfo.userId == 1 || userInfo.userId == 2) {
                 this.isAdmin = true;
                 this.orgType = '2,3';
                 this.getFirstList();
@@ -260,6 +257,7 @@ export default {
                     this.orgType = '4';
                 } else {
                     this.orgType = '2,3';
+                    this.orgId = userInfo.orgId;
                 }
                 this.getList();
                 this.getTotal();

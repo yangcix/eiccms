@@ -535,7 +535,7 @@
                             reportData.teachingSuggestionReport !== null && reportData.teachingSuggestionReport !== ''
                         "
                         type="text"
-                        @click="downloadAIReport(reportData.teachingSuggestionReport)"
+                        @click="downloadPDFReport(4)"
                         >下载</el-button
                     >
                     <span v-else style="width: 94px">
@@ -1723,49 +1723,6 @@ export default {
             this.showChooseProjectTimes = false;
             this.aiNum = 0;
             this.useList = [];
-        },
-        async downloadAIReport(url) {
-            try {
-                // 1. 先请求获取文件数据
-                const response = await fetch(url);
-
-                // 检查是否请求成功
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                // 2. 获取二进制数据
-                const blob = await response.blob();
-                this.$message('报告下载中...');
-                // 3. 创建本地下载链接
-                const link = document.createElement('a');
-                link.style.display = 'none';
-                const blobUrl = URL.createObjectURL(blob);
-                link.href = blobUrl;
-                link.download = this.reportRow.name + '_AI教学建议书.pdf';
-
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-
-                // 4. 释放内存
-                setTimeout(() => {
-                    URL.revokeObjectURL(blobUrl);
-                }, 100);
-            } catch (error) {
-                console.error('下载失败:', error);
-                // 降级方案：如果fetch失败，直接用a标签打开
-                this.fallbackDownload(url);
-            }
-        },
-        // 降级方案
-        fallbackDownload(url) {
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = this.reportRow.name + '_AI教学建议书.pdf';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
         },
         changeUnfoldState() {
             this.isUnfold = !this.isUnfold;

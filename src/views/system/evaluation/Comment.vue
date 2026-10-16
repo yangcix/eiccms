@@ -1151,7 +1151,7 @@ export default {
                         (val == 1 ? '全量数据' : val == 0 ? '教学诊断数据' : '课堂教学分析表') +
                         '.pdf';
                 } else if (val == 4) {
-                    link.download = this.commentInfo.name + '_AI教学建议书.pdf';
+                    link.download = this.commentInfo.name + '_课堂教学建议书.pdf';
                 }
                 document.body.appendChild(link);
                 link.click();

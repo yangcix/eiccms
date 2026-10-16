@@ -42,7 +42,7 @@
                     </div>
                     <div class="item-wrap">
                         <p>评课名称<em>*</em>：</p>
-                        <el-input class="width-2" v-model.trim="addEditInfo.name" clearable></el-input>
+                        <el-input class="width-2" v-model="addEditInfo.name" clearable></el-input>
                     </div>
                     <div class="item-wrap" v-if="aiStatus == 1 && radio1 == 2">
                         <p>课堂类型<em>*</em>：</p>
@@ -1992,7 +1992,7 @@ export default {
                 this.$message('评课名称不能为空', 'error');
                 return true;
             }
-            if (this.$verify.chLetterNum(this.addEditInfo.name, 80)) {
+            if (this.addEditInfo.name.length > 80) {
                 this.$message('课程名称由中文大小写字母数字组成，最长80位！', 'error');
                 return true;
             }

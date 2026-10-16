@@ -283,7 +283,7 @@
                     <div style="padding: 0">
                         <hr class="divider" />
                     </div>
-                    <div v-if="reportAi">
+                    <div v-if="aiDetail.aiStatus == 2">
                         <div class="report-title">
                             <div class="title">AI分析</div>
                             <div v-if="!isUnfold" class="icon-content" @click="changeUnfoldState">
@@ -302,12 +302,19 @@
                             class="report-item"
                         >
                             <span style="width: 300px">{{ reportAi.smCommentTemplate.name }}</span>
-                            <el-button type="text" @click="openEvaluationTempReportNew(2, commentInfo.id)"
+                            <el-button
+                                v-if="reportAi.bctiReport !== null && reportAi.bctiReport !== ''"
+                                type="text"
+                                @click="openEvaluationTempReportNew(2, commentInfo.id)"
                                 >查看</el-button
                             >
-                            <el-button type="text" @click="openEvaluationTempReportNew(1, commentInfo.id)"
+                            <el-button
+                                v-if="reportAi.bctiReport !== null && reportAi.bctiReport !== ''"
+                                type="text"
+                                @click="openEvaluationTempReportNew(1, commentInfo.id)"
                                 >下载</el-button
                             >
+                            <span v-else style="width: 180px">无报告，请联系管理员</span>
                         </div>
                         <div
                             v-else-if="
@@ -1141,10 +1148,10 @@ export default {
                     link.download =
                         this.commentInfo.name +
                         '_' +
-                        (val == 1 ? '专业版' : val == 0 ? '教师版' : '大数据报告') +
+                        (val == 1 ? '全量数据' : val == 0 ? '教学诊断数据' : '课堂教学分析表') +
                         '.pdf';
                 } else if (val == 4) {
-                    link.download = this.commentInfo.name + '_AI教学建议书.pdf';
+                    link.download = this.commentInfo.name + '_课堂教学建议书.pdf';
                 }
                 document.body.appendChild(link);
                 link.click();

@@ -1989,7 +1989,7 @@ export default {
                 this.$message('请输入课程名称', 'error');
                 return true;
             }
-            if (this.$verify.chLetterNum(this.addEditInfo.name, 80)) {
+            if (this.addEditInfo.name.length > 80) {
                 this.$message('课程名称由中文大小写字母数字组成，最长80位！', 'error');
                 return true;
             }

@@ -42,7 +42,7 @@
                     </div>
                     <div class="item-wrap">
                         <p>评课名称<em>*</em>：</p>
-                        <el-input class="width-2" v-model.trim="addEditInfo.name" clearable></el-input>
+                        <el-input class="width-2" v-model="addEditInfo.name" clearable></el-input>
                     </div>
                     <div class="item-wrap" v-if="aiStatus == 1 && radio1 == 2">
                         <p>课堂类型<em>*</em>：</p>

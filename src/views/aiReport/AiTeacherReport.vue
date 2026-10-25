@@ -2306,7 +2306,10 @@ export default {
                         }
                         this.idre = res.data.teacher.inspireCreativity.idre;
                         // this.initIntegralAnalysisText();
-                        this.initIntegralAnalysis(res.data.summary.integralAnalysis);
+                        // 课堂整体表现不显示的时候，数据不需要初始化（否则在渲染图表的时候会因为获取不到元素而导致后续方法执行有误
+                        if (this.$route.query.associatedDataReport != 1) {
+                            this.initIntegralAnalysis(res.data.summary.integralAnalysis);
+                        }
                         this.initCharacteristicsAnalysis(res.data.summary.characteristicsAnalysis);
                         // this.initIdre(res.data.teacher.inspireCreativity.idre);
                     });

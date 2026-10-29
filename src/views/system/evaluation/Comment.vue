@@ -763,7 +763,7 @@ export default {
                           {value: '', label: '全部'},
                           {value: 2, label: '排课录制'},
                           {value: 3, label: '本地上传'},
-                          {value: 1, label: '站内资源'},
+                        //   {value: 1, label: '站内资源'},
                           {value: 4, label: '智课终端'},
                           {value: 5, label: '历史录制资源'},
                       ]
@@ -771,7 +771,7 @@ export default {
                           {value: '', label: '全部'},
                           {value: 2, label: '排课录制'},
                           {value: 3, label: '本地上传'},
-                          {value: 1, label: '站内资源'},
+                        //   {value: 1, label: '站内资源'},
                       ],
             aiOpenStatus: JSON.parse(localStorage.getItem('sysInfo')).aiOpenStatus,
             addShow: false,
@@ -903,7 +903,7 @@ export default {
             return arr[val];
         },
         resources(val) {
-            let arr = ['', '站内资源', '排课录制', '本地上传', '智课终端', '历史录制资源'];
+            let arr = ['', '排课录制', '本地上传', '智课终端', '历史录制资源'];
             return arr[val];
         },
     },

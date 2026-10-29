@@ -292,7 +292,7 @@
                             <el-radio :label="2">排课录制</el-radio>
                             <el-radio v-if="$route.query.type == 2" :label="3">本地上传</el-radio>
                             <el-radio v-if="$route.query.type == 2" :label="4">智课终端</el-radio>
-                            <el-radio :label="1">站内资源</el-radio>
+                            <!-- <el-radio :label="1">站内资源</el-radio> -->
                             <el-radio v-if="$route.query.type == 2" :label="5">历史录制资源</el-radio>
                             <el-tooltip :content="tooltipContent" placement="right" effect="dark">
                                 <i

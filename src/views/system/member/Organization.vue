@@ -34,7 +34,7 @@
                     </el-table-column>
                     <el-table-column label="类型" align="center">
                         <template slot-scope="scope">
-                            {{ scope.row.orgLevelName }}
+                            {{ scope.row.orgLevelName.includes('null') ? '-' : scope.row.orgLevelName }}
                         </template>
                     </el-table-column>
                     <el-table-column label="所在地区" align="center">

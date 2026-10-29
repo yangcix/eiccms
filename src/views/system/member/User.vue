@@ -72,9 +72,9 @@
                         <el-button class="width-1" icon="el-icon-download" @click="downLoad" v-if="permission.getExcel"
                             >模板</el-button
                         >
-                        <el-button class="width-4" @click="showSyncTeacherDialog" v-show="activeIndex == 1"
+                        <!-- <el-button class="width-4" @click="showSyncTeacherDialog" v-show="activeIndex == 1"
                             >同步教师</el-button
-                        >
+                        > -->
                     </div>
                 </div>
 

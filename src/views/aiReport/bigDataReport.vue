@@ -2,8 +2,8 @@
     <div id="ai-teacher-report" class="report-container">
         <!--  第一页，报告信息页  -->
         <div class="page-container" data-order="1">
-            <header style="width: 56%; margin: 0 auto">
-                <img src="../../assets/imgs/logo-eicc.png" alt="Logo" style="margin-top: 80px" />
+            <header style="width: 90%; margin: 0 auto">
+                <img src="../../assets/imgs/logo-eicc.png" alt="Logo" style="margin-top: 80px; width: 60%" />
                 <h1 style="margin: 50px 0 80px">课堂教学分析表</h1>
                 <h2 style="width: 100%">《 {{ baseInfo?.analysisName }} 》</h2>
             </header>

@@ -521,13 +521,7 @@
                 </div>
                 <div
                     v-if="reportPermission.guidanceReport"
-                    style="
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        padding: 0 20px;
-                        margin-bottom: 10px;
-                    "
+                    class="report-item"
                 >
                     <span style="width: 300px">课堂教学建议书</span>
                     <el-button

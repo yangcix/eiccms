@@ -188,6 +188,7 @@ export default {
                     classTypeId: this.classTypeId,
                     pageNum: this.pageNum,
                     pageSize: 10,
+                    classification: 1,
                 })
                 .then((res) => {
                     console.log(res, '数据22');

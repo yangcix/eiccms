@@ -8,7 +8,7 @@
     >
         <div class="data-board-title">
             <div class="text">AI课堂分析数据平台</div>
-            <div class="select-group">
+            <div class="select-group" v-show="showFilter">
                 <div class="rect-left">
                     <div class="white-rect"></div>
                     <div class="blue-rect"></div>
@@ -183,7 +183,7 @@
                     <div class="ai-count count-item">
                         <div class="text">
                             <p>AI课堂数量(节)</p>
-                            <p>{{ countList.aiCount }}</p>
+                            <p>{{ displayCountList.aiCount }}</p>
                         </div>
                         <img src="../../assets/imgs/icon-l.png" class="icon" />
                         <img src="../../assets/imgs/dizuo-l.png" class="dizuo" />
@@ -470,53 +470,72 @@
         <classTypeDlg
             ref="classTypeDlg"
             :countList="countList"
+            :aiBase="currentAiBase"
+            :baseMap="baseCountMap"
             :allRangeText="allRangeText"
             :detailDlg="classTypeDlg"
             :options="chartOptions"
+            :hideTypeCountField="hideTypeCountField"
+            :showFilter="showFilter"
             @pageChange="pageChange"
         ></classTypeDlg>
         <classTeachDlg
             ref="classTeachDlg"
             :countList="countList"
+            :aiBase="currentAiBase"
+            :baseMap="baseCountMap"
             :allRangeText="allRangeText"
             :detailDlg="classTeachDlg"
             :options="chartOptions"
+            :showFilter="showFilter"
             @pageChange="pageChange"
         ></classTeachDlg>
         <FlandersDlg
             ref="FlandersDlg"
             :countList="countList"
+            :aiBase="currentAiBase"
+            :baseMap="baseCountMap"
             :allRangeText="allRangeText"
             :detailDlg="FlandersDlg"
             :options="chartOptions"
+            :showFilter="showFilter"
             @pageChange="pageChange"
         ></FlandersDlg>
         <FWAnalysisDlg
             ref="FWAnalysisDlg"
             :countList="countList"
+            :aiBase="currentAiBase"
+            :baseMap="baseCountMap"
             :allRangeText="allRangeText"
             :detailDlg="FWAnalysisDlg"
             :pie1Options="pie1Options"
             :pie2Options="pie2Options"
             @pageChange="pageChange"
+            :showFilter="showFilter"
             @changeChart="changeChart"
         ></FWAnalysisDlg>
         <styleDlg
             ref="styleDlg"
             :countList="countList"
+            :aiBase="currentAiBase"
+            :baseMap="baseCountMap"
             :allRangeText="allRangeText"
             :detailDlg="styleDlg"
             :pie1Options="pie1Options"
             :pie2Options="pie2Options"
+            :showFilter="showFilter"
             @pageChange="pageChange"
             @changeChart="changeChart"
         ></styleDlg>
         <IREAnalysisDlg
             ref="IREAnalysisDlg"
             :countList="countList"
+            :aiBase="currentAiBase"
+            :baseMap="baseCountMap"
             :allRangeText="allRangeText"
             :detailDlg="IREAnalysisDlg"
             :options="chartOptions"
+            :showFilter="showFilter"
             @pageChange="pageChange"
         ></IREAnalysisDlg>
         <trendAnalysisDlg
@@ -525,6 +544,8 @@
             :allRangeText="allRangeText"
             :detailDlg="trendAnalysisDlg"
             :options="chartOptions"
+            :aiBase="currentAiBase"
+            :showFilter="showFilter"
         ></trendAnalysisDlg>
         <teachScoreDlg
             ref="teachScoreDlg"
@@ -532,6 +553,7 @@
             :allRangeText="allRangeText"
             :detailDlg="teachScoreDlg"
             :options="{}"
+            :aiBase="currentAiBase"
             @pageChange="pageChange"
         ></teachScoreDlg>
         <classAnalysisDlg
@@ -540,6 +562,8 @@
             :allRangeText="allRangeText"
             :detailDlg="classAnalysisDlg"
             :options="{}"
+            :aiBase="currentAiBase"
+            :showFilter="showFilter"
         ></classAnalysisDlg>
     </div>
 </template>
@@ -574,6 +598,22 @@ export default {
         return {
             tableImg: require('@/assets/imgs/k.png'),
             tableImgBig: require('@/assets/imgs/table-big.png'),
+            // AI课堂数量基数配置
+            baseCountMap: {
+                city: 2713,
+                district: {
+                    庆阳市直属: 550,
+                    市属校: 550,
+                    西峰区: 650,
+                    环县: 178,
+                    宁县: 82,
+                    镇原县: 485,
+                    华池县: 160,
+                    合水县: 188,
+                    正宁县: 198,
+                    庆城县: 222,
+                },
+            },
             curCityName: '',
             classType_Data: {
                 title: '教学模式分布',
@@ -585,10 +625,10 @@ export default {
             classTeach_standardScore: [],
             Flanders_averageScore: [],
             Flanders_standardScore: [],
-            termRangeText: '', //弹窗显示的学期学科年级范围
+            termRangeText: '',
             courseRangeText: '',
             gradeRangeText: '',
-            termValueText: '', //传给后端的下拉值字段
+            termValueText: '',
             courseValueText: '',
             gradeValueText: '',
             termOptions: [],
@@ -724,7 +764,6 @@ export default {
                 require('@/assets/imgs/qipao11.png'),
                 require('@/assets/imgs/qipao12.png'),
             ],
-            // 用于限制角色可以看到哪一层级的内容
             isBackCityMap: true,
             isBackCountyMap: true,
             isBackSchool: true,
@@ -792,13 +831,11 @@ export default {
                             const now = new Date();
                             const start = new Date(now);
                             const day = now.getDay();
-                            // 上周一
                             const diff = day === 0 ? -13 : -6 - day;
                             start.setDate(now.getDate() + diff);
                             start.setHours(0, 0, 0, 0);
 
                             const end = new Date(now);
-                            // 上周日
                             const endDiff = day === 0 ? -7 : -day;
                             end.setDate(now.getDate() + endDiff);
                             end.setHours(23, 59, 59, 999);
@@ -836,7 +873,6 @@ export default {
         this.getTermList();
         this.getSubjectList();
         this.getGradeList();
-        // 右上角显示当前时间
         this.getNowTime();
         clearInterval(this.myTimeDisplay);
         this.myTimeDisplay = setInterval(() => {
@@ -844,12 +880,12 @@ export default {
         }, 1000);
         this.getUserInfo();
         window.addEventListener('resize', () => {
-            this.pie1Chart.resize();
-            this.pie2Chart.resize();
-            this.dbPie1Chart.resize();
-            this.dbPie2Chart.resize();
-            this.radar1Chart.resize();
-            this.radar2Chart.resize();
+            this.pie1Chart && this.pie1Chart.resize();
+            this.pie2Chart && this.pie2Chart.resize();
+            this.dbPie1Chart && this.dbPie1Chart.resize();
+            this.dbPie2Chart && this.dbPie2Chart.resize();
+            this.radar1Chart && this.radar1Chart.resize();
+            this.radar2Chart && this.radar2Chart.resize();
         });
     },
     computed: {
@@ -863,8 +899,67 @@ export default {
             }
             return [];
         },
+        // 当前层级 AI课堂数量基数
+        currentAiBase() {
+            if (this.curPage === 'CITY') {
+                return this.baseCountMap.city;
+            }
+            if (this.curPage === 'DISTRICT') {
+                let name = this.curMapTitle;
+                if (name === '市属校') {
+                    name = '庆阳市直属';
+                }
+                return this.baseCountMap.district[name] || 0;
+            }
+            return 0;
+        },
+        // 展示用 countList：AI课堂数量加基数，其他字段保持原样
+        displayCountList() {
+            const list = {...this.countList};
+            if (
+                list.aiCount !== undefined &&
+                list.aiCount !== null &&
+                list.aiCount !== '' &&
+                !isNaN(Number(list.aiCount))
+            ) {
+                list.aiCount = Number(list.aiCount) + this.currentAiBase;
+            }
+            return list;
+        },
+        // 传给详情弹窗的 countList：市级/区县级用加基数的，学校/教师用原数据
+        dialogCountList() {
+            if (this.curPage === 'CITY' || this.curPage === 'DISTRICT') {
+                return this.displayCountList;
+            }
+            return this.countList;
+        },
+        // 市级、区县级隐藏筛选条件；学校、教师保留
+        showFilter() {
+            return this.curPage === 'SCHOOL' || this.curPage === 'USER';
+        },
+        // 市级、区县级隐藏教学模式分布详情页的 4 个类型数量字段
+        hideTypeCountField() {
+            return this.curPage === 'CITY' || this.curPage === 'DISTRICT';
+        },
     },
     methods: {
+        // 根据区县名称获取基数
+        getDistrictBase(name) {
+            if (!name) return 0;
+            const map = this.baseCountMap.district;
+            if (map[name] !== undefined) return map[name];
+            if (name.includes('市属校') || name.includes('庆阳市直属')) {
+                return map['庆阳市直属'];
+            }
+            // 按 key 长度降序匹配，避免“正宁县”被“宁县”误匹配
+            const keys = Object.keys(map).sort((a, b) => b.length - a.length);
+            for (let key of keys) {
+                if (name.includes(key)) {
+                    return map[key];
+                }
+            }
+            return 0;
+        },
         getUserInfo() {
             let params = {};
             let userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -956,9 +1051,6 @@ export default {
                 this.updateData();
             });
         },
-        /**
-         * 获取机构上级
-         */
         getOrgDirectlyUp() {
             let params = {};
             params['orgId'] = this.curId;
@@ -984,9 +1076,6 @@ export default {
                 }
             });
         },
-        /**
-         * 获取机构直属下级
-         */
         async getOrgDirectlySub() {
             let params = {};
             params['orgId'] = this.curId;
@@ -1063,7 +1152,6 @@ export default {
                 }
             }
         },
-        // 获取下拉
         getTermList() {
             this.$axios.get('ai/bigdata/listTerm').then((res) => {
                 this.termOptions = this.$comjs.removeNullSubChildren(res.data);
@@ -1079,9 +1167,6 @@ export default {
                 this.gradeOptions = this.$comjs.removeNullSubChildren(res.data);
             });
         },
-        /**
-         * 获取通用参数的公共方法
-         */
         getParams() {
             let params = {};
             params['aiBigDataTypeEnum'] = this.curPage;
@@ -1112,7 +1197,6 @@ export default {
                 }
             });
         },
-        // 教学模式分布
         drawPieChart1() {
             let chartDom = document.getElementById('pieChart1');
             this.pie1Chart = echarts.init(chartDom);
@@ -1155,19 +1239,14 @@ export default {
                 this.pie2Chart.setOption(options, true);
             });
         },
-        /**
-         * 单个饼图生成通用方法
-         * @param pieParams 饼图数据 isDetail是否是查看详情（控制饼图显示大小）
-         * @param isDetail 是否是在弹窗内使用
-         */
         createPie(pieParams, isDetail) {
+            const isTeachMode = pieParams.title === '教学模式分布';
             return {
                 tooltip: {
                     trigger: 'item',
-                    formatter:
-                        '{a} <br/>{b}:&nbsp;&nbsp;<b>{c}' +
-                        (pieParams.title == '教学模式分布' ? '节' : '次') +
-                        '</b>&nbsp;&nbsp;(<b>{d}%</b>)',
+                    formatter: isTeachMode
+                        ? '{a} <br/>{b}:&nbsp;&nbsp;<b>{d}%</b>'
+                        : '{a} <br/>{b}:&nbsp;&nbsp;<b>{c}次</b>&nbsp;&nbsp;(<b>{d}%</b>)',
                     backgroundColor: '#00000099',
                     textStyle: {
                         fontFamily: 'SourceHanSansCN-Regular',
@@ -1204,13 +1283,6 @@ export default {
                 ],
             };
         },
-        /**
-         * 两个饼图通用方法
-         * @param pieParams 饼图数据
-         * @param isDisabled 是否禁用
-         * series1：第一个饼图相关数据，属性包括name和data
-         * series2：第二个饼图相关数据，属性包括name和data
-         */
         createDbPie(pieParams, isDisabled) {
             return {
                 title: [
@@ -1302,7 +1374,6 @@ export default {
                 ],
             };
         },
-        // 弹窗两个饼图生成通用方法
         createDbDetailPie(pieParams) {
             let options = {};
             options = {
@@ -1368,7 +1439,6 @@ export default {
             };
             return options;
         },
-        // 获取雷达图
         drawRadar1() {
             let chartDom = document.getElementById('radarChart1');
             this.radar1Chart = echarts.init(chartDom);
@@ -1406,7 +1476,6 @@ export default {
                     show: true,
                     borderColor: '#99def0',
                     formatter: (params) => {
-                        //自定义绘制tooltip
                         let str = '';
                         let colorArray = [
                             '#ed4848',
@@ -1456,7 +1525,7 @@ export default {
                                 `</li>`;
                         });
                         str += `</ul></div>`;
-                        return str ? str : ''; //解决未在拐点悬浮undefine问题
+                        return str ? str : '';
                     },
                     confine: isDetail,
                     position: ['50%', '-50%'],
@@ -1477,7 +1546,6 @@ export default {
                 },
                 radar: [
                     {
-                        // 根据数据的个数显示多边形
                         indicator: this.classTeach_indicator,
                         symbol: 'circle',
                         center: !isDetail ? ['35%', '50%'] : ['50%', '50%'],
@@ -1510,7 +1578,6 @@ export default {
                 series: [
                     {
                         type: 'radar',
-                        // 取消悬浮高亮效果
                         emphasis: {
                             disabled: true,
                         },
@@ -1581,7 +1648,6 @@ export default {
                     show: true,
                     borderColor: '#99def0',
                     formatter: (params) => {
-                        //自定义绘制tooltip
                         let str = '';
                         let colorArray = [
                             '#ed4848',
@@ -1631,7 +1697,7 @@ export default {
                                 `</li>`;
                         });
                         str += `</ul></div>`;
-                        return str ? str : ''; //解决未在拐点悬浮undefine问题
+                        return str ? str : '';
                     },
                     confine: isDetail,
                     position: ['50%', '-70%'],
@@ -1652,7 +1718,6 @@ export default {
                 },
                 radar: [
                     {
-                        // 根据数据的个数显示多边形
                         indicator: this.Flanders_indicator,
                         symbol: 'circle',
                         center: !isDetail ? ['35%', '50%'] : ['50%', '50%'],
@@ -1685,7 +1750,6 @@ export default {
                 series: [
                     {
                         type: 'radar',
-                        // 取消悬浮高亮效果
                         emphasis: {
                             disabled: true,
                         },
@@ -1739,7 +1803,6 @@ export default {
             this.columns[2].label = '区/县名称';
             this.updateData();
         },
-        // 获取地图
         drawCityMap() {
             const curCity = require('@/assets/echartsMap/' + this.curCityName + '.json');
             let chartDom = document.getElementById('cityMap');
@@ -1760,19 +1823,17 @@ export default {
                         map: this.curCityName,
                         zoom: 1.09,
                         itemStyle: {
-                            // 无操作时
                             normal: {
-                                areaColor: '#02325d3d', // 区域颜色
+                                areaColor: '#02325d3d',
                                 shadowOffsetX: 3,
                                 shadowOffsetY: 3,
-                                borderWidth: 2, // 边框线粗细
+                                borderWidth: 2,
                                 borderColor: '#02325d3d',
                                 shadowColor: '#000000ba',
-                                //发光效果
                                 shadowBlur: 12,
                             },
                             emphasis: {
-                                areaColor: '#02325d3d', //鼠标划上去的时候颜色
+                                areaColor: '#02325d3d',
                             },
                         },
                         label: {
@@ -1794,8 +1855,8 @@ export default {
                         map: this.curCityName,
                         itemStyle: {
                             normal: {
-                                areaColor: '#00000000', // 区域颜色
-                                borderWidth: 2, // 边框线粗细
+                                areaColor: '#00000000',
+                                borderWidth: 2,
                                 borderColor: '#B9E0FF',
                                 shadowOffsetX: 3,
                                 shadowOffsetY: 6,
@@ -1803,12 +1864,12 @@ export default {
                                 shadowBlur: 5,
                             },
                             emphasis: {
-                                areaColor: '#02335d1c', //鼠标划上去的时候颜色
+                                areaColor: '#02335d1c',
                             },
                         },
                         select: {
                             itemStyle: {
-                                areaColor: '#00000000', // 区域颜色
+                                areaColor: '#00000000',
                             },
                             label: {
                                 color: '#fff',
@@ -1841,13 +1902,11 @@ export default {
                 }
             });
             window.addEventListener('resize', () => {
-                this.myCityChart.resize();
+                this.myCityChart && this.myCityChart.resize();
             });
         },
-        // 切换到县级地图
         intoCountyMap(county, id) {
             if (!this.isBackCountyMap) return;
-            // 移除省级地图的点击事件，虽然页面不在，但是监听事件依旧会进行
             this.isCityMap = false;
             this.curPage = 'DISTRICT';
             this.curId = id;
@@ -1871,7 +1930,6 @@ export default {
             }
             this.updateData();
         },
-        // 获取区县地图
         drawCountyMap() {
             const countyJson = require('@/assets/echartsMap/' + this.curMapTitle + '.json');
             let chartDom = document.getElementById('countyMap');
@@ -1886,19 +1944,17 @@ export default {
                     map: this.curMapTitle,
                     zoom: 1.09,
                     itemStyle: {
-                        // 无操作时
                         normal: {
-                            areaColor: '#02325d3d', // 区域颜色
+                            areaColor: '#02325d3d',
                             shadowOffsetX: 3,
                             shadowOffsetY: 3,
-                            borderWidth: 2, // 边框线粗细
+                            borderWidth: 2,
                             borderColor: '#02325d3d',
                             shadowColor: '#000000ba',
-                            //发光效果
                             shadowBlur: 12,
                         },
                         emphasis: {
-                            areaColor: '#02325d3d', //鼠标划上去的时候颜色
+                            areaColor: '#02325d3d',
                         },
                     },
                     label: {
@@ -1912,8 +1968,8 @@ export default {
                         map: this.curMapTitle,
                         itemStyle: {
                             normal: {
-                                areaColor: '#00000000', // 区域颜色
-                                borderWidth: 2, // 边框线粗细
+                                areaColor: '#00000000',
+                                borderWidth: 2,
                                 borderColor: '#B9E0FF',
                                 shadowOffsetX: 3,
                                 shadowOffsetY: 6,
@@ -1921,12 +1977,12 @@ export default {
                                 shadowBlur: 5,
                             },
                             emphasis: {
-                                areaColor: '#02335d1c', //鼠标划上去的时候颜色
+                                areaColor: '#02335d1c',
                             },
                         },
                         label: {
                             normal: {
-                                show: true, //是否显示省份的名称
+                                show: true,
                                 color: '#ffd133',
                                 fontSize: 16,
                                 fontWeight: 'bold',
@@ -1942,7 +1998,6 @@ export default {
                     },
                     {
                         name: '数量',
-                        // 如果不想要波轮效果，可以设置为scatter
                         type: 'scatter',
                         coordinateSystem: 'geo',
                         map: this.curMapTitle,
@@ -1952,9 +2007,8 @@ export default {
                         },
                         symbol: 'image://' + require('../../assets/imgs/county-icon.png'),
                         itemStyle: {
-                            color: '#b02a02', //图标颜色
+                            color: '#b02a02',
                         },
-                        //小圆点的大小
                         symbolSize: 15,
                         data: this.schoolData,
                         label: {
@@ -1970,18 +2024,14 @@ export default {
             };
             this.myCountyChart.setOption(option, true);
             this.myCountyChart.on('click', 'series', (params) => {
-                // series引入地图，所以点击第二个参数设置series不能限制点击空白处不会触发事件，所以多加一层判断
                 if (params.data) {
                     this.intoSchoolPage(params.name, this.curSchoolOrgMap[params.name]);
                 }
             });
             window.addEventListener('resize', () => {
-                this.myCountyChart.resize();
+                this.myCountyChart && this.myCountyChart.resize();
             });
         },
-        /**
-         * 左上角下拉变动
-         */
         selectChange() {
             this.allRangeText = '';
             this.updateData(true);
@@ -1998,11 +2048,6 @@ export default {
                 this.allRangeText += '【' + this.gradeRangeText + '】';
             }
         },
-        /**
-         * 弹窗双图表切换
-         * 课堂投放信息与课堂问答的四何分析和教学风格和学习风格
-         * @param name 图表名
-         */
         changeChart(name) {
             this.curChart = name;
             if (this.FWAnalysisDlg.visible) {
@@ -2015,11 +2060,6 @@ export default {
                 this.$refs.styleDlg.updateView(this.pie1Options, this.pie2Options);
             }
         },
-        /**
-         * 弹窗显示信息判断
-         * 查看详情前先判断当前处于那个层级，判断当前要显示的对应层级内容
-         * @param ref 弹窗的ref
-         */
         setCurShowInfo(ref) {
             if (this.curPage == 'CITY') {
                 ref.selectValue = 1;
@@ -2035,7 +2075,6 @@ export default {
                 ref.selectChange(6, true);
             }
         },
-        // 教学模式分布-查看详情
         viewTypeDetail() {
             this.classTypeDlg.visible = true;
             this.chartOptions = this.createPie(this.classType_Data, true);
@@ -2044,7 +2083,6 @@ export default {
                 this.$refs.classTypeDlg.getTableData(this.getParams());
             });
         },
-        // 课堂教学情况-查看详情
         viewTeachDetail() {
             this.classTeachDlg.visible = true;
             this.chartOptions = this.getRadar1Option(true);
@@ -2053,7 +2091,6 @@ export default {
                 this.$refs.classTeachDlg.getTableData(this.getParams());
             });
         },
-        // 弗兰德斯互动分析-查看详情
         viewFlandersDetail() {
             this.FlandersDlg.visible = true;
             this.chartOptions = this.getRadar2Option(true);
@@ -2062,7 +2099,6 @@ export default {
                 this.$refs.FlandersDlg.getTableData(this.getParams());
             });
         },
-        // 四何分析-查看详情
         viewFWAnalysisDetail() {
             this.FWAnalysisDlg.visible = true;
             this.curChart = '教师课堂投放信息';
@@ -2073,7 +2109,6 @@ export default {
                 this.$refs.FWAnalysisDlg.getTableData(this.getParams());
             });
         },
-        // 教学风格和学习风格-查看详情
         viewStyleDetail() {
             this.styleDlg.visible = true;
             this.curChart = '教师教学风格';
@@ -2084,7 +2119,6 @@ export default {
                 this.$refs.styleDlg.getTableData(this.getParams());
             });
         },
-        // IRE互动分析-查看详情
         viewIREAnalysisDetail() {
             this.IREAnalysisDlg.visible = true;
             this.chartOptions = this.createPie(this.IRE_Data, true);
@@ -2093,28 +2127,22 @@ export default {
                 this.$refs.IREAnalysisDlg.getTableData(this.getParams());
             });
         },
-        // 课堂教学情况-查看趋势分析
         viewTrendDetail() {
             this.trendAnalysisDlg.visible = true;
             this.chartOptions = this.getRadar1Option(true);
             this.$nextTick(() => {
                 if (this.curPage == 'CITY') {
-                    // 市级
                     this.$refs.trendAnalysisDlg.$refs.detailCount.setCityType();
                 } else if (this.curPage == 'DISTRICT') {
-                    // 区县
                     this.$refs.trendAnalysisDlg.$refs.detailCount.setCountyType();
                 } else if (this.curPage == 'SCHOOL') {
-                    // 学校
                     this.$refs.trendAnalysisDlg.$refs.detailCount.setSchoolType();
                 } else if (this.curPage == 'USER') {
-                    // 教师
                     this.$refs.trendAnalysisDlg.$refs.detailCount.setTeacherType();
                 }
                 this.$refs.trendAnalysisDlg.getChartData(this.getParams());
             });
         },
-        // 课堂教学综合评分排行-查看详情
         viewScoreDetail() {
             this.teachScoreDlg.visible = true;
             this.teachScoreDlg.text = '统计该区域下各教师的课堂教学综合评分平均分、AI课堂数量及教师在区/县排名。';
@@ -2123,7 +2151,6 @@ export default {
                 this.$refs.teachScoreDlg.getTableData(this.getParams());
             });
         },
-        // 课堂教学综合评分分析 - 详情
         viewClassAnalysisDetail() {
             this.classAnalysisDlg.visible = true;
             this.$nextTick(() => {
@@ -2132,11 +2159,6 @@ export default {
                 this.$refs.classAnalysisDlg.drawLineChart(this.getParams());
             });
         },
-        /**
-         * 进入学校层级
-         * @param schoolName 学校名
-         * @param id 学校id
-         */
         intoSchoolPage(schoolName, id) {
             if (!this.isBackSchool) return;
             this.myCityChart && this.myCityChart.dispose();
@@ -2154,10 +2176,6 @@ export default {
             this.columns[2].label = '教师名称';
             this.updateData();
         },
-        /**
-         * 进入教师层级
-         * @param row 教师信息
-         */
         intoTeacherPage(row) {
             this.myCityChart && this.myCityChart.dispose();
             this.myCountyChart && this.myCountyChart.dispose();
@@ -2184,7 +2202,6 @@ export default {
                 }
             });
         },
-        // 获取当前时间
         getNowTime() {
             let date = new Date();
             this.curDay = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
@@ -2198,7 +2215,6 @@ export default {
         addZero(s) {
             return s < 10 ? '0' + s : s;
         },
-        // 教师层级-折线图-课堂教学综合评分分析
         drawAnalysisLineChart() {
             let chartDom = document.getElementById('analysisChart');
             this.lineChart = echarts.init(chartDom);
@@ -2235,7 +2251,6 @@ export default {
                     },
                     data: this.chartDataList,
                     axisTick: {
-                        // 轴刻度
                         show: false,
                     },
                     axisLine: {
@@ -2247,7 +2262,6 @@ export default {
                         },
                     },
                     axisLabel: {
-                        // 轴文字
                         color: '#91CEFF',
                         fontSize: 12,
                         fontFamily: 'SourceHanSansCN-Regular',
@@ -2259,17 +2273,14 @@ export default {
                 yAxis: {
                     type: 'value',
                     splitLine: {
-                        // 网格线
                         show: true,
                         lineStyle: {
-                            //分割线
                             color: '#91CEFF80',
                             width: 1,
                             type: 'dashed',
                         },
                     },
                     axisLabel: {
-                        // 轴文字
                         color: '#fff',
                         fontSize: 14,
                         fontFamily: 'ArialMT',
@@ -2282,17 +2293,16 @@ export default {
                         symbol: symbolImg,
                         symbolSize: 15,
                         itemStyle: {
-                            color: '#FFD12B', //改变折线颜色
+                            color: '#FFD12B',
                         },
                     },
                 ],
             };
             this.lineChart.setOption(option, true);
             window.addEventListener('resize', () => {
-                this.lineChart.resize();
+                this.lineChart && this.lineChart.resize();
             });
         },
-        // 当前位置-下拉切换
         changeCurMsg(item) {
             if (this.curPage == 'DISTRICT') {
                 this.intoCountyMap(item.name, item.id);
@@ -2302,7 +2312,6 @@ export default {
                 this.intoTeacherPage({teacher: item.name, id: item.id});
             }
         },
-        // 学期下拉修改
         termSelectChange(valArray) {
             this.termRangeText = '';
             this.termValueText = '';
@@ -2323,7 +2332,6 @@ export default {
             });
             this.selectChange();
         },
-        // 学科下拉修改
         courseSelectChange(valArray) {
             this.courseRangeText = '';
             valArray.forEach((ite, index) => {
@@ -2337,7 +2345,6 @@ export default {
             this.courseValueText = valArray.join(',');
             this.selectChange();
         },
-        // 年级下拉修改
         gradeSelectChange(valArray) {
             this.gradeRangeText = '';
             this.gradeValueText = '';
@@ -2365,7 +2372,6 @@ export default {
             }
             this.selectChange();
         },
-        // 课堂教学综合评分排行
         getClassroomTeachingScoreRankingList() {
             let params = {...this.getParams(), ...this.sortParams};
             params['pageNum'] = 1;
@@ -2382,15 +2388,25 @@ export default {
             this.tableLoading = true;
             this.$axios.get('/ai/bigdata/getClassroomTeachingScoreRankingList', params).then((res) => {
                 if (res.data) {
-                    this.tableData = res.data.pageList;
+                    let pageList = res.data.pageList || [];
+                    // 市级页面：各区县 AI课堂数量加基数
+                    if (this.curPage === 'CITY') {
+                        pageList = pageList.map((row) => {
+                            let districtName = this.curDistrictNameMap[row.id] || row.name || '';
+                            let base = this.getDistrictBase(districtName);
+                            return {
+                                ...row,
+                                aiClassCount: (Number(row.aiClassCount) || 0) + base,
+                            };
+                        });
+                    }
+                    this.tableData = pageList;
                     this.tableLoading = false;
                 }
             });
         },
-        // 点击表格，跳转到下一级
         intoNextPage(name, id) {
             if (this.curPage == 'CITY') {
-                // 当前区县名称会显示如“庆阳市镇原县教育局”，无法匹配镇原县，需要通过id对照出name
                 let districtName = this.curDistrictNameMap[id];
                 this.intoCountyMap(districtName, id);
             } else if (this.curPage == 'DISTRICT') {
@@ -2399,20 +2415,9 @@ export default {
                 this.intoTeacherPage({teacher: name, id: id});
             }
         },
-        /**
-         * 弹窗表格跳转
-         * @param msg 行数据
-         * type：跳转到哪一层级
-         * name：当前层级名称
-         * id：当前层级id
-         * schoolId：学校层级id，用于教师层级，获取当前学校下级教师列表
-         * schoolName：学校名称，用于教师层级，显示学校名称
-         * regionId：区县id，用于学校层级，获取当前区县下级学校列表
-         */
         pageChange(msg) {
             const {type, name, id, schoolId, schoolName, regionId} = msg;
             if (type == 'DISTRICT') {
-                // 当前区县名称会显示如“庆阳市镇原县教育局”，无法匹配镇原县，需要通过id对照出name
                 let districtName = this.curDistrictNameMap[id];
                 this.intoCountyMap(districtName, id);
             } else if (type == 'SCHOOL') {
@@ -2430,7 +2435,6 @@ export default {
                 this.getOrgDirectlyUp();
             }
         },
-        // 当从弹窗跳转到学校层级，获取一下学校的下拉
         getSchoolOptions(id) {
             let params = {};
             params['orgId'] = id;
@@ -2449,7 +2453,6 @@ export default {
                 });
             });
         },
-        // 当从弹窗跳转到教师层级，获取一下教师的下拉
         getTeacherOptions(id) {
             let params = {};
             params['orgId'] = id;
@@ -2482,7 +2485,6 @@ export default {
                 });
             });
         },
-        // 控制按时间/学期筛选
         statisticsSelectChange(val) {
             this.isShowTermSelect = val == 1;
             this.termValue = '';
@@ -2495,7 +2497,6 @@ export default {
     },
 };
 </script>
-
 <style lang="scss">
 .data-board {
     width: 100%;

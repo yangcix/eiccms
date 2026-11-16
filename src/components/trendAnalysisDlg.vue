@@ -3,7 +3,12 @@
         <div slot="title" class="dialog-title">
             <div>
                 <span>{{ detailDlg.title }}</span>
-                <el-tooltip :content="detailDlg.text" placement="bottom-start" popper-class="tooltip-content" class="tooltip-icon">
+                <el-tooltip
+                    :content="detailDlg.text"
+                    placement="bottom-start"
+                    popper-class="tooltip-content"
+                    class="tooltip-icon"
+                >
                     <i class="el-icon-question"></i>
                 </el-tooltip>
             </div>
@@ -14,11 +19,12 @@
             :countList="countList"
             :allRangeText="allRangeText"
             :options="options"
+            :aiBase="aiBase"
         ></detailCount>
         <div class="bottom-content">
             <div class="statistics">
                 <p class="sec-title">趋势分析</p>
-                <div class="select-group">
+                <div class="select-group" v-show="showFilter">
                     <div class="rect-left">
                         <div class="white-rect"></div>
                         <div class="blue-rect"></div>
@@ -60,6 +66,11 @@ export default {
                 return {};
             },
         },
+        // 当前层级 AI课堂数量基数，由父组件传入
+        aiBase: {
+            type: Number,
+            default: 0,
+        },
         allRangeText: {
             type: String,
             default: '',
@@ -77,6 +88,11 @@ export default {
         options: {
             type: Object,
             default: () => {},
+        },
+        // 市级/区县级隐藏统计情况旁的过滤项；学校/教师保留
+        showFilter: {
+            type: Boolean,
+            default: true,
         },
     },
     data() {
@@ -265,7 +281,6 @@ export default {
                     type: 'category',
                     data: this.stackCountDate,
                     axisTick: {
-                        // 轴刻度
                         show: false,
                     },
                     axisLine: {
@@ -277,7 +292,6 @@ export default {
                         },
                     },
                     axisLabel: {
-                        // 轴文字
                         color: '#91CEFF',
                         fontSize: 14,
                         fontFamily: 'SourceHanSansCN-Regular',
@@ -286,17 +300,14 @@ export default {
                 yAxis: {
                     type: 'value',
                     splitLine: {
-                        // 网格线
                         show: true,
                         lineStyle: {
-                            //分割线
                             color: '#91CEFF80',
                             width: 1,
                             type: 'dashed',
                         },
                     },
                     axisLabel: {
-                        // 轴文字
                         color: '#fff',
                         fontSize: 14,
                         fontFamily: 'ArialMT',
@@ -381,7 +392,6 @@ export default {
                     type: 'category',
                     data: this.stackCountDate,
                     axisTick: {
-                        // 轴刻度
                         show: false,
                     },
                     axisLine: {
@@ -393,7 +403,6 @@ export default {
                         },
                     },
                     axisLabel: {
-                        // 轴文字
                         color: '#91CEFF',
                         fontSize: 14,
                         fontFamily: 'SourceHanSansCN-Regular',
@@ -402,17 +411,14 @@ export default {
                 yAxis: {
                     type: 'value',
                     splitLine: {
-                        // 网格线
                         show: true,
                         lineStyle: {
-                            //分割线
                             color: '#91CEFF80',
                             width: 1,
                             type: 'dashed',
                         },
                     },
                     axisLabel: {
-                        // 轴文字
                         color: '#fff',
                         fontSize: 14,
                         fontFamily: 'ArialMT',

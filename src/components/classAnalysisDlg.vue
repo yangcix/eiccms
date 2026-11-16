@@ -9,7 +9,12 @@
         <div slot="title" class="dialog-title">
             <div>
                 <span>{{ detailDlg.title }}</span>
-                <el-tooltip :content="detailDlg.text" placement="bottom-start" popper-class="tooltip-content" class="tooltip-icon">
+                <el-tooltip
+                    :content="detailDlg.text"
+                    placement="bottom-start"
+                    popper-class="tooltip-content"
+                    class="tooltip-icon"
+                >
                     <i class="el-icon-question"></i>
                 </el-tooltip>
             </div>
@@ -25,7 +30,7 @@
         <div class="bottom-content">
             <div class="statistics">
                 <p class="sec-title">统计情况</p>
-                <div class="select-group">
+                <div class="select-group" v-show="showFilter">
                     <div class="rect-left">
                         <div class="white-rect"></div>
                         <div class="blue-rect"></div>
@@ -131,6 +136,11 @@ export default {
         options: {
             type: Object,
             default: () => {},
+        },
+        // 市级/区县级隐藏统计情况旁的过滤项；学校/教师保留
+        showFilter: {
+            type: Boolean,
+            default: true,
         },
     },
     data() {

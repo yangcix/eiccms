@@ -32,7 +32,7 @@
                     </div>
                     <div class="count-item" v-show="showAiClassCount">
                         <p>AI课堂数量(节)</p>
-                        <p>{{ countList.aiCount }}</p>
+                        <p>{{ displayAiCount }}</p>
                     </div>
                     <div class="count-item" v-show="showRankCount">
                         <p>
@@ -106,6 +106,11 @@ export default {
                 };
             },
         },
+        // 新增：当前层级 AI课堂数量基数
+        aiBase: {
+            type: Number,
+            default: 0,
+        },
         allRangeText: {
             type: String,
             default: '',
@@ -172,6 +177,13 @@ export default {
             classScoreList: [],
             courseList: [],
         };
+    },
+    computed: {
+        // 展示用 AI课堂数量：原始数量 + 当前层级基数
+        displayAiCount() {
+            const origin = Number(this.countList.aiCount) || 0;
+            return origin + (Number(this.aiBase) || 0);
+        },
     },
     mounted() {
         if (!this.isScoreAnalysisType && !this.isOnlyCount) {
@@ -411,9 +423,9 @@ export default {
                     formatter: (params) => {
                         let html = '';
                         html += '<div>';
-                            html += '<p>综合评分：' + params[0].value + '</p>';
-                            html += '<p>课程名称：《' + this.courseList[params[0].dataIndex] + '》</p>';
-                            html += '<p>时间：' + params[0].name + '</p>';
+                        html += '<p>综合评分：' + params[0].value + '</p>';
+                        html += '<p>课程名称：《' + this.courseList[params[0].dataIndex] + '》</p>';
+                        html += '<p>时间：' + params[0].name + '</p>';
                         html += '</div>';
                         return html;
                     },

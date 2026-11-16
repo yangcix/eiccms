@@ -20,11 +20,12 @@
             :allRangeText="allRangeText"
             :options="options"
             :isSinglePie="true"
+            :aiBase="aiBase"
         ></detailCount>
         <div class="bottom-content">
             <div class="statistics">
                 <p class="sec-title">统计情况</p>
-                <div class="select-group">
+                <div class="select-group" v-show="showFilter">
                     <div class="rect-left">
                         <div class="white-rect"></div>
                         <div class="blue-rect"></div>
@@ -100,6 +101,10 @@
                     >
                         {{ row.name }}
                     </div>
+                    <!-- 市级按区县统计时，AI课堂数加区县基数 -->
+                    <div v-if="column.prop == 'aiClassCount'">
+                        {{ getAiClassCount(row) }}
+                    </div>
                 </template>
             </commonTable>
         </div>
@@ -121,6 +126,21 @@ export default {
                 return {};
             },
         },
+        // 当前层级 AI课堂数量基数，由父组件传入
+        aiBase: {
+            type: Number,
+            default: 0,
+        },
+        // 区县基数映射，由父组件传入，用于市级详情页列表
+        baseMap: {
+            type: Object,
+            default: () => ({district: {}}),
+        },
+        // 市级/区县级隐藏 4 个类型的数量字段
+        hideTypeCountField: {
+            type: Boolean,
+            default: false,
+        },
         allRangeText: {
             type: String,
             default: '',
@@ -139,11 +159,15 @@ export default {
             type: Object,
             default: () => {},
         },
+        // 市级/区县级隐藏统计情况旁的过滤项；学校/教师保留
+        showFilter: {
+            type: Boolean,
+            default: true,
+        },
     },
     data() {
         return {
             columns: [
-                // 不设置宽度会自动填补表格剩余宽度
                 {prop: 'name', label: '课程名称', slot: true, minWidth: '130'},
                 {prop: 'teacherName', label: '教师名称', slot: true, isShow: false},
                 {prop: 'schoolName', label: '学校名称', slot: true, isShow: false, minWidth: '130'},
@@ -153,7 +177,7 @@ export default {
                 {prop: 'subjectName', label: '学科名称', isShow: false},
                 {prop: 'gradeName', label: '年级名称', isShow: false, minWidth: '100'},
                 {prop: 'teacherCount', label: '参与教师数', sortable: 'custom'},
-                {prop: 'aiClassCount', label: 'AI课堂数', sortable: 'custom'},
+                {prop: 'aiClassCount', label: 'AI课堂数', sortable: 'custom', slot: true},
                 {
                     prop: 'practice',
                     label: '练习型',
@@ -221,6 +245,34 @@ export default {
     methods: {
         getTableData(params) {
             this.$comjs.getDlgTableData(params, '/ai/bigdata/getClassroomTypeDistributionList', this);
+        },
+        // 区县基数匹配
+        getDistrictBase(name) {
+            if (!name) return 0;
+            const map = (this.baseMap && this.baseMap.district) || {};
+            if (map[name] !== undefined) return map[name];
+            if (name.includes('市属校') || name.includes('庆阳市直属')) {
+                return map['庆阳市直属'] || 0;
+            }
+            const keys = Object.keys(map).sort((a, b) => b.length - a.length);
+            for (let key of keys) {
+                if (name.includes(key)) {
+                    return map[key];
+                }
+            }
+            return 0;
+        },
+        // 列表 AI课堂数展示
+        // 市级、区县级「按区/县统计」时，行是区县，加对应区县基数；
+        // 其他维度、学校/教师层级不加基数
+        getAiClassCount(row) {
+            const origin = Number(row.aiClassCount) || 0;
+            // aiBase：市级 2713，区县级为对应区县基数，学校/教师为 0
+            // 只有市级/区县级，且当前是按区/县统计，才加基数
+            if (this.aiBase <= 0 || this.selectValue !== 1) {
+                return origin;
+            }
+            return origin + this.getDistrictBase(row.name);
         },
         operateColumns(val) {
             let showColumnsArray = [];
@@ -325,8 +377,22 @@ export default {
             }
             this.columns = this.$comjs.setColumns(this.columns, showColumnsArray, true);
             this.columns = this.$comjs.setColumns(this.columns, hiddenColumnsArray, false);
-            // 根据层级判断列的显示隐藏，例如如果在区县层级或者该角色最高只到区县打开弹窗，进入‘按学校统计’，那么就不用显示区县列
+            // 根据层级判断列的显示隐藏
             this.columns = this.$comjs.setColumnsOperate(this.initialValue, this);
+
+            // 市级/区县级：教学模式分布详情页隐藏 4 个类型的“数量”字段，只保留“占比”
+            this.updateTypeMulHead();
+        },
+        // 根据 hideTypeCountField 过滤 mulHead 中的数量列
+        updateTypeMulHead() {
+            const typeProps = ['practice', 'teach', 'chat', 'mix'];
+            typeProps.forEach((prop) => {
+                const col = this.columns.find((c) => c.prop === prop);
+                if (!col || !col.mulHead) return;
+                if (this.hideTypeCountField) {
+                    col.mulHead = col.mulHead.filter((h) => h.label !== '数量');
+                }
+            });
         },
         clickRowLine(row, prop) {
             let msg = this.$comjs.clickRowLine(row, prop, this);
